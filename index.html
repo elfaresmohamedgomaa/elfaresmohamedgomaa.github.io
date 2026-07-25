@@ -3486,6 +3486,181 @@
 }
 .student-logout-link:hover { opacity: 1; text-decoration: underline; }
 
+/* ===== LEGAL PAGES (Terms / Privacy) ===== */
+.legal-overlay {
+  position: fixed; inset: 0;
+  background: var(--dark);
+  z-index: 999999;
+  display: none;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.legal-overlay.open { display: block; animation: fadeIn 0.25s ease; }
+.legal-topbar {
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent2), var(--gold), var(--gold-light), var(--accent2));
+  background-size: 200% 100%;
+  animation: legalTopbarShift 6s linear infinite;
+}
+@keyframes legalTopbarShift { 0% { background-position: 0% 0; } 100% { background-position: 200% 0; } }
+
+.legal-header {
+  position: sticky; top: 0; z-index: 5;
+  background: rgba(10,10,15,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(201,168,76,0.15);
+  padding: 20px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.legal-close-btn {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.25s;
+  flex-shrink: 0;
+}
+.legal-close-btn:hover { background: rgba(201,168,76,0.15); border-color: var(--gold); transform: rotate(90deg); }
+.legal-header-title-wrap { display: flex; align-items: center; gap: 12px; text-align: right; }
+.legal-header-icon { font-size: 1.7rem; flex-shrink: 0; }
+.legal-header-title {
+  font-family: 'Tajawal', sans-serif;
+  font-size: 1.25rem; font-weight: 900;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  line-height: 1.3;
+}
+.legal-header-sub { font-size: 0.8rem; color: var(--white2); opacity: 0.55; margin-top: 2px; }
+
+.legal-body { max-width: 900px; margin: 0 auto; padding: 36px 24px 80px; }
+.legal-update-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(201,168,76,0.08);
+  border: 1px solid rgba(201,168,76,0.25);
+  color: var(--gold-light);
+  padding: 8px 18px;
+  border-radius: 50px;
+  font-size: 0.83rem;
+  margin-bottom: 28px;
+  float: left;
+}
+.legal-intro {
+  clear: both;
+  background: rgba(201,168,76,0.06);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 18px;
+  padding: 24px 28px;
+  text-align: center;
+  color: var(--white2);
+  font-size: 0.98rem;
+  line-height: 2;
+  margin-bottom: 32px;
+}
+.legal-intro strong { color: var(--gold-light); }
+
+.legal-section {
+  background: var(--dark3);
+  border: 1px solid rgba(201,168,76,0.12);
+  border-radius: 16px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  transition: border-color 0.25s;
+}
+.legal-section.open { border-color: rgba(201,168,76,0.35); }
+.legal-section-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px;
+  cursor: pointer;
+  gap: 12px;
+  user-select: none;
+}
+.legal-section-head-title {
+  display: flex; align-items: center; gap: 12px;
+  font-family: 'Tajawal', sans-serif;
+  font-weight: 800; font-size: 1rem; color: var(--white);
+}
+.legal-section-head-title .num { color: var(--gold); }
+.legal-section-chevron {
+  color: var(--gold);
+  transition: transform 0.3s;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+.legal-section.open .legal-section-chevron { transform: rotate(180deg); }
+.legal-section-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+  padding: 0 24px;
+}
+.legal-section.open .legal-section-body {
+  max-height: 600px;
+  padding: 0 24px 22px;
+}
+.legal-section-body ul { list-style: none; }
+.legal-section-body li {
+  position: relative;
+  padding-right: 22px;
+  margin-bottom: 10px;
+  color: var(--white2);
+  opacity: 0.85;
+  font-size: 0.92rem;
+  line-height: 1.9;
+}
+.legal-section-body li::before {
+  content: '•';
+  color: var(--gold);
+  position: absolute; right: 0; top: 0;
+  font-size: 1.2rem;
+  line-height: 1.4;
+}
+.legal-section-body p {
+  color: var(--white2); opacity: 0.85; font-size: 0.92rem; line-height: 1.9; margin-bottom: 10px;
+}
+
+.legal-contact-box {
+  margin-top: 36px;
+  background: var(--dark3);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 18px;
+  padding: 30px 28px;
+  text-align: center;
+}
+.legal-contact-box h4 {
+  font-family: 'Tajawal', sans-serif; font-size: 1.1rem; font-weight: 800;
+  color: var(--gold-light); margin-bottom: 10px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.legal-contact-box p { color: var(--white2); opacity: 0.75; font-size: 0.9rem; margin-bottom: 20px; }
+.legal-contact-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.legal-contact-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 22px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-size: 0.9rem; font-weight: 700;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--white);
+  background: rgba(255,255,255,0.04);
+  transition: all 0.25s;
+}
+.legal-contact-btn.fb:hover { background: #1877f2; border-color: #1877f2; }
+.legal-contact-btn.wa:hover { background: #25d366; border-color: #25d366; color: var(--dark); }
+
+@media (max-width: 640px) {
+  .legal-header { padding: 16px 20px; }
+  .legal-header-title { font-size: 1.05rem; }
+  .legal-body { padding: 28px 16px 60px; }
+  .legal-update-badge { float: none; display: flex; width: fit-content; margin: 0 auto 24px; }
+}
+
 /* Admin Panel Overlay */
 #admin-panel {
   position: fixed; inset: 0; z-index: 99998;
@@ -4719,8 +4894,8 @@
     <div class="footer-col">
       <h4>قانوني</h4>
       <ul class="footer-links">
-        <li><a href="#">الشروط والأحكام</a></li>
-        <li><a href="#">سياسة الخصوصية</a></li>
+        <li><a href="javascript:void(0)" onclick="openLegalPage('terms')">الشروط والأحكام</a></li>
+        <li><a href="javascript:void(0)" onclick="openLegalPage('privacy')">سياسة الخصوصية</a></li>
         <li><a href="#contact">تواصل معنا</a></li>
       </ul>
     </div>
@@ -7355,6 +7530,256 @@ function initPushSystem() {
     </div>
   </div>
 </div>
+
+<!-- ===== TERMS & CONDITIONS PAGE ===== -->
+<div class="legal-overlay" id="terms-page">
+  <div class="legal-topbar"></div>
+  <div class="legal-header">
+    <button class="legal-close-btn" onclick="closeLegalPage('terms')" aria-label="إغلاق">✕</button>
+    <div class="legal-header-title-wrap">
+      <div>
+        <div class="legal-header-title">الشروط والأحكام</div>
+        <div class="legal-header-sub">محمد جمعة — الفارس في الرياضيات</div>
+      </div>
+      <div class="legal-header-icon">📜</div>
+    </div>
+  </div>
+
+  <div class="legal-body">
+    <div class="legal-update-badge">📅 آخر تحديث: يوليو 2026</div>
+    <div class="legal-intro">
+      مرحبًا بك في منصة <strong>الفارس في الرياضيات</strong>. باستخدامك لهذه المنصة، فإنك توافق على الالتزام بالشروط والأحكام التالية:
+    </div>
+
+    <div class="legal-section open" data-legal-section>
+      <div class="legal-section-head" onclick="toggleLegalSection(this.parentElement)">
+        <div class="legal-section-head-title"><span class="num">1.</span> استخدام المنصة 🖥️</div>
+        <span class="legal-section-chevron">▾</span>
+      </div>
+      <div class="legal-section-body">
+        <ul>
+          <li>يُسمح باستخدام المنصة للأغراض التعليمية فقط.</li>
+          <li>يُمنع استخدام المحتوى (فيديوهات، مذكرات، شوامل) لأي أغراض تجارية دون إذن مسبق.</li>
+          <li>يُمنع إعادة نشر أو توزيع أي محتوى من المنصة خارجها.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="legal-section" data-legal-section>
+      <div class="legal-section-head" onclick="toggleLegalSection(this.parentElement)">
+        <div class="legal-section-head-title"><span class="num">2.</span> حساب الطالب 👤</div>
+        <span class="legal-section-chevron">▾</span>
+      </div>
+      <div class="legal-section-body">
+        <ul>
+          <li>الدخول للمنصة يتم عن طريق كود الطالب الخاص بك فقط.</li>
+          <li>الطالب مسؤول عن الحفاظ على سرية كود الدخول الخاص به وعدم مشاركته مع أي شخص آخر.</li>
+          <li>أي نشاط يتم من خلال الكود يُعتبر مسؤولية صاحب الكود.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="legal-section" data-legal-section>
+      <div class="legal-section-head" onclick="toggleLegalSection(this.parentElement)">
+        <div class="legal-section-head-title"><span class="num">3.</span> نظام الأكواد 🔑</div>
+        <span class="legal-section-chevron">▾</span>
+      </div>
+      <div class="legal-section-body">
+        <ul>
+          <li>يتم إصدار كود الطالب من قبل إدارة المنصة فقط.</li>
+          <li>لا يجوز بيع أو تداول الأكواد بين الطلاب.</li>
+          <li>يحق للمنصة إيقاف أي كود يتم استخدامه بشكل مخالف لهذه الشروط.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="legal-section" data-legal-section>
+      <div class="legal-section-head" onclick="toggleLegalSection(this.parentElement)">
+        <div class="legal-section-head-title"><span class="num">4.</span> حقوق الملكية الفكرية ©️</div>
+        <span class="legal-section-chevron">▾</span>
+      </div>
+      <div class="legal-section-body">
+        <ul>
+          <li>جميع المحتويات التعليمية (فيديوهات، مذكرات، شوامل) مملوكة للأستاذ محمد جمعة.</li>
+          <li>يُمنع نسخ أو تصوير أو إعادة رفع أي محتوى دون إذن كتابي مسبق.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="legal-section" data-legal-section>
+      <div class="legal-section-head" onclick="toggleLegalSection(this.parentElement)">
+        <div class="legal-section-head-title"><span class="num">5.</span> إيقاف الخدمة 🚫</div>
+        <span class="legal-section-chevron">▾</span>
+      </div>
+      <div class="legal-section-body">
+        <ul>
+          <li>تحتفظ إدارة المنصة بحق إيقاف أو تعليق أي حساب يخالف الشروط والأحكام.</li>
+          <li>يمكن إيقاف الخدمة مؤقتًا لأعمال الصيانة أو التطوير دون إشعار مسبق.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="legal-section" data-legal-section>
+      <div class="legal-section-head" onclick="toggleLegalSection(this.parentElement)">
+        <div class="legal-section-head-title"><span class="num">6.</span> التعديلات 🔄</div>
+        <span class="legal-section-chevron">▾</span>
+      </div>
+      <div class="legal-section-body">
+        <p>يحق للمنصة تعديل هذه الشروط في أي وقت، وسيتم نشر أي تحديث على هذه الصفحة مع تاريخ آخر تحديث.</p>
+      </div>
+    </div>
+
+    <div class="legal-section" data-legal-section>
+      <div class="legal-section-head" onclick="toggleLegalSection(this.parentElement)">
+        <div class="legal-section-head-title"><span class="num">7.</span> إخلاء المسؤولية ⚠️</div>
+        <span class="legal-section-chevron">▾</span>
+      </div>
+      <div class="legal-section-body">
+        <p>تُبذل المنصة أقصى جهد لضمان جودة المحتوى التعليمي، لكنها غير مسؤولة عن أي نتائج دراسية فردية قد تختلف من طالب لآخر حسب مجهوده الشخصي.</p>
+      </div>
+    </div>
+
+    <div class="legal-contact-box">
+      <h4>📬 التواصل معنا</h4>
+      <p>لأي استفسارات بخصوص الشروط والأحكام، يمكنك التواصل معنا عبر:</p>
+      <div class="legal-contact-btns">
+        <a class="legal-contact-btn fb" href="https://www.facebook.com/share/1ArxwKLPhf/" target="_blank" rel="noopener">📘 فيسبوك</a>
+        <a class="legal-contact-btn wa" href="https://wa.me/201223678850" target="_blank" rel="noopener">💬 واتساب</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PRIVACY POLICY PAGE ===== -->
+<div class="legal-overlay" id="privacy-page">
+  <div class="legal-topbar"></div>
+  <div class="legal-header">
+    <button class="legal-close-btn" onclick="closeLegalPage('privacy')" aria-label="إغلاق">✕</button>
+    <div class="legal-header-title-wrap">
+      <div>
+        <div class="legal-header-title">سياسة الخصوصية</div>
+        <div class="legal-header-sub">محمد جمعة — الفارس في الرياضيات</div>
+      </div>
+      <div class="legal-header-icon">🔒</div>
+    </div>
+  </div>
+
+  <div class="legal-body">
+    <div class="legal-update-badge">📅 آخر تحديث: يوليو 2026</div>
+    <div class="legal-intro">
+      نحرص على حماية خصوصية المستخدمين في منصة <strong>الفارس في الرياضيات</strong>. توضح هذه السياسة كيفية جمع واستخدام وحماية المعلومات التي يتم الحصول عليها من المستخدمين.
+    </div>
+
+    <div class="legal-section open" data-legal-section>
+      <div class="legal-section-head" onclick="toggleLegalSection(this.parentElement)">
+        <div class="legal-section-head-title"><span class="num">1.</span> المعلومات التي نقوم بجمعها 📋</div>
+        <span class="legal-section-chevron">▾</span>
+      </div>
+      <div class="legal-section-body">
+        <ul>
+          <li>الاسم (إن تم إدخاله عند التسجيل).</li>
+          <li>رقم الواتساب المستخدم في التواصل.</li>
+          <li>كود الطالب المستخدم لتسجيل الدخول للمنصة.</li>
+          <li>بيانات المتابعة الدراسية (درجات، حضور) الخاصة بالطالب.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="legal-section" data-legal-section>
+      <div class="legal-section-head" onclick="toggleLegalSection(this.parentElement)">
+        <div class="legal-section-head-title"><span class="num">2.</span> كيفية استخدام المعلومات ⚙️</div>
+        <span class="legal-section-chevron">▾</span>
+      </div>
+      <div class="legal-section-body">
+        <ul>
+          <li>تسجيل دخول الطالب والتحقق من هويته عبر كود الطالب.</li>
+          <li>متابعة المستوى الدراسي وتقديم محتوى مناسب له.</li>
+          <li>التواصل مع الطالب أو ولي الأمر بخصوص المواعيد والتحديثات.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="legal-section" data-legal-section>
+      <div class="legal-section-head" onclick="toggleLegalSection(this.parentElement)">
+        <div class="legal-section-head-title"><span class="num">3.</span> حماية البيانات 🛡️</div>
+        <span class="legal-section-chevron">▾</span>
+      </div>
+      <div class="legal-section-body">
+        <p>يتم تخزين بيانات الطلاب على قواعد بيانات آمنة (Firebase)، ونتخذ إجراءات معقولة لحماية هذه البيانات من الوصول غير المصرح به.</p>
+      </div>
+    </div>
+
+    <div class="legal-section" data-legal-section>
+      <div class="legal-section-head" onclick="toggleLegalSection(this.parentElement)">
+        <div class="legal-section-head-title"><span class="num">4.</span> مشاركة المعلومات 🤝</div>
+        <span class="legal-section-chevron">▾</span>
+      </div>
+      <div class="legal-section-body">
+        <p>لا تتم مشاركة بيانات الطلاب مع أي طرف ثالث لأغراض تجارية. تُستخدم البيانات فقط داخل نطاق المنصة التعليمية.</p>
+      </div>
+    </div>
+
+    <div class="legal-section" data-legal-section>
+      <div class="legal-section-head" onclick="toggleLegalSection(this.parentElement)">
+        <div class="legal-section-head-title"><span class="num">5.</span> ملفات تعريف الارتباط (Cookies) 🍪</div>
+        <span class="legal-section-chevron">▾</span>
+      </div>
+      <div class="legal-section-body">
+        <p>تستخدم المنصة تخزينًا محليًا في المتصفح (localStorage) لحفظ حالة تسجيل الدخول فقط، ولا تُستخدم لأغراض تتبع إعلاني.</p>
+      </div>
+    </div>
+
+    <div class="legal-section" data-legal-section>
+      <div class="legal-section-head" onclick="toggleLegalSection(this.parentElement)">
+        <div class="legal-section-head-title"><span class="num">6.</span> موافقة المستخدم ✅</div>
+        <span class="legal-section-chevron">▾</span>
+      </div>
+      <div class="legal-section-body">
+        <p>باستخدامك للمنصة وتسجيل الدخول بكود الطالب، فإنك توافق على جمع واستخدام بياناتك وفقًا لهذه السياسة.</p>
+      </div>
+    </div>
+
+    <div class="legal-section" data-legal-section>
+      <div class="legal-section-head" onclick="toggleLegalSection(this.parentElement)">
+        <div class="legal-section-head-title"><span class="num">7.</span> التعديلات على السياسة 🔄</div>
+        <span class="legal-section-chevron">▾</span>
+      </div>
+      <div class="legal-section-body">
+        <p>قد يتم تحديث سياسة الخصوصية من وقت لآخر، وسيتم نشر أي تعديل على هذه الصفحة مع تحديث تاريخ آخر تحديث.</p>
+      </div>
+    </div>
+
+    <div class="legal-contact-box">
+      <h4>📬 التواصل معنا</h4>
+      <p>إذا كان لديك أي استفسار بخصوص سياسة الخصوصية، يمكنك التواصل معنا عبر:</p>
+      <div class="legal-contact-btns">
+        <a class="legal-contact-btn fb" href="https://www.facebook.com/share/1ArxwKLPhf/" target="_blank" rel="noopener">📘 فيسبوك</a>
+        <a class="legal-contact-btn wa" href="https://wa.me/201223678850" target="_blank" rel="noopener">💬 واتساب</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.openLegalPage = function(type) {
+    const overlay = document.getElementById(type === 'privacy' ? 'privacy-page' : 'terms-page');
+    if (!overlay) return;
+    overlay.classList.add('open');
+    overlay.scrollTop = 0;
+    document.body.style.overflow = 'hidden';
+  };
+
+  window.closeLegalPage = function(type) {
+    const overlay = document.getElementById(type === 'privacy' ? 'privacy-page' : 'terms-page');
+    if (!overlay) return;
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  };
+
+  window.toggleLegalSection = function(sectionEl) {
+    sectionEl.classList.toggle('open');
+  };
+</script>
 
 </body>
 </html>
