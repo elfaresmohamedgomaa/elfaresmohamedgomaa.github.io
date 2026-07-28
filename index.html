@@ -4304,6 +4304,18 @@
   flex-shrink: 0;
 }
 .student-code-copy-btn:hover { background: rgba(37,211,102,0.25); }
+.admin-form-error {
+  display: none;
+  margin-top: 12px;
+  background: rgba(255,107,107,0.08);
+  border: 1px solid rgba(255,107,107,0.35);
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 0.85rem;
+  color: #ff8a8a;
+  line-height: 1.7;
+}
+.admin-form-error.show { display: block; }
 
 /* Save notification */
 .admin-save-toast {
@@ -6660,6 +6672,7 @@ adminLoadFromStorage();
           <input class="admin-input" id="student-new-center" placeholder="السنتر *" dir="rtl">
           <input class="admin-input" id="student-new-code" placeholder="كود مخصص (اختياري - هيتولد كود تلقائي لو سيبته فاضي)" dir="ltr">
           <button class="admin-add-btn" onclick="adminAddStudent()">➕ إضافة الطالب</button>
+          <div class="admin-form-error" id="adminStudentError"></div>
           <div class="student-code-result" id="adminStudentResult" style="display:none;"></div>
         </div>
       </div>
@@ -7256,12 +7269,22 @@ window.adminAddStudent = function() {
   const gradeEl       = document.getElementById('student-new-gradelevel');
   const centerEl      = document.getElementById('student-new-center');
   const codeEl        = document.getElementById('student-new-code');
+  const errBox        = document.getElementById('adminStudentError');
+
+  function showFormError(msg) {
+    if (errBox) { errBox.textContent = msg; errBox.classList.add('show'); }
+  }
+  function hideFormError() {
+    if (errBox) { errBox.classList.remove('show'); errBox.textContent = ''; }
+  }
 
   function flagError(el) {
     el.focus();
     el.style.borderColor = '#ff6b6b';
     setTimeout(() => el.style.borderColor = '', 1200);
   }
+
+  hideFormError();
 
   const name = nameEl.value.trim();
   if (!name) { flagError(nameEl); return; }
@@ -7277,8 +7300,8 @@ window.adminAddStudent = function() {
 
   let code = codeEl.value.trim();
   if (code) {
-    if (!/^[0-9]{4,10}$/.test(code)) { alert('الكود المخصص لازم يكون أرقام بس (من 4 لـ 10 أرقام)'); return; }
-    if (adminStudents[code]) { alert('الكود ده مستخدم بالفعل، اختار كود تاني أو سيب الخانة فاضية عشان يتولد كود تلقائي'); return; }
+    if (!/^[0-9]{4,10}$/.test(code)) { showFormError('⚠️ الكود المخصص لازم يكون أرقام بس (من 4 لـ 10 أرقام)'); return; }
+    if (adminStudents[code]) { showFormError('⚠️ الكود ده مستخدم بالفعل، اختار كود تاني أو سيب الخانة فاضية عشان يتولد كود تلقائي'); return; }
   } else {
     code = generateStudentCode();
   }
@@ -7315,16 +7338,34 @@ window.adminAddStudent = function() {
   waitForDb(function(ready) {
     if (!ready || !studentsRef) {
       resetBtn();
-      alert('⚠️ تعذر الاتصال بقاعدة البيانات. تأكد إن اتصال الإنترنت شغال وحاول تاني.');
+      showFormError('⚠️ تعذر تحميل مكتبة قاعدة البيانات. تأكد إن اتصال الإنترنت شغال وحاول تاني.');
       return;
     }
+
+    // Hard timeout: if the write hangs (e.g. WebSocket to Firebase blocked by
+    // network/firewall even though the SDK loaded fine), fail clearly instead
+    // of leaving the button stuck on "جاري الحفظ..." forever.
+    let settled = false;
+    const timeoutId = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      resetBtn();
+      showFormError('⚠️ الاتصال بقاعدة البيانات بياخد وقت طويل جدًا. غالبًا الشبكة/الواي فاي اللي متصل بيها بتمنع الاتصال بقاعدة البيانات حتى لو النت شغال. جرب شبكة تانية (بيانات الموبايل مثلاً) وحاول تاني.');
+    }, 9000);
+
     studentsRef.child(code).set(studentObj).then(() => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timeoutId);
       resetBtn();
       afterSave();
     }).catch(err => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timeoutId);
       resetBtn();
       console.error('Error saving student to Firebase:', err);
-      alert('⚠️ حصل خطأ أثناء الحفظ في قاعدة البيانات، حاول تاني');
+      showFormError('⚠️ حصل خطأ أثناء الحفظ في قاعدة البيانات (' + (err && err.message ? err.message : 'خطأ غير معروف') + ')، حاول تاني.');
     });
   });
 };
