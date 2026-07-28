@@ -55,12 +55,7 @@
   "knowsAbout": ["رياضيات الثانوية العامة", "رياضيات إعدادي", "الجبر", "الهندسة"]
 }
 </script>
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%230a0a0f'/><rect x='4' y='4' width='56' height='56' rx='10' fill='none' stroke='%23c9a84c' stroke-width='2'/><text x='32' y='42' font-family='serif' font-size='36' font-weight='bold' fill='%23c9a84c' text-anchor='middle'>♞</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Cairo:wght@300;400;600;700;900&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -1141,8 +1136,6 @@
   .footer-social a.yt:hover { background: #ff0000; border-color: #ff0000; }
   .footer-social a.wa:hover { background: #25d366; border-color: #25d366; color: var(--dark); }
   .footer-social a.tt:hover { background: #000; border-color: #444; }
-  .footer-social a.wac:hover { background: #25d366; border-color: #25d366; color: var(--dark); }
-  .footer-social a.tg:hover { background: #229ED9; border-color: #229ED9; color: var(--dark); }
 
   .footer-col h4 {
     font-family: 'Tajawal', sans-serif;
@@ -2725,49 +2718,6 @@
     opacity: 1;
     pointer-events: all;
   }
-  #telegram-menu-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(5,8,20,0.96);
-    backdrop-filter: blur(18px);
-    z-index: 99999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.35s;
-  }
-  #telegram-menu-overlay.open {
-    opacity: 1;
-    pointer-events: all;
-  }
-  .tg-grade-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 8px;
-  }
-  .tg-grade-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(34,158,217,0.1);
-    border: 1px solid rgba(34,158,217,0.35);
-    color: #fff;
-    font-size: 0.95rem;
-    font-weight: 700;
-    padding: 13px 20px;
-    border-radius: 12px;
-    text-decoration: none;
-    font-family: 'Tajawal', sans-serif;
-    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
-  }
-  .tg-grade-btn:hover {
-    background: #229ED9;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(34,158,217,0.4);
-  }
   .support-panel {
     background: linear-gradient(135deg, rgba(15,20,50,0.98) 0%, rgba(10,15,40,0.98) 100%);
     border: 1px solid rgba(201,168,76,0.3);
@@ -4313,9 +4263,47 @@
   transition: border-color 0.2s;
   margin-bottom: 8px;
   cursor: pointer;
+  accent-color: var(--gold);
 }
 .notif-type-select:focus { border-color: var(--gold); }
-.notif-type-select option { background: var(--dark2); }
+.notif-type-select option {
+  background: var(--dark2);
+  color: var(--white);
+  padding: 10px;
+}
+.notif-type-select option:checked,
+.notif-type-select option:hover {
+  background: var(--gold);
+  color: var(--dark);
+}
+.notif-type-select:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Student admin extras */
+.student-code-result {
+  margin-top: 14px;
+  background: rgba(37,211,102,0.08);
+  border: 1px solid rgba(37,211,102,0.35);
+  border-radius: 12px;
+  padding: 14px 18px;
+  font-size: 0.85rem;
+  color: var(--white2);
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap;
+}
+.student-code-result strong { color: #4fdc85; font-size: 1.05rem; letter-spacing: 2px; }
+.student-code-copy-btn {
+  background: rgba(37,211,102,0.15);
+  border: 1px solid rgba(37,211,102,0.4);
+  color: #4fdc85;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-family: 'IBM Plex Sans Arabic', sans-serif;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.student-code-copy-btn:hover { background: rgba(37,211,102,0.25); }
 
 /* Save notification */
 .admin-save-toast {
@@ -4343,89 +4331,6 @@
   transition: all 0.2s; margin-right: 10px;
 }
 .admin-reset-btn:hover { background: rgba(255,107,107,0.2); }
-
-/* ===== ADMIN: STUDENTS LIST ===== */
-.admin-students-search { margin-bottom: 16px; }
-.admin-students-list { display: flex; flex-direction: column; gap: 10px; }
-.admin-student-item {
-  background: var(--dark3);
-  border: 1px solid rgba(201,168,76,0.12);
-  border-radius: 14px;
-  padding: 14px 16px;
-  display: flex; gap: 12px; align-items: center; justify-content: space-between;
-  cursor: pointer;
-  transition: border-color 0.2s;
-}
-.admin-student-item:hover { border-color: rgba(201,168,76,0.35); }
-.admin-student-item.inactive { opacity: 0.5; }
-.admin-student-main { flex: 1; min-width: 0; }
-.admin-student-name { font-size: 0.92rem; font-weight: 700; color: var(--white); }
-.admin-student-name .code-tag { font-size: 0.75rem; color: var(--gold); opacity: 0.8; font-weight: 500; margin-right: 6px; direction: ltr; display: inline-block; }
-.admin-student-sub { font-size: 0.75rem; color: var(--white2); opacity: 0.55; margin-top: 4px; }
-.admin-student-badge {
-  font-size: 0.7rem; padding: 3px 10px; border-radius: 50px; flex-shrink: 0;
-  background: rgba(50,205,100,0.12); color: #32cd64; border: 1px solid rgba(50,205,100,0.3);
-}
-.admin-student-item.inactive .admin-student-badge {
-  background: rgba(255,107,107,0.12); color: #ff6b6b; border-color: rgba(255,107,107,0.3);
-}
-
-/* ===== ADMIN: STUDENT DETAIL MODAL ===== */
-#admin-student-detail-modal {
-  display: none;
-  position: fixed; inset: 0; z-index: 100001;
-  background: rgba(5,5,10,0.85);
-  backdrop-filter: blur(6px);
-  align-items: flex-start; justify-content: center;
-  overflow-y: auto;
-  padding: 40px 16px;
-}
-#admin-student-detail-modal.open { display: flex; }
-.student-detail-box {
-  position: relative;
-  background: var(--dark2);
-  border: 1px solid rgba(201,168,76,0.25);
-  border-radius: 20px;
-  padding: 32px 24px;
-  max-width: 480px; width: 100%;
-  margin-bottom: 40px;
-}
-.student-detail-head { text-align: center; margin-bottom: 18px; padding-top: 8px; }
-.student-detail-name { font-size: 1.3rem; font-weight: 800; color: var(--gold); }
-.student-detail-meta { font-size: 0.8rem; color: var(--white2); opacity: 0.6; margin-top: 6px; line-height: 1.6; }
-.student-detail-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 24px; }
-.student-detail-section-title { font-size: 0.95rem; font-weight: 700; color: var(--gold); margin: 20px 0 10px; }
-.student-detail-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
-.student-detail-entry {
-  background: var(--dark3);
-  border: 1px solid rgba(201,168,76,0.1);
-  border-radius: 10px;
-  padding: 10px 14px;
-  display: flex; align-items: center; justify-content: space-between; gap: 10px;
-  font-size: 0.85rem;
-}
-.student-detail-entry .sd-entry-info { color: var(--white2); }
-.student-detail-entry .sd-entry-info b { color: var(--white); }
-.student-detail-entry .sd-entry-del {
-  background: none; border: none; color: #ff6b6b; cursor: pointer; font-size: 0.85rem; opacity: 0.7; flex-shrink: 0;
-}
-.student-detail-entry .sd-entry-del:hover { opacity: 1; }
-.sd-empty { font-size: 0.8rem; color: var(--white2); opacity: 0.45; padding: 4px 0; }
-
-/* ===== STUDENT DASHBOARD ===== */
-.dash-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 30px; }
-.dash-stat-card {
-  background: var(--dark3);
-  border: 1px solid rgba(201,168,76,0.15);
-  border-radius: 14px;
-  padding: 16px 10px;
-  text-align: center;
-}
-.dash-stat-value { font-size: 1.4rem; font-weight: 800; color: var(--gold); }
-.dash-stat-label { font-size: 0.72rem; color: var(--white2); opacity: 0.6; margin-top: 4px; }
-@media (max-width: 560px) {
-  .dash-stats { grid-template-columns: repeat(2, 1fr); }
-}
 
 </style>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase.js"></script>
@@ -4979,12 +4884,6 @@
         <a class="wa" href="https://wa.me/201223678850" target="_blank" rel="noopener" aria-label="WhatsApp">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M17.5 14.4c-.28-.14-1.65-.82-1.9-.9-.26-.1-.44-.14-.63.14-.18.28-.72.9-.88 1.08-.16.19-.32.2-.6.07-.28-.14-1.18-.44-2.24-1.4-.83-.74-1.39-1.66-1.55-1.94-.16-.28-.02-.43.12-.57.13-.13.28-.33.42-.5.14-.16.18-.28.28-.46.1-.19.05-.35-.02-.5-.07-.13-.63-1.53-.87-2.1-.23-.55-.46-.47-.63-.48h-.54c-.19 0-.5.07-.76.35-.26.28-1 .98-1 2.4s1.02 2.78 1.17 2.98c.14.19 2 3.06 4.86 4.29.68.29 1.2.47 1.62.6.68.21 1.3.18 1.79.11.55-.08 1.65-.68 1.88-1.33.23-.66.23-1.22.16-1.34-.07-.12-.25-.19-.53-.33zM12.02 2C6.5 2 2 6.48 2 12c0 1.85.5 3.58 1.35 5.07L2 22l5.08-1.33A9.96 9.96 0 0 0 12.02 22C17.5 22 22 17.52 22 12S17.5 2 12.02 2zm0 18.15c-1.6 0-3.1-.44-4.4-1.2l-.32-.19-3.02.79.8-2.94-.2-.3A8.13 8.13 0 0 1 3.87 12c0-4.5 3.66-8.15 8.15-8.15 4.5 0 8.15 3.66 8.15 8.15 0 4.5-3.66 8.15-8.15 8.15z"/></svg>
         </a>
-        <a class="wac" href="https://whatsapp.com/channel/0029Vb7TgbnC1FuEUlEdGA0q" target="_blank" rel="noopener" aria-label="قناة واتساب">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M17.5 14.4c-.28-.14-1.65-.82-1.9-.9-.26-.1-.44-.14-.63.14-.18.28-.72.9-.88 1.08-.16.19-.32.2-.6.07-.28-.14-1.18-.44-2.24-1.4-.83-.74-1.39-1.66-1.55-1.94-.16-.28-.02-.43.12-.57.13-.13.28-.33.42-.5.14-.16.18-.28.28-.46.1-.19.05-.35-.02-.5-.07-.13-.63-1.53-.87-2.1-.23-.55-.46-.47-.63-.48h-.54c-.19 0-.5.07-.76.35-.26.28-1 .98-1 2.4s1.02 2.78 1.17 2.98c.14.19 2 3.06 4.86 4.29.68.29 1.2.47 1.62.6.68.21 1.3.18 1.79.11.55-.08 1.65-.68 1.88-1.33.23-.66.23-1.22.16-1.34-.07-.12-.25-.19-.53-.33zM12.02 2C6.5 2 2 6.48 2 12c0 1.85.5 3.58 1.35 5.07L2 22l5.08-1.33A9.96 9.96 0 0 0 12.02 22C17.5 22 22 17.52 22 12S17.5 2 12.02 2zm0 18.15c-1.6 0-3.1-.44-4.4-1.2l-.32-.19-3.02.79.8-2.94-.2-.3A8.13 8.13 0 0 1 3.87 12c0-4.5 3.66-8.15 8.15-8.15 4.5 0 8.15 3.66 8.15 8.15 0 4.5-3.66 8.15-8.15 8.15z"/></svg>
-        </a>
-        <a class="tg" href="javascript:void(0)" onclick="openTelegramMenu()" aria-label="تليجرام">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M22.05 3.44 2.98 10.9c-1.3.52-1.3 1.24-.24 1.56l4.9 1.53 1.9 5.83c.24.68.13.95.85.95.55 0 .79-.25 1.09-.55l2.6-2.5 5.4 3.97c1 .55 1.7.27 1.96-.92l3.55-16.6c.37-1.46-.55-2.12-1.9-1.73zM8.63 13.6l10.1-6.36c.48-.3.92-.14.56.19L11 15.2l-.32 3.32z"/></svg>
-        </a>
       </div>
     </div>
 
@@ -5020,9 +4919,12 @@
     <!-- SUPPORT -->
     <div class="footer-col">
       <h4>الدعم الفني 🎧</h4>
-      <a href="https://wa.me/201223093974?text=مرحباً%2C+أحتاج+مساعدة+في+منصة+الفارس+في+الرياضيات" target="_blank" rel="noopener" class="footer-contact-item">
+      <a href="https://wa.me/201223093974?text=مرحباً%2C+أحتاج+مساعدة+في+منصة+الفارس+في+الرياضيات" target="_blank" rel="noopener" class="footer-contact-item" style="margin-bottom:14px;">
         <span class="txt">تواصل مع الدعم الفني</span>
         <span class="footer-contact-icon">💬</span>
+      </a>
+      <a class="footer-support-btn" href="https://wa.me/201223093974" target="_blank" rel="noopener">
+        <span>201223093974+</span>💬
       </a>
     </div>
 
@@ -6521,14 +6423,10 @@ adminLoadFromStorage();
   <div class="student-login-box" id="studentLoginBoxLogin">
     <div class="student-login-icon">🎓</div>
     <h2 class="student-login-title">دخول الطالب</h2>
-    <p class="student-login-sub">اكتب كود الطالب وكلمة المرور الخاصة بيك للدخول</p>
+    <p class="student-login-sub">اكتب كود الطالب الخاص بيك للدخول</p>
     <div class="student-login-field">
       <label>كود الطالب</label>
-      <input type="tel" inputmode="numeric" id="studentCodeInput" placeholder="مثال: 483920" maxlength="10" dir="ltr" autocomplete="off" onkeydown="if(event.key==='Enter') document.getElementById('studentPassInput').focus()">
-    </div>
-    <div class="student-login-field">
-      <label>كلمة المرور</label>
-      <input type="password" id="studentPassInput" placeholder="••••••" maxlength="20" dir="ltr" autocomplete="off" onkeydown="if(event.key==='Enter') doStudentLogin()">
+      <input type="tel" inputmode="numeric" id="studentCodeInput" placeholder="مثال: 483920" maxlength="10" dir="ltr" autocomplete="off" onkeydown="if(event.key==='Enter') doStudentLogin()">
     </div>
     <div class="student-login-error" id="studentLoginError"></div>
     <button class="student-login-submit" id="studentLoginSubmitBtn" onclick="doStudentLogin()">دخول ←</button><br>
@@ -6540,8 +6438,7 @@ adminLoadFromStorage();
     <h2 class="student-login-title">أهلاً بيك</h2>
     <div class="student-welcome-name" id="studentWelcomeName"></div>
     <p class="student-login-sub" style="margin-bottom:20px;">تم تسجيل دخولك بنجاح</p>
-    <button class="student-login-submit" onclick="closeStudentLogin(); openStudentDashboard();">لوحة الطالب 📊</button><br>
-    <button class="student-login-submit" style="background:none; border:1px solid rgba(201,168,76,0.3); color:var(--gold); box-shadow:none;" onclick="closeStudentLogin()">إغلاق</button><br>
+    <button class="student-login-submit" onclick="closeStudentLogin()">تمام ✓</button><br>
     <button class="student-logout-link" onclick="doStudentLogout()">تسجيل الخروج</button>
   </div>
 </div>
@@ -6572,7 +6469,7 @@ adminLoadFromStorage();
       <button class="admin-tab-btn" onclick="switchAdminTab('tracking', this)">
         <span class="admin-tab-icon">📊</span><span>متابعة الطلاب</span>
       </button>
-      <button class="admin-tab-btn" onclick="switchAdminTab('students', this); renderAdminStudentsList()">
+      <button class="admin-tab-btn" onclick="switchAdminTab('students', this); renderAdminStudentList()">
         <span class="admin-tab-icon">🎓</span><span>الطلاب</span>
       </button>
       <button class="admin-tab-btn" onclick="switchAdminTab('notifications', this); renderAdminNotifList()">
@@ -6717,25 +6614,6 @@ adminLoadFromStorage();
         <button class="admin-add-btn" onclick="addTrackingCard()">+ إضافة بطاقة متابعة</button>
       </div>
 
-      <!-- ===== STUDENTS TAB ===== -->
-      <div class="admin-section" id="admin-students">
-        <div class="admin-section-title">🎓 إدارة الطلاب</div>
-        <p style="font-size:0.85rem; color:var(--white2); opacity:0.6; margin-bottom:20px;">أضف طالب جديد وهياخد كود تلقائي. أي طالب نشط لما يسجل دخول أول مرة، هتقدر تشوف تاريخ آخر دخول وعدد مرات الدخول جنب اسمه.</p>
-
-        <div class="admin-add-form">
-          <div class="admin-add-form-title">+ إضافة طالب جديد</div>
-          <input class="admin-input" id="student-new-name" placeholder="اسم الطالب..." dir="rtl">
-          <input class="admin-input" id="student-new-grade" placeholder="الصف الدراسي (اختياري)، مثال: تالتة ثانوي" dir="rtl">
-          <button class="admin-add-btn" onclick="adminAddStudent()">إضافة الطالب 🎓</button>
-        </div>
-
-        <div class="admin-students-search">
-          <input class="admin-input" id="student-search-input" placeholder="🔍 دوّر بالاسم أو الكود..." dir="rtl" oninput="renderAdminStudentsList()">
-        </div>
-
-        <div class="admin-students-list" id="admin-students-list"></div>
-      </div>
-
       <!-- ===== NOTIFICATIONS TAB ===== -->
       <div class="admin-section" id="admin-notifications">
         <div class="admin-section-title">🔔 إدارة الإشعارات</div>
@@ -6757,52 +6635,40 @@ adminLoadFromStorage();
         </div>
       </div>
 
+      <!-- ===== STUDENTS TAB ===== -->
+      <div class="admin-section" id="admin-students">
+        <div class="admin-section-title">🎓 إدارة الطلاب</div>
+        <p style="font-size:0.85rem; color:var(--white2); opacity:0.6; margin-bottom:20px;">أضف طالب جديد وهيتولد له كود دخول تلقائي بيتحفظ فورًا في قاعدة البيانات، ويقدر الطالب يدخل بيه من أي جهاز على طول من غير أي خطوة يدوية تانية.</p>
+
+        <div class="admin-item-list" id="admin-students-list"></div>
+
+        <div class="admin-add-form">
+          <div class="admin-add-form-title">+ إضافة طالب جديد</div>
+          <input class="admin-input" id="student-new-name" placeholder="اسم الطالب *" dir="rtl">
+          <input class="admin-input" id="student-new-phone" placeholder="رقم واتساب الطالب *" dir="ltr">
+          <input class="admin-input" id="student-new-parent-phone" placeholder="رقم واتساب ولي الأمر *" dir="ltr">
+          <select class="notif-type-select" id="student-new-stage" onchange="onStudentStageChange()">
+            <option value="">اختر المرحلة الدراسية (اختياري)</option>
+            <option value="ابتدائي">ابتدائي</option>
+            <option value="إعدادي">إعدادي</option>
+            <option value="ثانوي">ثانوي</option>
+          </select>
+          <select class="notif-type-select" id="student-new-gradelevel" disabled>
+            <option value="">اختر الصف الدراسي</option>
+          </select>
+          <input class="admin-input" id="student-new-center" placeholder="السنتر *" dir="rtl">
+          <input class="admin-input" id="student-new-code" placeholder="كود مخصص (اختياري - هيتولد كود تلقائي لو سيبته فاضي)" dir="ltr">
+          <button class="admin-add-btn" onclick="adminAddStudent()">➕ إضافة الطالب</button>
+          <div class="student-code-result" id="adminStudentResult" style="display:none;"></div>
+        </div>
+      </div>
+
     </div><!-- .admin-content -->
   </div><!-- .admin-panel-body -->
 </div>
 
-<!-- ===== ADMIN: STUDENT DETAIL MODAL (grades / attendance / password) ===== -->
-<div id="admin-student-detail-modal">
-  <div class="student-detail-box">
-    <button class="legal-close-btn" style="position:absolute; top:16px; left:16px;" onclick="closeAdminStudentDetail()" aria-label="إغلاق">✕</button>
-    <div class="student-detail-head">
-      <div class="student-detail-name" id="sd-name">—</div>
-      <div class="student-detail-meta" id="sd-meta">—</div>
-    </div>
-
-    <div class="student-detail-actions">
-      <button class="admin-reset-btn" onclick="adminResetStudentPassword()">🔑 إعادة تعيين كلمة المرور</button>
-      <button class="admin-reset-btn" id="sd-toggle-active-btn" onclick="adminToggleStudentActive()">⏸ إيقاف الكود</button>
-      <button class="admin-reset-btn" onclick="adminDeleteStudentConfirm()">🗑 حذف الطالب</button>
-    </div>
-
-    <div class="student-detail-section-title">📝 الدرجات</div>
-    <div class="student-detail-list" id="sd-grades-list"></div>
-    <div class="admin-add-form">
-      <input class="admin-input" id="sd-grade-title" placeholder="اسم الاختبار... مثال: امتحان الشهر" dir="rtl">
-      <div style="display:flex; gap:10px;">
-        <input class="admin-input" id="sd-grade-score" placeholder="الدرجة" type="number" style="text-align:center;">
-        <input class="admin-input" id="sd-grade-max" placeholder="من كام" type="number" style="text-align:center;">
-      </div>
-      <button class="admin-add-btn" onclick="adminAddGrade()">+ إضافة درجة</button>
-    </div>
-
-    <div class="student-detail-section-title">📅 الحضور</div>
-    <div class="student-detail-list" id="sd-attendance-list"></div>
-    <div class="admin-add-form">
-      <select class="notif-type-select" id="sd-attendance-status">
-        <option value="present">✅ حاضر</option>
-        <option value="absent">❌ غايب</option>
-      </select>
-      <input class="admin-input" id="sd-attendance-note" placeholder="ملاحظة (اختياري)..." dir="rtl">
-      <button class="admin-add-btn" onclick="adminAddAttendance()">+ تسجيل حصة النهاردة</button>
-    </div>
-  </div>
-</div>
-
 <!-- Toast Notification -->
 <div class="admin-save-toast" id="adminToast">✅ تم الحفظ بنجاح!</div>
-
 
 
 <!-- ===== TRACKING FULLPAGE OVERLAY ===== -->
@@ -6936,47 +6802,6 @@ document.addEventListener('keydown', function(e) {
 });
 </script>
 
-<!-- ===== TELEGRAM GRADE-SELECT MENU ===== -->
-<div id="telegram-menu-overlay" role="dialog" aria-modal="true">
-  <div class="support-panel">
-    <button class="support-close-btn" onclick="closeTelegramMenu()" aria-label="إغلاق">✕</button>
-
-    <div class="support-headset-icon" style="background: radial-gradient(circle, rgba(34,158,217,0.18) 0%, transparent 70%); border-color: rgba(34,158,217,0.3);">
-      <svg viewBox="0 0 24 24" width="40" height="40" fill="#229ED9"><path d="M22.05 3.44 2.98 10.9c-1.3.52-1.3 1.24-.24 1.56l4.9 1.53 1.9 5.83c.24.68.13.95.85.95.55 0 .79-.25 1.09-.55l2.6-2.5 5.4 3.97c1 .55 1.7.27 1.96-.92l3.55-16.6c.37-1.46-.55-2.12-1.9-1.73zM8.63 13.6l10.1-6.36c.48-.3.92-.14.56.19L11 15.2l-.32 3.32z"/></svg>
-    </div>
-
-    <h2>📚 قناة تليجرام الصف</h2>
-    <p>اختار صفك الدراسي عشان تدخل قناة تليجرام الخاصة بيه.</p>
-
-    <div class="support-divider"></div>
-
-    <div class="tg-grade-list">
-      <a class="tg-grade-btn" href="https://web.telegram.org/a/#-1004465187646" target="_blank" rel="noopener noreferrer">أولى إعدادي</a>
-      <a class="tg-grade-btn" href="https://web.telegram.org/a/#-1003529158265" target="_blank" rel="noopener noreferrer">تانية إعدادي</a>
-      <a class="tg-grade-btn" href="https://web.telegram.org/a/#-1004337984285" target="_blank" rel="noopener noreferrer">تالتة إعدادي</a>
-      <a class="tg-grade-btn" href="https://web.telegram.org/a/#-1003986969756" target="_blank" rel="noopener noreferrer">أولى بكالوريا</a>
-      <a class="tg-grade-btn" href="https://web.telegram.org/a/#-1004458135635" target="_blank" rel="noopener noreferrer">تانية بكالوريا</a>
-    </div>
-  </div>
-</div>
-
-<script>
-function openTelegramMenu() {
-  document.getElementById('telegram-menu-overlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeTelegramMenu() {
-  document.getElementById('telegram-menu-overlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-document.getElementById('telegram-menu-overlay').addEventListener('click', function(e) {
-  if (e.target === this) closeTelegramMenu();
-});
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') closeTelegramMenu();
-});
-</script>
-
 <script>
 // ===== NOTIFICATION SYSTEM =====
 
@@ -6998,6 +6823,8 @@ let notifDropOpen = false;
 // ===== FIREBASE INITIALIZATION =====
 let db = null;
 let notificationsRef = null;
+let studentsRef = null;
+let adminStudents = {};
 let firebaseRetries = 0;
 const MAX_FIREBASE_RETRIES = 20;
 
@@ -7046,6 +6873,17 @@ function initFirebase() {
         updateNotifBadge();
       } catch(e) {
         console.error('Error listening to Firebase:', e);
+      }
+    });
+
+    // ---- STUDENTS: live sync ----
+    studentsRef = db.ref('students');
+    studentsRef.on('value', snapshot => {
+      try {
+        adminStudents = snapshot.val() || {};
+        renderAdminStudentList();
+      } catch(e) {
+        console.error('Error listening to students:', e);
       }
     });
 
@@ -7383,6 +7221,189 @@ function renderAdminNotifList() {
   `).join('');
 }
 
+// ==================== STUDENTS ADMIN ====================
+
+const STUDENT_GRADE_OPTIONS = {
+  'ابتدائي': ['الصف الرابع', 'الصف الخامس', 'الصف السادس'],
+  'إعدادي': ['الأول الإعدادي', 'الثاني الإعدادي', 'الثالث الإعدادي'],
+  'ثانوي': ['الأول الثانوي', 'الثاني الثانوي', 'الثالث الثانوي']
+};
+
+window.onStudentStageChange = function() {
+  const stage = document.getElementById('student-new-stage').value;
+  const gradeEl = document.getElementById('student-new-gradelevel');
+  const options = STUDENT_GRADE_OPTIONS[stage] || [];
+
+  gradeEl.innerHTML = '<option value="">اختر الصف الدراسي</option>' +
+    options.map(g => `<option value="${g}">${g}</option>`).join('');
+  gradeEl.disabled = options.length === 0;
+};
+
+function generateStudentCode() {
+  let code;
+  do {
+    code = String(Math.floor(100000 + Math.random() * 900000)); // 6-digit code, never starts at 0
+  } while (adminStudents[code]);
+  return code;
+}
+
+window.adminAddStudent = function() {
+  const nameEl        = document.getElementById('student-new-name');
+  const phoneEl       = document.getElementById('student-new-phone');
+  const parentPhoneEl = document.getElementById('student-new-parent-phone');
+  const stageEl       = document.getElementById('student-new-stage');
+  const gradeEl       = document.getElementById('student-new-gradelevel');
+  const centerEl      = document.getElementById('student-new-center');
+  const codeEl        = document.getElementById('student-new-code');
+
+  function flagError(el) {
+    el.focus();
+    el.style.borderColor = '#ff6b6b';
+    setTimeout(() => el.style.borderColor = '', 1200);
+  }
+
+  const name = nameEl.value.trim();
+  if (!name) { flagError(nameEl); return; }
+
+  const phone = phoneEl.value.trim();
+  if (!phone) { flagError(phoneEl); return; }
+
+  const parentPhone = parentPhoneEl.value.trim();
+  if (!parentPhone) { flagError(parentPhoneEl); return; }
+
+  const center = centerEl.value.trim();
+  if (!center) { flagError(centerEl); return; }
+
+  let code = codeEl.value.trim();
+  if (code) {
+    if (!/^[0-9]{4,10}$/.test(code)) { alert('الكود المخصص لازم يكون أرقام بس (من 4 لـ 10 أرقام)'); return; }
+    if (adminStudents[code]) { alert('الكود ده مستخدم بالفعل، اختار كود تاني أو سيب الخانة فاضية عشان يتولد كود تلقائي'); return; }
+  } else {
+    code = generateStudentCode();
+  }
+
+  const studentObj = {
+    name: name,
+    phone: phone,
+    parentPhone: parentPhone,
+    stage: stageEl.value,
+    gradeLevel: gradeEl.value,
+    center: center,
+    active: true,
+    createdAt: new Date().toISOString()
+  };
+
+  function afterSave() {
+    adminStudents[code] = studentObj;
+    nameEl.value = ''; phoneEl.value = ''; parentPhoneEl.value = ''; centerEl.value = ''; codeEl.value = '';
+    stageEl.value = '';
+    gradeEl.innerHTML = '<option value="">اختر الصف الدراسي</option>';
+    gradeEl.disabled = true;
+    renderAdminStudentList();
+    showAdminToast();
+    showStudentCodeResult(code, studentObj.name);
+  }
+
+  if (studentsRef) {
+    studentsRef.child(code).set(studentObj).then(afterSave).catch(err => {
+      console.error('Error saving student to Firebase:', err);
+      alert('⚠️ حصل خطأ أثناء الحفظ في قاعدة البيانات، حاول تاني');
+    });
+  } else {
+    alert('⚠️ لسه مفيش اتصال بقاعدة البيانات، استنى شوية وحاول تاني');
+  }
+};
+
+function showStudentCodeResult(code, name) {
+  const box = document.getElementById('adminStudentResult');
+  if (!box) return;
+  box.style.display = 'flex';
+  box.innerHTML = `
+    <span>✅ تم إضافة <b>${escHtml(name)}</b> — كود الدخول: <strong>${code}</strong></span>
+    <button class="student-code-copy-btn" onclick="copyStudentCode('${code}', this)">📋 نسخ الكود</button>
+  `;
+}
+
+window.copyStudentCode = function(code, btnEl) {
+  try {
+    navigator.clipboard.writeText(code);
+    if (btnEl) {
+      const old = btnEl.textContent;
+      btnEl.textContent = '✅ تم النسخ';
+      setTimeout(() => { if (btnEl) btnEl.textContent = old; }, 1500);
+    }
+  } catch(e) {}
+};
+
+window.toggleStudentActive = function(code) {
+  const s = adminStudents[code];
+  if (!s) return;
+  const newActive = s.active === false ? true : false;
+  if (studentsRef) {
+    studentsRef.child(code).update({ active: newActive }).catch(err => {
+      console.error('Error updating student:', err);
+      alert('⚠️ حصل خطأ أثناء التحديث، حاول تاني');
+    });
+  }
+};
+
+window.deleteAdminStudent = function(code) {
+  const s = adminStudents[code];
+  const label = s ? s.name : code;
+  if (!confirm(`متأكد إنك عايز تحذف الطالب "${label}"؟ الكود مش هيشتغل تاني بعد الحذف.`)) return;
+  if (studentsRef) {
+    studentsRef.child(code).remove().then(() => {
+      delete adminStudents[code];
+      renderAdminStudentList();
+      showAdminToast();
+    }).catch(err => {
+      console.error('Error deleting student:', err);
+      alert('⚠️ حصل خطأ أثناء الحذف، حاول تاني');
+    });
+  }
+};
+
+function renderAdminStudentList() {
+  const container = document.getElementById('admin-students-list');
+  if (!container) return;
+
+  const codes = Object.keys(adminStudents || {});
+  if (!codes.length) {
+    container.innerHTML = '<p style="font-size:0.82rem;color:var(--white2);opacity:0.5;padding:8px 0;">لا يوجد طلاب مسجلين حتى الآن. أضف طالب جديد من الفورم تحت.</p>';
+    return;
+  }
+
+  codes.sort((a, b) => {
+    const da = (adminStudents[a] && adminStudents[a].createdAt) || '';
+    const dbb = (adminStudents[b] && adminStudents[b].createdAt) || '';
+    return dbb.localeCompare(da);
+  });
+
+  container.innerHTML = codes.map(code => {
+    const s = adminStudents[code] || {};
+    const stageGradeTxt = s.gradeLevel
+      ? ` · ${escHtml(s.gradeLevel)}`
+      : (s.stage ? ` · ${escHtml(s.stage)}` : (s.grade ? ` · ${escHtml(s.grade)}` : ''));
+    const centerTxt = s.center ? ` · 🏢 ${escHtml(s.center)}` : '';
+    const phoneTxt  = s.phone ? ` · 📱 ${escHtml(s.phone)}` : '';
+    const parentPhoneTxt = s.parentPhone ? ` · 👨‍👩‍👦 ${escHtml(s.parentPhone)}` : '';
+    const inactive  = s.active === false;
+    const activeTxt = inactive ? ' <span style="color:#ff6b6b;">(موقوف)</span>' : '';
+    return `
+    <div class="admin-item">
+      <div class="admin-item-info">
+        <div class="admin-item-title">${escHtml(s.name || 'بدون اسم')}${activeTxt}</div>
+        <div class="admin-item-sub">كود: <b style="color:var(--gold-light); letter-spacing:1px;">${code}</b>${stageGradeTxt}${centerTxt}${phoneTxt}${parentPhoneTxt}</div>
+      </div>
+      <div class="admin-item-actions">
+        <button class="admin-btn-up" onclick="copyStudentCode('${code}', this)" title="نسخ الكود">📋</button>
+        <button class="admin-btn-up" onclick="toggleStudentActive('${code}')" title="${inactive ? 'تفعيل' : 'إيقاف'}">${inactive ? '▶️' : '⏸'}</button>
+        <button class="admin-btn-del" onclick="deleteAdminStudent('${code}')" title="حذف">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
 // Hook into existing renderAllAdminLists
 const _origRenderAll = window.renderAllAdminLists || function(){};
 (function() {
@@ -7401,6 +7422,7 @@ document.addEventListener('DOMContentLoaded', function() {
     window.renderAllAdminLists = function() {
       origRender();
       renderAdminNotifList();
+      renderAdminStudentList();
     };
   }
 });
@@ -7429,7 +7451,6 @@ window.openStudentLogin = function() {
   document.getElementById('studentLoginBoxLogin').style.display = 'block';
   document.getElementById('studentWelcomeBox').style.display = 'none';
   document.getElementById('studentCodeInput').value = '';
-  document.getElementById('studentPassInput').value = '';
   document.getElementById('studentLoginError').textContent = '';
   setTimeout(() => document.getElementById('studentCodeInput').focus(), 200);
 };
@@ -7453,60 +7474,8 @@ function waitForDb(callback, attempts) {
   setTimeout(() => waitForDb(callback, attempts + 1), 300);
 }
 
-// ===== Login attempt lockout (per-device, client-side) =====
-var STUDENT_LOGIN_MAX_ATTEMPTS = 5;
-var STUDENT_LOGIN_LOCK_MS = 60 * 1000; // دقيقة واحدة
-
-function getStudentLoginAttempts() {
-  try {
-    return JSON.parse(localStorage.getItem('af_student_login_attempts') || '{}');
-  } catch (e) {
-    return {};
-  }
-}
-
-function saveStudentLoginAttempts(obj) {
-  try {
-    localStorage.setItem('af_student_login_attempts', JSON.stringify(obj));
-  } catch (e) {}
-}
-
-// بيرجع null لو مفيش قفل، أو عدد الثواني المتبقية لو مقفول
-function getStudentLockRemaining(code) {
-  const attempts = getStudentLoginAttempts();
-  const entry = attempts[code];
-  if (!entry || entry.count < STUDENT_LOGIN_MAX_ATTEMPTS) return null;
-  const remaining = entry.lockedAt + STUDENT_LOGIN_LOCK_MS - Date.now();
-  if (remaining <= 0) {
-    delete attempts[code];
-    saveStudentLoginAttempts(attempts);
-    return null;
-  }
-  return Math.ceil(remaining / 1000);
-}
-
-function registerStudentLoginFailure(code) {
-  const attempts = getStudentLoginAttempts();
-  const entry = attempts[code] || { count: 0, lockedAt: 0 };
-  entry.count += 1;
-  if (entry.count >= STUDENT_LOGIN_MAX_ATTEMPTS) {
-    entry.lockedAt = Date.now();
-  }
-  attempts[code] = entry;
-  saveStudentLoginAttempts(attempts);
-}
-
-function clearStudentLoginFailures(code) {
-  const attempts = getStudentLoginAttempts();
-  if (attempts[code]) {
-    delete attempts[code];
-    saveStudentLoginAttempts(attempts);
-  }
-}
-
 window.doStudentLogin = function() {
   const code = document.getElementById('studentCodeInput').value.trim();
-  const pass = document.getElementById('studentPassInput').value;
   const errEl = document.getElementById('studentLoginError');
   const btn = document.getElementById('studentLoginSubmitBtn');
   errEl.textContent = '';
@@ -7519,16 +7488,6 @@ window.doStudentLogin = function() {
     errEl.textContent = 'الكود لازم يكون أرقام بس';
     return;
   }
-  if (!pass) {
-    errEl.textContent = 'من فضلك اكتب كلمة المرور';
-    return;
-  }
-
-  const lockRemaining = getStudentLockRemaining(code);
-  if (lockRemaining !== null) {
-    errEl.textContent = '⛔ محاولات كتير غلط، حاول تاني بعد ' + lockRemaining + ' ثانية';
-    return;
-  }
 
   btn.disabled = true;
   btn.textContent = 'جاري التحقق...';
@@ -7536,7 +7495,7 @@ window.doStudentLogin = function() {
   function fail(msg) {
     btn.disabled = false;
     btn.textContent = 'دخول ←';
-    errEl.textContent = msg || '❌ كود الطالب أو كلمة المرور غلط';
+    errEl.textContent = msg || '❌ كود الطالب غير صحيح';
   }
 
   waitForDb(function(ready) {
@@ -7546,51 +7505,18 @@ window.doStudentLogin = function() {
     }
     db.ref('students/' + code).once('value').then(snapshot => {
       const data = snapshot.val();
-      if (!data || !data.name) {
-        registerStudentLoginFailure(code);
-        fail();
-        return;
-      }
-      if (data.active === false) {
+      if (data && data.name && data.active !== false) {
+        loginStudentSuccess(code, data.name);
+      } else if (data && data.active === false) {
         fail('⚠️ الكود ده متوقف حالياً، كلم الأستاذ');
-        return;
+      } else {
+        fail();
       }
-      // دعم الطلاب القدام اللي لسه معملهاش باسورد: أول باسورد بيتكتب بتتسجل تلقائي
-      if (!data.password) {
-        db.ref('students/' + code + '/password').set(pass).then(() => {
-          clearStudentLoginFailures(code);
-          recordStudentLogin(code, data);
-          loginStudentSuccess(code, data.name);
-        }).catch(() => fail('⚠️ تعذر الاتصال، حاول تاني'));
-        return;
-      }
-      if (data.password !== pass) {
-        registerStudentLoginFailure(code);
-        const remaining = getStudentLockRemaining(code);
-        if (remaining !== null) {
-          fail('⛔ محاولات كتير غلط، حاول تاني بعد ' + remaining + ' ثانية');
-        } else {
-          fail();
-        }
-        return;
-      }
-      clearStudentLoginFailures(code);
-      recordStudentLogin(code, data);
-      loginStudentSuccess(code, data.name);
     }).catch(() => {
       fail('⚠️ تعذر الاتصال، حاول تاني');
     });
   });
 };
-
-// بيسجل وقت آخر دخول وعدد مرات الدخول لكل طالب — عشان تظهر في لوحة التحكم
-function recordStudentLogin(code, data) {
-  const now = Date.now();
-  db.ref('students/' + code).update({
-    lastLogin: now,
-    loginCount: (data.loginCount || 0) + 1
-  }).catch(() => {});
-}
 
 function loginStudentSuccess(code, name) {
   currentStudent = { code, name };
@@ -7639,311 +7565,8 @@ if (typeof _origOpenAdmin === 'function') {
   window.openAdminPanel = function() {
     _origOpenAdmin();
     renderAdminNotifList();
-    renderAdminStudentsList();
   };
 }
-
-// ================================================================
-// ===== ADMIN: STUDENTS MANAGEMENT (Firebase-backed, live sync) =====
-// ================================================================
-
-let adminStudentsCache = {}; // { code: {...data} }
-let adminStudentsListenerAttached = false;
-let currentAdminStudentCode = null; // student open in the detail modal
-
-function attachAdminStudentsListener() {
-  if (adminStudentsListenerAttached) return;
-  waitForDb(function(ready) {
-    if (!ready || !db) return;
-    adminStudentsListenerAttached = true;
-    db.ref('students').on('value', function(snapshot) {
-      adminStudentsCache = snapshot.val() || {};
-      renderAdminStudentsList();
-      // لو مودال تفاصيل طالب متفتح، حدّث بياناته لايف
-      if (currentAdminStudentCode) renderAdminStudentDetail(currentAdminStudentCode);
-    });
-  });
-}
-
-// بيولّد كود عشوائي من 6 أرقام مش مستخدم قبل كده
-function generateUniqueStudentCode() {
-  let code;
-  let tries = 0;
-  do {
-    code = String(Math.floor(100000 + Math.random() * 900000));
-    tries++;
-  } while (adminStudentsCache[code] && tries < 50);
-  return code;
-}
-
-window.adminAddStudent = function() {
-  const nameEl = document.getElementById('student-new-name');
-  const gradeEl = document.getElementById('student-new-grade');
-  const name = nameEl.value.trim();
-  if (!name) {
-    nameEl.focus(); nameEl.style.borderColor = '#ff6b6b';
-    setTimeout(() => nameEl.style.borderColor = '', 1200);
-    return;
-  }
-  const code = generateUniqueStudentCode();
-  const newStudent = {
-    name: name,
-    grade: gradeEl.value.trim() || '',
-    active: true,
-    createdAt: Date.now(),
-    loginCount: 0
-  };
-  waitForDb(function(ready) {
-    if (!ready || !db) { alert('⚠️ تعذر الاتصال، حاول تاني'); return; }
-    db.ref('students/' + code).set(newStudent).then(() => {
-      nameEl.value = '';
-      gradeEl.value = '';
-      showAdminToast();
-      alert('✅ تم إضافة الطالب "' + name + '"\nكود الطالب: ' + code + '\nسلّم الكود ده للطالب عشان يسجل بيه أول مرة.');
-    }).catch(() => alert('⚠️ حصل خطأ، حاول تاني'));
-  });
-};
-
-function renderAdminStudentsList() {
-  const container = document.getElementById('admin-students-list');
-  if (!container) return;
-  attachAdminStudentsListener();
-
-  const searchEl = document.getElementById('student-search-input');
-  const query = (searchEl ? searchEl.value.trim() : '').toLowerCase();
-
-  let entries = Object.entries(adminStudentsCache);
-  if (query) {
-    entries = entries.filter(([code, s]) =>
-      code.includes(query) || (s.name || '').toLowerCase().includes(query)
-    );
-  }
-  // الأحدث إضافة الأول
-  entries.sort((a, b) => (b[1].createdAt || 0) - (a[1].createdAt || 0));
-
-  if (!entries.length) {
-    container.innerHTML = '<p class="sd-empty">لا يوجد طلاب حتى الآن. أضف طالب جديد من الفورم فوق.</p>';
-    return;
-  }
-
-  container.innerHTML = entries.map(([code, s]) => {
-    const lastLoginText = s.lastLogin
-      ? new Date(s.lastLogin).toLocaleString('ar-EG')
-      : 'لسه ما سجّلش دخول';
-    const loginCountText = s.loginCount ? (s.loginCount + ' مرة دخول') : 'صفر دخول';
-    return `
-      <div class="admin-student-item ${s.active === false ? 'inactive' : ''}" onclick="openAdminStudentDetail('${code}')">
-        <div class="admin-student-main">
-          <div class="admin-student-name"><span class="code-tag">#${code}</span>${escapeHtml(s.name || '—')}</div>
-          <div class="admin-student-sub">${s.grade ? escapeHtml(s.grade) + ' · ' : ''}آخر دخول: ${lastLoginText} · ${loginCountText}</div>
-        </div>
-        <div class="admin-student-badge">${s.active === false ? 'متوقف' : 'نشط'}</div>
-      </div>
-    `;
-  }).join('');
-}
-
-window.openAdminStudentDetail = function(code) {
-  currentAdminStudentCode = code;
-  document.getElementById('admin-student-detail-modal').classList.add('open');
-  renderAdminStudentDetail(code);
-};
-
-window.closeAdminStudentDetail = function() {
-  currentAdminStudentCode = null;
-  document.getElementById('admin-student-detail-modal').classList.remove('open');
-};
-
-function renderAdminStudentDetail(code) {
-  const s = adminStudentsCache[code];
-  if (!s) { closeAdminStudentDetail(); return; }
-
-  document.getElementById('sd-name').textContent = s.name || '—';
-  const lastLoginText = s.lastLogin ? new Date(s.lastLogin).toLocaleString('ar-EG') : 'لسه ما سجّلش دخول';
-  document.getElementById('sd-meta').innerHTML =
-    'كود الطالب: <b style="color:var(--gold)">' + code + '</b><br>' +
-    (s.grade ? escapeHtml(s.grade) + '<br>' : '') +
-    'آخر دخول: ' + lastLoginText + ' · عدد مرات الدخول: ' + (s.loginCount || 0);
-
-  const toggleBtn = document.getElementById('sd-toggle-active-btn');
-  toggleBtn.textContent = s.active === false ? '▶️ تفعيل الكود' : '⏸ إيقاف الكود';
-
-  // الدرجات
-  const gradesList = document.getElementById('sd-grades-list');
-  const grades = s.grades ? Object.entries(s.grades) : [];
-  grades.sort((a, b) => (b[1].date || 0) - (a[1].date || 0));
-  gradesList.innerHTML = grades.length ? grades.map(([gid, g]) => `
-    <div class="student-detail-entry">
-      <div class="sd-entry-info"><b>${escapeHtml(g.title || '')}</b> — ${g.score}/${g.maxScore} <span style="opacity:0.6;">(${g.date || ''})</span></div>
-      <button class="sd-entry-del" onclick="event.stopPropagation(); adminDeleteGrade('${gid}')">🗑</button>
-    </div>
-  `).join('') : '<p class="sd-empty">لا توجد درجات مسجّلة.</p>';
-
-  // الحضور
-  const attList = document.getElementById('sd-attendance-list');
-  const attendance = s.attendance ? Object.entries(s.attendance) : [];
-  attendance.sort((a, b) => (b[1].date || 0) - (a[1].date || 0));
-  attList.innerHTML = attendance.length ? attendance.map(([aid, a]) => `
-    <div class="student-detail-entry">
-      <div class="sd-entry-info">${a.present ? '✅ حاضر' : '❌ غايب'} — ${a.date || ''} ${a.note ? '· ' + escapeHtml(a.note) : ''}</div>
-      <button class="sd-entry-del" onclick="event.stopPropagation(); adminDeleteAttendance('${aid}')">🗑</button>
-    </div>
-  `).join('') : '<p class="sd-empty">لا يوجد سجل حضور بعد.</p>';
-}
-
-window.adminResetStudentPassword = function() {
-  if (!currentAdminStudentCode) return;
-  if (!confirm('هيتم مسح كلمة المرور الحالية، وأول مرة الطالب يسجل دخول هيقدر يحط كلمة مرور جديدة. متأكد؟')) return;
-  db.ref('students/' + currentAdminStudentCode + '/password').remove().then(() => {
-    showAdminToast();
-  }).catch(() => alert('⚠️ حصل خطأ، حاول تاني'));
-};
-
-window.adminToggleStudentActive = function() {
-  if (!currentAdminStudentCode) return;
-  const s = adminStudentsCache[currentAdminStudentCode];
-  const nextActive = s.active === false ? true : false;
-  db.ref('students/' + currentAdminStudentCode + '/active').set(nextActive).then(() => {
-    showAdminToast();
-  }).catch(() => alert('⚠️ حصل خطأ، حاول تاني'));
-};
-
-window.adminDeleteStudentConfirm = function() {
-  if (!currentAdminStudentCode) return;
-  const s = adminStudentsCache[currentAdminStudentCode];
-  if (!confirm('هل أنت متأكد إنك عايز تحذف الطالب "' + (s ? s.name : '') + '" نهائياً؟ الإجراء ده مش هيتراجع.')) return;
-  db.ref('students/' + currentAdminStudentCode).remove().then(() => {
-    closeAdminStudentDetail();
-    showAdminToast();
-  }).catch(() => alert('⚠️ حصل خطأ، حاول تاني'));
-};
-
-window.adminAddGrade = function() {
-  if (!currentAdminStudentCode) return;
-  const titleEl = document.getElementById('sd-grade-title');
-  const scoreEl = document.getElementById('sd-grade-score');
-  const maxEl = document.getElementById('sd-grade-max');
-  const title = titleEl.value.trim();
-  const score = parseFloat(scoreEl.value);
-  const max = parseFloat(maxEl.value);
-  if (!title || isNaN(score) || isNaN(max)) {
-    alert('من فضلك اكتب اسم الاختبار والدرجة كاملة');
-    return;
-  }
-  const gid = 'g' + Date.now();
-  db.ref('students/' + currentAdminStudentCode + '/grades/' + gid).set({
-    title: title,
-    score: score,
-    maxScore: max,
-    date: new Date().toISOString().slice(0, 10)
-  }).then(() => {
-    titleEl.value = ''; scoreEl.value = ''; maxEl.value = '';
-    showAdminToast();
-  }).catch(() => alert('⚠️ حصل خطأ، حاول تاني'));
-};
-
-window.adminDeleteGrade = function(gid) {
-  if (!currentAdminStudentCode) return;
-  db.ref('students/' + currentAdminStudentCode + '/grades/' + gid).remove();
-};
-
-window.adminAddAttendance = function() {
-  if (!currentAdminStudentCode) return;
-  const statusEl = document.getElementById('sd-attendance-status');
-  const noteEl = document.getElementById('sd-attendance-note');
-  const aid = 'a' + Date.now();
-  db.ref('students/' + currentAdminStudentCode + '/attendance/' + aid).set({
-    present: statusEl.value === 'present',
-    note: noteEl.value.trim(),
-    date: new Date().toISOString().slice(0, 10)
-  }).then(() => {
-    noteEl.value = '';
-    showAdminToast();
-  }).catch(() => alert('⚠️ حصل خطأ، حاول تاني'));
-};
-
-window.adminDeleteAttendance = function(aid) {
-  if (!currentAdminStudentCode) return;
-  db.ref('students/' + currentAdminStudentCode + '/attendance/' + aid).remove();
-};
-
-// ================================================================
-// ===== STUDENT DASHBOARD (student-facing view) =====
-// ================================================================
-
-window.openStudentDashboard = function() {
-  if (!currentStudent) return;
-  document.getElementById('student-dashboard-page').classList.add('open');
-  document.getElementById('dash-student-name').textContent = 'أهلاً ' + currentStudent.name;
-  document.body.style.overflow = 'hidden';
-  document.getElementById('dash-stats').innerHTML = '<p class="sd-empty">جاري تحميل بياناتك...</p>';
-
-  waitForDb(function(ready) {
-    if (!ready || !db) {
-      document.getElementById('dash-stats').innerHTML = '<p class="sd-empty">⚠️ تعذر تحميل البيانات، حاول تاني</p>';
-      return;
-    }
-    // لايف: أي تحديث من الأستاذ (درجة/حضور جديد) يظهر فوراً من غير ريفريش
-    db.ref('students/' + currentStudent.code).on('value', function(snapshot) {
-      const data = snapshot.val();
-      if (data) renderStudentDashboard(data);
-    });
-  });
-};
-
-window.closeStudentDashboard = function() {
-  document.getElementById('student-dashboard-page').classList.remove('open');
-  document.body.style.overflow = '';
-};
-
-function renderStudentDashboard(data) {
-  const grades = data.grades ? Object.values(data.grades) : [];
-  const attendance = data.attendance ? Object.entries(data.attendance) : [];
-
-  const avgPercent = grades.length
-    ? Math.round(grades.reduce((sum, g) => sum + (g.score / (g.maxScore || 1)) * 100, 0) / grades.length)
-    : null;
-  const presentCount = attendance.filter(([, a]) => a.present).length;
-  const attendancePercent = attendance.length ? Math.round((presentCount / attendance.length) * 100) : null;
-
-  document.getElementById('dash-stats').innerHTML = `
-    <div class="dash-stat-card">
-      <div class="dash-stat-value">${avgPercent !== null ? avgPercent + '%' : '—'}</div>
-      <div class="dash-stat-label">متوسط الدرجات</div>
-    </div>
-    <div class="dash-stat-card">
-      <div class="dash-stat-value">${attendancePercent !== null ? attendancePercent + '%' : '—'}</div>
-      <div class="dash-stat-label">نسبة الحضور</div>
-    </div>
-    <div class="dash-stat-card">
-      <div class="dash-stat-value">${data.loginCount || 0}</div>
-      <div class="dash-stat-label">مرات الدخول</div>
-    </div>
-  `;
-
-  const sortedGrades = grades.slice().sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-  document.getElementById('dash-grades-list').innerHTML = sortedGrades.length ? sortedGrades.map(g => `
-    <div class="student-detail-entry">
-      <div class="sd-entry-info"><b>${escapeHtml(g.title || '')}</b> — ${g.score}/${g.maxScore}</div>
-      <div style="opacity:0.6; font-size:0.78rem;">${g.date || ''}</div>
-    </div>
-  `).join('') : '<p class="sd-empty">الأستاذ لسه مسجّلش درجات ليك.</p>';
-
-  const sortedAttendance = attendance.slice().sort((a, b) => (b[1].date || '').localeCompare(a[1].date || ''));
-  document.getElementById('dash-attendance-list').innerHTML = sortedAttendance.length ? sortedAttendance.map(([, a]) => `
-    <div class="student-detail-entry">
-      <div class="sd-entry-info">${a.present ? '✅ حاضر' : '❌ غايب'} ${a.note ? '· ' + escapeHtml(a.note) : ''}</div>
-      <div style="opacity:0.6; font-size:0.78rem;">${a.date || ''}</div>
-    </div>
-  `).join('') : '<p class="sd-empty">لا يوجد سجل حضور بعد.</p>';
-}
-
-// لما الطالب يعمل logout وهو فاتح الداشبورد، اقفلها
-const _origDoStudentLogout = window.doStudentLogout;
-window.doStudentLogout = function() {
-  _origDoStudentLogout();
-  closeStudentDashboard();
-};
 
 // ===== PUSH / BROWSER NOTIFICATION SYSTEM =====
 
@@ -8400,31 +8023,6 @@ function initPushSystem() {
         <a class="legal-contact-btn wa" href="https://wa.me/201223678850" target="_blank" rel="noopener">💬 واتساب</a>
       </div>
     </div>
-  </div>
-</div>
-
-<!-- ===== STUDENT DASHBOARD PAGE ===== -->
-<div class="legal-overlay" id="student-dashboard-page">
-  <div class="legal-topbar"></div>
-  <div class="legal-header">
-    <button class="legal-close-btn" onclick="closeStudentDashboard()" aria-label="إغلاق">✕</button>
-    <div class="legal-header-title-wrap">
-      <div>
-        <div class="legal-header-title" id="dash-student-name">لوحة الطالب</div>
-        <div class="legal-header-sub">الفارس في الرياضيات</div>
-      </div>
-      <div class="legal-header-icon">🎓</div>
-    </div>
-  </div>
-
-  <div class="legal-body">
-    <div class="dash-stats" id="dash-stats"></div>
-
-    <div class="student-detail-section-title">📝 درجاتي</div>
-    <div class="student-detail-list" id="dash-grades-list"></div>
-
-    <div class="student-detail-section-title">📅 حضوري</div>
-    <div class="student-detail-list" id="dash-attendance-list"></div>
   </div>
 </div>
 
