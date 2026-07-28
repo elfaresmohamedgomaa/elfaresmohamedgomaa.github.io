@@ -4333,7 +4333,8 @@
 .admin-reset-btn:hover { background: rgba(255,107,107,0.2); }
 
 </style>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 </head>
 <body>
 
@@ -6831,7 +6832,7 @@ const MAX_FIREBASE_RETRIES = 20;
 function initFirebase() {
   try {
     // تحقق من Firebase
-    if (!window.firebase) {
+    if (!window.firebase || typeof firebase.database !== 'function') {
       firebaseRetries++;
       if (firebaseRetries > MAX_FIREBASE_RETRIES) {
         console.error('❌ Firebase failed to load after 20 attempts. Using localStorage fallback.');
