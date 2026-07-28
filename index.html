@@ -7304,14 +7304,28 @@ window.adminAddStudent = function() {
     showStudentCodeResult(code, studentObj.name);
   }
 
-  if (studentsRef) {
-    studentsRef.child(code).set(studentObj).then(afterSave).catch(err => {
+  const addBtn = document.querySelector('#admin-students .admin-add-btn');
+  if (addBtn) { addBtn.disabled = true; addBtn.textContent = 'جاري الحفظ...'; }
+
+  function resetBtn() {
+    if (addBtn) { addBtn.disabled = false; addBtn.textContent = '➕ إضافة الطالب'; }
+  }
+
+  waitForDb(function(ready) {
+    if (!ready || !studentsRef) {
+      resetBtn();
+      alert('⚠️ تعذر الاتصال بقاعدة البيانات. تأكد إن اتصال الإنترنت شغال وحاول تاني.');
+      return;
+    }
+    studentsRef.child(code).set(studentObj).then(() => {
+      resetBtn();
+      afterSave();
+    }).catch(err => {
+      resetBtn();
       console.error('Error saving student to Firebase:', err);
       alert('⚠️ حصل خطأ أثناء الحفظ في قاعدة البيانات، حاول تاني');
     });
-  } else {
-    alert('⚠️ لسه مفيش اتصال بقاعدة البيانات، استنى شوية وحاول تاني');
-  }
+  });
 };
 
 function showStudentCodeResult(code, name) {
