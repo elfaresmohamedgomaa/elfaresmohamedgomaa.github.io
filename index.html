@@ -62,6 +62,7 @@
 <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Cairo:wght@300;400;600;700;900&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
   :root {
     --gold: #c9a84c;
@@ -3536,6 +3537,106 @@
 }
 .student-logout-link:hover { opacity: 1; text-decoration: underline; }
 
+/* ===== STUDENT QR CODE MODAL ===== */
+#student-qr-modal {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.9);
+  backdrop-filter: blur(10px);
+  z-index: 100000;
+  display: none; align-items: center; justify-content: center;
+  padding: 20px;
+}
+#student-qr-modal.open { display: flex; }
+.qr-box {
+  background: var(--dark2);
+  border: 1px solid rgba(201,168,76,0.4);
+  border-radius: 20px;
+  padding: 34px 30px;
+  width: 100%; max-width: 380px;
+  text-align: center;
+  position: relative;
+  animation: fadeIn 0.3s ease;
+}
+.qr-box-close {
+  position: absolute; top: 14px; left: 14px;
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.qr-box-close:hover { background: rgba(201,168,76,0.15); border-color: var(--gold); transform: rotate(90deg); }
+.qr-box-icon { font-size: 2.4rem; margin-bottom: 10px; filter: drop-shadow(0 0 12px rgba(201,168,76,0.6)); }
+.qr-box-title {
+  font-family: 'Tajawal', sans-serif;
+  font-size: 1.3rem; font-weight: 900;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 4px;
+}
+.qr-box-name { color: var(--white2); font-size: 0.95rem; opacity: 0.75; margin-bottom: 20px; }
+.qr-box-code-wrap {
+  width: 236px; height: 236px;
+  margin: 0 auto 18px;
+  background: var(--white2);
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 10px;
+}
+.qr-box-code-wrap img, .qr-box-code-wrap canvas { border-radius: 6px; }
+.qr-box-code-label {
+  display: inline-block;
+  background: rgba(201,168,76,0.08);
+  border: 1px solid rgba(201,168,76,0.3);
+  color: var(--gold-light);
+  padding: 6px 18px;
+  border-radius: 50px;
+  font-size: 1.05rem;
+  letter-spacing: 3px;
+  direction: ltr;
+  margin-bottom: 16px;
+}
+.qr-box-link-row {
+  display: flex; gap: 8px;
+  margin-bottom: 18px;
+}
+.qr-box-link-row input {
+  flex: 1;
+  background: rgba(201,168,76,0.05);
+  border: 1px solid rgba(201,168,76,0.25);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--white2);
+  font-family: 'IBM Plex Sans Arabic', sans-serif;
+  font-size: 0.78rem;
+  direction: ltr;
+  text-align: left;
+  outline: none;
+}
+.qr-box-actions {
+  display: flex; gap: 10px; flex-wrap: wrap;
+}
+.qr-box-actions button {
+  flex: 1; min-width: 100px;
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+  color: var(--dark); border: none;
+  padding: 12px 10px; border-radius: 50px;
+  font-family: 'IBM Plex Sans Arabic', 'Cairo', sans-serif;
+  font-size: 0.85rem; font-weight: 700;
+  cursor: pointer; transition: all 0.3s;
+}
+.qr-box-actions button.secondary {
+  background: none;
+  border: 1px solid rgba(201,168,76,0.3);
+  color: var(--gold);
+}
+.qr-box-actions button:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,168,76,0.35); }
+.qr-box-hint { color: var(--white2); opacity: 0.5; font-size: 0.75rem; margin-top: 16px; line-height: 1.6; }
+
 /* ===== LEGAL PAGES (Terms / Privacy) ===== */
 .legal-overlay {
   position: fixed; inset: 0;
@@ -6603,6 +6704,27 @@ adminLoadFromStorage();
   </div>
 </div>
 
+<!-- ===== STUDENT QR CODE MODAL ===== -->
+<div id="student-qr-modal">
+  <div class="qr-box">
+    <button class="qr-box-close" onclick="closeStudentQR()" aria-label="إغلاق">✕</button>
+    <div class="qr-box-icon">📱</div>
+    <h2 class="qr-box-title">كود دخول الطالب</h2>
+    <div class="qr-box-name" id="qrBoxStudentName">—</div>
+    <div class="qr-box-code-wrap" id="qrBoxCanvas"></div>
+    <div class="qr-box-code-label" id="qrBoxCodeLabel">——————</div>
+    <div class="qr-box-link-row">
+      <input type="text" id="qrBoxLinkInput" readonly dir="ltr" onclick="this.select()">
+      <button class="admin-reset-btn" style="width:auto; padding:0 14px;" onclick="copyStudentQRLink()">📋</button>
+    </div>
+    <div class="qr-box-actions">
+      <button onclick="downloadStudentQR()">⬇️ تحميل QR</button>
+      <button class="secondary" onclick="printStudentQR()">🖨️ طباعة</button>
+    </div>
+    <div class="qr-box-hint">سلّم الطالب الكود ده أو خليه يعمل مسح (Scan) للـ QR، هيدخله مباشرة لصفحة تسجيل الدخول وهيحتاج بس يكتب كلمة المرور.</div>
+  </div>
+</div>
+
 <!-- ===== ADMIN PANEL ===== -->
 <div id="admin-panel">
   <!-- Header -->
@@ -6840,6 +6962,7 @@ adminLoadFromStorage();
     </div>
 
     <div class="student-detail-actions">
+      <button class="admin-reset-btn" onclick="adminShowStudentQR()">📱 QR الدخول</button>
       <button class="admin-reset-btn" onclick="adminResetStudentPassword()">🔑 إعادة تعيين كلمة المرور</button>
       <button class="admin-reset-btn" id="sd-toggle-active-btn" onclick="adminToggleStudentActive()">⏸ إيقاف الكود</button>
       <button class="admin-reset-btn" onclick="adminDeleteStudentConfirm()">🗑 حذف الطالب</button>
@@ -7514,6 +7637,106 @@ window.closeStudentLogin = function() {
   document.getElementById('student-login-modal').classList.remove('open');
 };
 
+// ===== STUDENT QR LOGIN LINK / CODE =====
+function getStudentLoginLink(code) {
+  const base = window.location.origin + window.location.pathname;
+  return base + '?code=' + encodeURIComponent(code);
+}
+
+window.openStudentQR = function(code, name) {
+  const link = getStudentLoginLink(code);
+  document.getElementById('qrBoxStudentName').textContent = name || '';
+  document.getElementById('qrBoxCodeLabel').textContent = code;
+  document.getElementById('qrBoxLinkInput').value = link;
+
+  const canvasWrap = document.getElementById('qrBoxCanvas');
+  canvasWrap.innerHTML = '';
+  if (window.QRCode) {
+    new QRCode(canvasWrap, {
+      text: link,
+      width: 216,
+      height: 216,
+      colorDark: '#0a0a0f',
+      colorLight: '#f5f0e8',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+  } else {
+    canvasWrap.innerHTML = '<div style="color:#0a0a0f; font-size:0.75rem; padding:10px;">تعذر تحميل مكتبة QR، تأكد من الاتصال بالإنترنت</div>';
+  }
+
+  document.getElementById('student-qr-modal').classList.add('open');
+};
+
+window.closeStudentQR = function() {
+  document.getElementById('student-qr-modal').classList.remove('open');
+};
+
+window.adminShowStudentQR = function() {
+  if (!currentAdminStudentCode) return;
+  const s = adminStudentsCache[currentAdminStudentCode];
+  openStudentQR(currentAdminStudentCode, s ? s.name : '');
+};
+
+window.copyStudentQRLink = function() {
+  const input = document.getElementById('qrBoxLinkInput');
+  input.select();
+  input.setSelectionRange(0, 99999);
+  navigator.clipboard && navigator.clipboard.writeText(input.value).then(() => {
+    showAdminToast && showAdminToast();
+  }).catch(() => { document.execCommand('copy'); });
+};
+
+window.downloadStudentQR = function() {
+  const canvasWrap = document.getElementById('qrBoxCanvas');
+  const canvas = canvasWrap.querySelector('canvas');
+  const code = document.getElementById('qrBoxCodeLabel').textContent;
+  if (!canvas) return;
+  const link = document.createElement('a');
+  link.download = 'كود-الطالب-' + code + '.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+};
+
+window.printStudentQR = function() {
+  const canvasWrap = document.getElementById('qrBoxCanvas');
+  const canvas = canvasWrap.querySelector('canvas');
+  const name = document.getElementById('qrBoxStudentName').textContent;
+  const code = document.getElementById('qrBoxCodeLabel').textContent;
+  if (!canvas) return;
+  const img = canvas.toDataURL('image/png');
+  const w = window.open('', '_blank');
+  w.document.write(
+    '<html dir="rtl"><head><meta charset="UTF-8"><title>كود الطالب ' + code + '</title>' +
+    '<style>body{font-family:sans-serif;text-align:center;padding:40px;}img{width:260px;height:260px;margin:20px auto;}' +
+    'h2{margin-bottom:4px;}p{color:#555;letter-spacing:3px;font-size:1.2rem;}</style></head><body>' +
+    '<h2>' + (name || '') + '</h2>' +
+    '<img src="' + img + '">' +
+    '<p>' + code + '</p>' +
+    '<p style="font-size:0.85rem;color:#888;">الفارس في الرياضيات</p>' +
+    '<script>window.onload=()=>window.print()<\/script>' +
+    '</body></html>'
+  );
+  w.document.close();
+};
+
+// ===== AUTO-FILL STUDENT CODE FROM QR LINK (?code=xxxx) =====
+document.addEventListener('DOMContentLoaded', function() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const codeFromLink = params.get('code');
+    if (codeFromLink && /^[0-9]+$/.test(codeFromLink)) {
+      openStudentLogin();
+      const codeInput = document.getElementById('studentCodeInput');
+      const passInput = document.getElementById('studentPassInput');
+      if (codeInput) codeInput.value = codeFromLink;
+      if (passInput) setTimeout(() => passInput.focus(), 250);
+      // تنظيف الرابط من الكود عشان ميفضلش ظاهر في شريط العنوان
+      const cleanUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
+    }
+  } catch (e) { /* تجاهل أي خطأ في قراءة الرابط */ }
+});
+
 // Waits for Firebase `db` to be ready (it initializes async with retries elsewhere)
 function waitForDb(callback, attempts) {
   attempts = attempts || 0;
@@ -7828,7 +8051,7 @@ window.adminAddStudent = function() {
       centerEl.value = '';
       codeEl.value = '';
       showAdminToast();
-      alert('✅ تم إضافة الطالب "' + name + '"\nكود الطالب: ' + code + '\nسلّم الكود ده للطالب عشان يسجل بيه أول مرة.');
+      openStudentQR(code, name);
     }).catch(() => alert('⚠️ حصل خطأ، حاول تاني'));
   });
 };
