@@ -1564,11 +1564,15 @@
     100% { transform: translateY(-100px) rotate(10deg); opacity: 0; }
   }
 
-  /* ===== CUSTOM CURSOR (desktop only) ===== */
+  /* ===== GOLD CURSOR (desktop only) ===== */
   @media (pointer: fine) {
-  body { cursor: none; }
-  a, button, [onclick], .course-card, .tracking-card-clickable, label, select, input, textarea { cursor: none !important; }
+  body { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M3 2 L3 19 L7.5 15.3 L10.2 21.8 L13 20.6 L10.3 14.2 L16.3 14.2 Z" fill="%23C9A84C" stroke="%230a0a0f" stroke-width="1.3" stroke-linejoin="round"/></svg>') 3 2, auto; }
+  a, button, [onclick], .course-card, .tracking-card-clickable, label, select, input, textarea {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M3 2 L3 19 L7.5 15.3 L10.2 21.8 L13 20.6 L10.3 14.2 L16.3 14.2 Z" fill="%23E9D9A8" stroke="%230a0a0f" stroke-width="1.3" stroke-linejoin="round"/></svg>') 3 2, pointer !important;
   }
+  }
+
+  #custom-cursor-dot, #custom-cursor-ring, #cursor-glow { display: none !important; }
 
   #custom-cursor-dot {
     position: fixed;
@@ -4191,35 +4195,41 @@
 /* Individual notification item */
 .notif-item {
   display: flex; gap: 12px;
-  padding: 12px 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
-  transition: background 0.2s;
+  margin: 0 8px 6px;
+  padding: 13px 14px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.015);
+  transition: background 0.25s, transform 0.2s;
   position: relative;
   cursor: default;
 }
-.notif-item:last-child { border-bottom: none; }
-.notif-item:hover { background: rgba(201,168,76,0.04); }
-.notif-item.unread { background: rgba(201,168,76,0.06); }
-.notif-item.unread::before {
-  content: '';
-  position: absolute;
-  right: 0; top: 0; bottom: 0;
-  width: 3px;
-  background: var(--gold);
-  border-radius: 0 3px 3px 0;
-}
+.notif-item:last-child { margin-bottom: 2px; }
+.notif-item:hover { background: rgba(201,168,76,0.07); }
+.notif-item.unread { background: rgba(201,168,76,0.07); }
+.notif-item.unread:hover { background: rgba(201,168,76,0.1); }
 
 .notif-item-icon {
-  width: 38px; height: 38px;
+  width: 40px; height: 40px;
   border-radius: 12px;
   display: flex; align-items: center; justify-content: center;
   font-size: 1.1rem;
   flex-shrink: 0;
+  position: relative;
 }
 .notif-icon-info    { background: rgba(74,144,217,0.15); }
 .notif-icon-success { background: rgba(50,205,100,0.15); }
 .notif-icon-warning { background: rgba(255,165,0,0.15); }
 .notif-icon-alert   { background: rgba(255,107,107,0.15); }
+.notif-item.unread .notif-item-icon::after {
+  content: '';
+  position: absolute;
+  top: -2px; left: -2px;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: 2px solid var(--dark2);
+  box-shadow: 0 0 6px rgba(201,168,76,0.8);
+}
 
 .notif-item-body { flex: 1; min-width: 0; }
 .notif-item-title {
@@ -4227,14 +4237,15 @@
   color: var(--white); margin-bottom: 3px;
   line-height: 1.4;
 }
-.notif-item.read .notif-item-title { color: var(--white2); opacity: 0.65; }
+.notif-item.read .notif-item-title { color: var(--white2); opacity: 0.6; }
 .notif-item-text {
-  font-size: 0.78rem; color: var(--white2); opacity: 0.65;
+  font-size: 0.78rem; color: var(--white2); opacity: 0.6;
   line-height: 1.55; word-break: break-word;
 }
+.notif-item.read .notif-item-text { opacity: 0.42; }
 .notif-item-meta {
   display: flex; align-items: center; gap: 8px;
-  margin-top: 6px;
+  margin-top: 7px;
 }
 .notif-item-date { font-size: 0.7rem; color: var(--white2); opacity: 0.4; }
 .notif-pin-badge {
@@ -4242,23 +4253,27 @@
   border: 1px solid rgba(201,168,76,0.3);
   color: var(--gold); padding: 1px 7px; border-radius: 20px;
   font-weight: 700;
+  display: inline-flex; align-items: center; gap: 3px;
 }
 
 .notif-item-actions {
   display: flex; flex-direction: column; gap: 4px;
   align-items: center; flex-shrink: 0;
+  opacity: 0.35; transition: opacity 0.2s;
 }
+.notif-item:hover .notif-item-actions { opacity: 1; }
 .notif-action-btn {
   background: none; border: none;
-  color: var(--white2); opacity: 0.4;
-  cursor: pointer; padding: 4px; border-radius: 6px;
+  color: var(--white2);
+  cursor: pointer; padding: 4px; border-radius: 8px;
   font-size: 0.85rem; line-height: 1;
-  transition: all 0.2s; width: 26px; height: 26px;
+  transition: all 0.2s; width: 27px; height: 27px;
   display: flex; align-items: center; justify-content: center;
 }
-.notif-action-btn:hover { opacity: 1; background: rgba(255,255,255,0.06); color: var(--white); }
+.notif-action-btn:hover { background: rgba(255,255,255,0.08); color: var(--white); transform: scale(1.08); }
 .notif-action-btn.pin-active { opacity: 1; color: var(--gold); }
-.notif-action-btn.del-btn:hover { color: #ff6b6b; background: rgba(255,107,107,0.1); }
+.notif-item-actions:has(.pin-active) { opacity: 1; }
+.notif-action-btn.del-btn:hover { color: #ff6b6b; background: rgba(255,107,107,0.12); }
 
 /* Drop footer */
 .notif-drop-footer {
@@ -4644,7 +4659,7 @@
     <div class="notif-dropdown" id="notifDropdown">
       <div class="notif-drop-header">
         <div class="notif-drop-title">🔔 الإشعارات</div>
-        <button class="notif-mark-all-btn" onclick="playNotifSound(); markAllNotifsRead()">قراءة الكل ✓</button>
+        <button class="notif-mark-all-btn" onclick="playNotifSound(); markAllNotifsRead()">تعليم الكل كمقروء</button>
       </div>
       <div class="notif-filter-tabs">
         <button class="notif-filter-tab active" onclick="playNotifSound(); setNotifFilter('all',this)">الكل</button>
@@ -7413,8 +7428,7 @@ function renderNotifList() {
         </div>
         <div class="notif-item-actions">
           <button class="notif-action-btn ${n.pinned ? 'pin-active' : ''}" onclick="playNotifSound(); toggleNotifPin('${n.id}')" title="${n.pinned ? 'إلغاء التثبيت' : 'تثبيت'}">📌</button>
-          ${!n.read ? `<button class="notif-action-btn" onclick="playNotifSound(); markNotifRead('${n.id}')" title="تعليم كمقروء">✓</button>` : ''}
-          <button class="notif-action-btn del-btn" onclick="playNotifSound(); deleteNotif('${n.id}')" title="حذف">✕</button>
+          <button class="notif-action-btn del-btn" onclick="playNotifSound(); deleteNotif('${n.id}')" title="حذف">🗑️</button>
         </div>
       </div>
     `;
