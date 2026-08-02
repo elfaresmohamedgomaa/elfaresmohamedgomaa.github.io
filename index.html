@@ -6343,16 +6343,43 @@ window.openAdminPanel = function() {
   document.getElementById('admin-panel').classList.add('open');
   document.body.style.overflow = 'hidden';
   renderAllAdminLists();
+  // حدّث رابط الصفحة عشان لو حصل ريفرش يرجعنا للوحة التحكم تاني
+  if (location.hash !== '#dashboard') {
+    history.pushState({ adminDashboard: true }, '', '#dashboard');
+  }
 }
 window.closeAdminPanel = function() {
   document.getElementById('admin-panel').classList.remove('open');
   document.body.style.overflow = '';
+  // امسح دلالة الداشبورد من الرابط لو المستخدم قافل اللوحة يدوي
+  if (location.hash === '#dashboard') {
+    history.pushState({}, '', location.pathname + location.search);
+  }
 }
 window.adminLogout = function() {
   localStorage.removeItem('af_admin_auth');
   adminLoggedIn = false;
   closeAdminPanel();
 }
+
+// إعادة فتح لوحة التحكم تلقائياً لو الرابط فيه #dashboard (بعد الريفرش مثلاً)
+document.addEventListener('DOMContentLoaded', function() {
+  if (location.hash === '#dashboard') {
+    openAdminLogin(); // لو مسجّل دخول قبل كده هتفتح اللوحة على طول، ولو لأ هيظهر فورم تسجيل الدخول
+  }
+});
+
+// لو المستخدم دوس زرار "رجوع" في المتصفح وهو في لوحة التحكم، اقفلها بشكل طبيعي
+window.addEventListener('popstate', function() {
+  if (location.hash !== '#dashboard') {
+    const panel = document.getElementById('admin-panel');
+    if (panel && panel.classList.contains('open')) {
+      panel.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  }
+});
+
 
 // ---- TABS ----
 window.switchAdminTab = function(tab, btn) {
