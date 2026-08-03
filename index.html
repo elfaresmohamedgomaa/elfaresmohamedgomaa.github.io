@@ -7005,10 +7005,32 @@ adminLoadFromStorage();
     </div>
 
     <div class="student-detail-actions">
+      <button class="admin-reset-btn" onclick="adminToggleEditStudent()">✏️ تعديل البيانات</button>
       <button class="admin-reset-btn" onclick="adminShowStudentQR()">📱 QR الدخول</button>
       <button class="admin-reset-btn" onclick="adminResetStudentPassword()">🔑 إعادة تعيين كلمة المرور</button>
       <button class="admin-reset-btn" id="sd-toggle-active-btn" onclick="adminToggleStudentActive()">⏸ إيقاف الكود</button>
       <button class="admin-reset-btn" onclick="adminDeleteStudentConfirm()">🗑 حذف الطالب</button>
+    </div>
+
+    <div class="admin-add-form" id="sd-edit-form" style="display:none;">
+      <div class="admin-add-form-title">✏️ تعديل بيانات الطالب</div>
+      <input class="admin-input" id="sd-edit-name" placeholder="اسم الطالب *" dir="rtl">
+      <input class="admin-input" id="sd-edit-phone" placeholder="رقم واتساب الطالب *" type="tel" dir="rtl">
+      <input class="admin-input" id="sd-edit-parent-phone" placeholder="رقم واتساب ولي الأمر *" type="tel" dir="rtl">
+      <select class="notif-type-select" id="sd-edit-stage" onchange="onStudentEditStageChange()">
+        <option value="">اختر المرحلة الدراسية (اختياري)</option>
+        <option value="ابتدائي">ابتدائي</option>
+        <option value="إعدادي">إعدادي</option>
+        <option value="ثانوي">ثانوي</option>
+      </select>
+      <select class="notif-type-select" id="sd-edit-grade-select">
+        <option value="">اختر الصف الدراسي</option>
+      </select>
+      <input class="admin-input" id="sd-edit-center" placeholder="السنتر *" dir="rtl">
+      <div style="display:flex; gap:10px;">
+        <button class="admin-add-btn" style="flex:1;" onclick="adminSaveStudentEdits()">💾 حفظ التعديلات</button>
+        <button class="admin-reset-btn" style="flex:1;" onclick="adminToggleEditStudent()">إلغاء</button>
+      </div>
     </div>
 
     <div class="student-detail-section-title">📝 الدرجات</div>
@@ -8141,11 +8163,13 @@ function renderAdminStudentsList() {
 window.openAdminStudentDetail = function(code) {
   currentAdminStudentCode = code;
   document.getElementById('admin-student-detail-modal').classList.add('open');
+  document.getElementById('sd-edit-form').style.display = 'none';
   renderAdminStudentDetail(code);
 };
 
 window.closeAdminStudentDetail = function() {
   currentAdminStudentCode = null;
+  document.getElementById('sd-edit-form').style.display = 'none';
   document.getElementById('admin-student-detail-modal').classList.remove('open');
 };
 
@@ -8189,6 +8213,86 @@ function renderAdminStudentDetail(code) {
     </div>
   `).join('') : '<p class="sd-empty">لا يوجد سجل حضور بعد.</p>';
 }
+
+// ===== EDIT EXISTING STUDENT INFO =====
+window.adminToggleEditStudent = function() {
+  const form = document.getElementById('sd-edit-form');
+  const isOpen = form.style.display !== 'none';
+  if (isOpen) { form.style.display = 'none'; return; }
+
+  const s = adminStudentsCache[currentAdminStudentCode];
+  if (!s) return;
+
+  document.getElementById('sd-edit-name').value = s.name || '';
+  document.getElementById('sd-edit-phone').value = s.phone || '';
+  document.getElementById('sd-edit-parent-phone').value = s.parentPhone || '';
+
+  const stageEl = document.getElementById('sd-edit-stage');
+  stageEl.value = s.stage || '';
+  if (stageEl._cselRefresh) stageEl._cselRefresh();
+  onStudentEditStageChange(s.grade || '');
+
+  document.getElementById('sd-edit-center').value = s.center || '';
+
+  form.style.display = 'flex';
+  form.style.flexDirection = 'column';
+  form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+};
+
+window.onStudentEditStageChange = function(presetGrade) {
+  const stage = document.getElementById('sd-edit-stage').value;
+  const gradeSelect = document.getElementById('sd-edit-grade-select');
+  const options = STUDENT_GRADE_OPTIONS[stage] || [];
+  gradeSelect.innerHTML = '<option value="">اختر الصف الدراسي</option>' +
+    options.map(g => `<option value="${escapeHtml(g)}">${escapeHtml(g)}</option>`).join('');
+  if (presetGrade) gradeSelect.value = presetGrade;
+  if (gradeSelect._cselRefresh) gradeSelect._cselRefresh();
+};
+
+window.adminSaveStudentEdits = function() {
+  if (!currentAdminStudentCode) return;
+  const nameEl = document.getElementById('sd-edit-name');
+  const phoneEl = document.getElementById('sd-edit-phone');
+  const parentPhoneEl = document.getElementById('sd-edit-parent-phone');
+  const stageEl = document.getElementById('sd-edit-stage');
+  const gradeSelectEl = document.getElementById('sd-edit-grade-select');
+  const centerEl = document.getElementById('sd-edit-center');
+
+  const name = nameEl.value.trim();
+  const phone = phoneEl.value.trim();
+  const parentPhone = parentPhoneEl.value.trim();
+  const center = centerEl.value.trim();
+
+  let hasError = false;
+  [[nameEl, name], [phoneEl, phone], [parentPhoneEl, parentPhone], [centerEl, center]].forEach(([el, val]) => {
+    if (!val) {
+      hasError = true;
+      el.style.borderColor = '#ff6b6b';
+      setTimeout(() => el.style.borderColor = '', 1200);
+    }
+  });
+  if (hasError) {
+    (!name ? nameEl : !phone ? phoneEl : !parentPhone ? parentPhoneEl : centerEl).focus();
+    return;
+  }
+
+  const updates = {
+    name: name,
+    phone: phone,
+    parentPhone: parentPhone,
+    stage: stageEl.value || '',
+    grade: gradeSelectEl.value || '',
+    center: center
+  };
+
+  waitForDb(function(ready) {
+    if (!ready || !db) { alert('⚠️ تعذر الاتصال، حاول تاني'); return; }
+    db.ref('students/' + currentAdminStudentCode).update(updates).then(() => {
+      showAdminToast();
+      document.getElementById('sd-edit-form').style.display = 'none';
+    }).catch(() => alert('⚠️ حصل خطأ أثناء الحفظ، حاول تاني'));
+  });
+};
 
 window.adminResetStudentPassword = function() {
   if (!currentAdminStudentCode) return;
@@ -8925,7 +9029,7 @@ function enhanceCustomSelect(selectEl) {
 }
 
 function initCustomSelects() {
-  ['inp-level', 'student-new-stage', 'student-new-grade-select', 'notif-new-type', 'sd-attendance-status'].forEach((id) => {
+  ['inp-level', 'student-new-stage', 'student-new-grade-select', 'notif-new-type', 'sd-attendance-status', 'sd-edit-stage', 'sd-edit-grade-select'].forEach((id) => {
     enhanceCustomSelect(document.getElementById(id));
   });
 }
