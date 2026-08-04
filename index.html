@@ -3542,7 +3542,7 @@
 .student-logout-link:hover { opacity: 1; text-decoration: underline; }
 
 /* ===== STUDENT QR CODE MODAL ===== */
-#student-qr-modal {
+#student-qr-modal, #student-pw-modal {
   position: fixed; inset: 0;
   background: rgba(0,0,0,0.9);
   backdrop-filter: blur(10px);
@@ -3550,7 +3550,7 @@
   display: none; align-items: center; justify-content: center;
   padding: 20px;
 }
-#student-qr-modal.open { display: flex; }
+#student-qr-modal.open, #student-pw-modal.open { display: flex; }
 .qr-box {
   background: var(--dark2);
   border: 1px solid rgba(201,168,76,0.4);
@@ -3987,6 +3987,33 @@
   cursor: pointer; transition: all 0.2s;
 }
 .admin-add-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(201,168,76,0.3); }
+
+/* Bulk import results */
+.bulk-results-title { font-size: 0.9rem; font-weight: 700; color: var(--gold-light); margin-bottom: 10px; }
+.bulk-results-table-wrap { overflow-x: auto; border: 1px solid rgba(201,168,76,0.2); border-radius: 10px; }
+.bulk-results-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+.bulk-results-table th {
+  background: rgba(201,168,76,0.1); color: var(--gold-light);
+  padding: 8px 10px; text-align: right; font-weight: 700;
+  border-bottom: 1px solid rgba(201,168,76,0.2);
+}
+.bulk-results-table td { padding: 7px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--white2); }
+.bulk-results-table tr:last-child td { border-bottom: none; }
+.bulk-results-table td[dir="ltr"] { text-align: left; }
+.bulk-results-errors {
+  margin-top: 12px; font-size: 0.78rem; color: #ffb37a;
+  background: rgba(255,165,0,0.08); border: 1px solid rgba(255,165,0,0.25);
+  border-radius: 8px; padding: 10px 12px; line-height: 1.8;
+}
+.bulk-results-actions { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+.bulk-results-actions button {
+  flex: 1; min-width: 140px;
+  background: none; border: 1px solid rgba(201,168,76,0.3); color: var(--gold);
+  padding: 8px 12px; border-radius: 50px;
+  font-family: 'IBM Plex Sans Arabic', sans-serif; font-size: 0.8rem; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+}
+.bulk-results-actions button:hover { background: rgba(201,168,76,0.1); }
 
 /* Heart message cards in admin */
 .admin-heart-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; margin-bottom: 20px; }
@@ -6725,7 +6752,7 @@ adminLoadFromStorage();
     <p class="student-login-sub">اكتب كود الطالب وكلمة المرور الخاصة بيك للدخول</p>
     <div class="student-login-field">
       <label>كود الطالب</label>
-      <input type="tel" inputmode="numeric" id="studentCodeInput" placeholder="مثال: 483920" maxlength="10" dir="ltr" autocomplete="off" onkeydown="if(event.key==='Enter') document.getElementById('studentPassInput').focus()">
+      <input type="text" id="studentCodeInput" placeholder="مثال: STU-26-0001" maxlength="20" dir="ltr" autocomplete="off" onkeydown="if(event.key==='Enter') document.getElementById('studentPassInput').focus()">
     </div>
     <div class="student-login-field">
       <label>كلمة المرور</label>
@@ -6747,6 +6774,25 @@ adminLoadFromStorage();
   </div>
 </div>
 
+<!-- ===== STUDENT PASSWORD EDIT MODAL ===== -->
+<div id="student-pw-modal">
+  <div class="qr-box">
+    <button class="qr-box-close" onclick="closePasswordEditModal()" aria-label="إغلاق">✕</button>
+    <div class="qr-box-icon">🔑</div>
+    <h2 class="qr-box-title">كلمة مرور الطالب</h2>
+    <div class="qr-box-name" id="pwEditStudentName">—</div>
+    <div class="qr-box-link-row" style="margin-top:10px;">
+      <input type="text" id="pwEditInput" dir="ltr" maxlength="30">
+      <button class="admin-reset-btn" style="width:auto; padding:0 14px;" onclick="pwEditRegenerate()" title="توليد عشوائي">🎲</button>
+    </div>
+    <div class="qr-box-actions">
+      <button onclick="savePasswordEdit()">💾 حفظ كلمة المرور</button>
+      <button class="secondary" onclick="clearPasswordEdit()">🗑 مسحها بالكامل</button>
+    </div>
+    <div class="qr-box-hint">تقدر تكتب أي كلمة مرور تحبها، أو تدوس 🎲 لتوليد وحدة عشوائية. لو مسحتها بالكامل، الطالب هيحتاج يحط كلمة مرور جديدة أول ما يسجل دخول.</div>
+  </div>
+</div>
+
 <!-- ===== STUDENT QR CODE MODAL ===== -->
 <div id="student-qr-modal">
   <div class="qr-box">
@@ -6756,6 +6802,10 @@ adminLoadFromStorage();
     <div class="qr-box-name" id="qrBoxStudentName">—</div>
     <div class="qr-box-code-wrap" id="qrBoxCanvas"></div>
     <div class="qr-box-code-label" id="qrBoxCodeLabel">——————</div>
+    <div class="qr-box-link-row" id="qrBoxPasswordRow" style="display:none;">
+      <input type="text" id="qrBoxPasswordInput" readonly dir="ltr" onclick="this.select()">
+      <button class="admin-reset-btn" style="width:auto; padding:0 14px;" onclick="copyStudentQRPassword()">📋</button>
+    </div>
     <div class="qr-box-link-row">
       <input type="text" id="qrBoxLinkInput" readonly dir="ltr" onclick="this.select()">
       <button class="admin-reset-btn" style="width:auto; padding:0 14px;" onclick="copyStudentQRLink()">📋</button>
@@ -6764,7 +6814,7 @@ adminLoadFromStorage();
       <button onclick="downloadStudentQR()">⬇️ تحميل QR</button>
       <button class="secondary" onclick="printStudentQR()">🖨️ طباعة</button>
     </div>
-    <div class="qr-box-hint">سلّم الطالب الكود ده أو خليه يعمل مسح (Scan) للـ QR، هيدخله مباشرة لصفحة تسجيل الدخول وهيحتاج بس يكتب كلمة المرور.</div>
+    <div class="qr-box-hint">سلّم الطالب الكود وكلمة المرور دول، أو خليه يعمل مسح (Scan) للـ QR هيدخله مباشرة لصفحة تسجيل الدخول وهيحتاج بس يكتب كلمة المرور.</div>
   </div>
 </div>
 
@@ -6959,8 +7009,19 @@ adminLoadFromStorage();
             <option value="">اختر الصف الدراسي</option>
           </select>
           <input class="admin-input" id="student-new-center" placeholder="السنتر *" dir="rtl">
-          <input class="admin-input" id="student-new-code" placeholder="كود مخصص (اختياري، أرقام فقط، هيتولد كود تلقائي لو سيبته فاضي)" dir="rtl" inputmode="numeric">
+          <input class="admin-input" id="student-new-code" placeholder="كود مخصص (اختياري، أرقام/حروف/شرطة، هيتولد كود تلقائي لو سيبته فاضي)" dir="ltr">
           <button class="admin-add-btn" onclick="adminAddStudent()">إضافة الطالب 🎓</button>
+        </div>
+
+        <div class="admin-add-form">
+          <div class="admin-add-form-title">📥 استيراد طلاب بالجملة (كود + اسم)</div>
+          <p style="font-size:0.78rem; color:var(--white2); opacity:0.55; margin:-6px 0 10px;">
+            الصق كل طالب في سطر لوحده بالشكل: <span dir="ltr" style="color:var(--gold-light);">الكود [مسافة/تاب] الاسم</span> — هيتولد لكل طالب كود مرور عشوائي (7 خانات أرقام وحروف)، وهنعرضهملك كلهم في جدول جاهز للنسخ في الآخر.
+          </p>
+          <textarea class="admin-input" id="bulkImportTextarea" rows="6" dir="ltr" placeholder="STU-26-0001	ادهم سمير
+STU-26-0003	معاذ خالد" style="resize:vertical; font-family:'IBM Plex Sans Arabic', monospace; line-height:1.8;"></textarea>
+          <button class="admin-add-btn" onclick="runBulkImport()">📥 استيراد كل الأسطر</button>
+          <div id="bulkImportResults" style="display:none; margin-top:16px;"></div>
         </div>
 
         <div class="admin-students-search">
@@ -7007,7 +7068,7 @@ adminLoadFromStorage();
     <div class="student-detail-actions">
       <button class="admin-reset-btn" onclick="adminToggleEditStudent()">✏️ تعديل البيانات</button>
       <button class="admin-reset-btn" onclick="adminShowStudentQR()">📱 QR الدخول</button>
-      <button class="admin-reset-btn" onclick="adminResetStudentPassword()">🔑 إعادة تعيين كلمة المرور</button>
+      <button class="admin-reset-btn" onclick="adminEditStudentPassword()">🔑 تعديل كلمة المرور</button>
       <button class="admin-reset-btn" id="sd-toggle-active-btn" onclick="adminToggleStudentActive()">⏸ إيقاف الكود</button>
       <button class="admin-reset-btn" onclick="adminDeleteStudentConfirm()">🗑 حذف الطالب</button>
     </div>
@@ -7708,11 +7769,21 @@ function getStudentLoginLink(code) {
   return base + '?code=' + encodeURIComponent(code);
 }
 
-window.openStudentQR = function(code, name) {
+window.openStudentQR = function(code, name, password) {
   const link = getStudentLoginLink(code);
   document.getElementById('qrBoxStudentName').textContent = name || '';
   document.getElementById('qrBoxCodeLabel').textContent = code;
   document.getElementById('qrBoxLinkInput').value = link;
+
+  const passRow = document.getElementById('qrBoxPasswordRow');
+  const passInput = document.getElementById('qrBoxPasswordInput');
+  if (password) {
+    passInput.value = password;
+    passRow.style.display = 'flex';
+  } else {
+    passInput.value = '';
+    passRow.style.display = 'none';
+  }
 
   const canvasWrap = document.getElementById('qrBoxCanvas');
   canvasWrap.innerHTML = '';
@@ -7736,10 +7807,19 @@ window.closeStudentQR = function() {
   document.getElementById('student-qr-modal').classList.remove('open');
 };
 
+window.copyStudentQRPassword = function() {
+  const input = document.getElementById('qrBoxPasswordInput');
+  input.select();
+  input.setSelectionRange(0, 99999);
+  navigator.clipboard && navigator.clipboard.writeText(input.value).then(() => {
+    showAdminToast && showAdminToast();
+  }).catch(() => { document.execCommand('copy'); });
+};
+
 window.adminShowStudentQR = function() {
   if (!currentAdminStudentCode) return;
   const s = adminStudentsCache[currentAdminStudentCode];
-  openStudentQR(currentAdminStudentCode, s ? s.name : '');
+  openStudentQR(currentAdminStudentCode, s ? s.name : '', s ? s.password : '');
 };
 
 window.copyStudentQRLink = function() {
@@ -7789,7 +7869,7 @@ document.addEventListener('DOMContentLoaded', function() {
   try {
     const params = new URLSearchParams(window.location.search);
     const codeFromLink = params.get('code');
-    if (codeFromLink && /^[0-9]+$/.test(codeFromLink)) {
+    if (codeFromLink && /^[A-Za-z0-9\-]+$/.test(codeFromLink)) {
       openStudentLogin();
       const codeInput = document.getElementById('studentCodeInput');
       const passInput = document.getElementById('studentPassInput');
@@ -7872,8 +7952,8 @@ window.doStudentLogin = function() {
     errEl.textContent = 'من فضلك اكتب كود الطالب';
     return;
   }
-  if (!/^[0-9]+$/.test(code)) {
-    errEl.textContent = 'الكود لازم يكون أرقام بس';
+  if (!/^[A-Za-z0-9\-]+$/.test(code)) {
+    errEl.textContent = 'الكود لازم يكون أرقام أو حروف إنجليزي بس';
     return;
   }
   if (!pass) {
@@ -8033,6 +8113,143 @@ function generateUniqueStudentCode() {
   return code;
 }
 
+// كلمة مرور عشوائية 7 خانات (أرقام + حروف إنجليزي)، بدون رموز ملتبسة زي 0/O أو 1/l/I
+function generateStudentPassword(length) {
+  length = length || 7;
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+  let pass = '';
+  for (let i = 0; i < length; i++) {
+    pass += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return pass;
+}
+
+// ===== استيراد طلاب بالجملة (كود + اسم في كل سطر) =====
+let lastBulkImportResults = [];
+
+window.runBulkImport = function() {
+  const textarea = document.getElementById('bulkImportTextarea');
+  const raw = textarea.value;
+  const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
+  if (!lines.length) { alert('⚠️ الصق بيانات الطلاب الأول (كل طالب في سطر: الكود ثم الاسم)'); return; }
+
+  const parsed = [];
+  const errors = [];
+  lines.forEach((line, idx) => {
+    let parts = line.split('\t').map(s => s.trim()).filter(Boolean);
+    if (parts.length < 2) parts = line.split(/\s{2,}/).map(s => s.trim()).filter(Boolean);
+    if (parts.length < 2) { errors.push('سطر ' + (idx + 1) + ': "' + line + '" — تنسيق غير مفهوم (لازم كود ومسافة/تاب واسم)'); return; }
+    const code = parts[0].trim();
+    const name = parts.slice(1).join(' ').trim();
+    if (!/^[A-Za-z0-9\-]{2,}$/.test(code)) { errors.push('سطر ' + (idx + 1) + ': الكود "' + code + '" فيه رموز مش مسموحة'); return; }
+    if (!name) { errors.push('سطر ' + (idx + 1) + ': الاسم فاضي'); return; }
+    parsed.push({ code, name });
+  });
+
+  if (!parsed.length) {
+    renderBulkImportResults([], errors);
+    return;
+  }
+
+  waitForDb(function(ready) {
+    if (!ready || !db) { alert('⚠️ تعذر الاتصال، حاول تاني'); return; }
+    db.ref('students').once('value').then(function(snap) {
+      const existing = snap.val() || {};
+      const results = [];
+      let chain = Promise.resolve();
+
+      parsed.forEach(function(item) {
+        chain = chain.then(function() {
+          if (existing[item.code] || adminStudentsCache[item.code]) {
+            results.push({ code: item.code, name: item.name, password: '—', status: '⚠️ الكود موجود قبل كده، اتخطّى' });
+            return;
+          }
+          const pass = generateStudentPassword();
+          const record = {
+            name: item.name,
+            password: pass,
+            phone: '',
+            parentPhone: '',
+            stage: '',
+            grade: '',
+            center: '',
+            active: true,
+            createdAt: Date.now(),
+            loginCount: 0
+          };
+          return db.ref('students/' + item.code).set(record).then(function() {
+            existing[item.code] = record;
+            results.push({ code: item.code, name: item.name, password: pass, status: '✅ تمت الإضافة' });
+          }).catch(function() {
+            results.push({ code: item.code, name: item.name, password: '—', status: '❌ فشلت الإضافة' });
+          });
+        });
+      });
+
+      chain.then(function() {
+        textarea.value = '';
+        showAdminToast();
+        renderBulkImportResults(results, errors);
+      });
+    }).catch(function() {
+      alert('⚠️ تعذر قراءة بيانات الطلاب الحالية، حاول تاني');
+    });
+  });
+};
+
+function renderBulkImportResults(results, errors) {
+  lastBulkImportResults = results;
+  const box = document.getElementById('bulkImportResults');
+  const addedCount = results.filter(function(r) { return r.status.indexOf('✅') === 0; }).length;
+
+  let html = '<div class="bulk-results-title">📋 نتيجة الاستيراد — تم إضافة ' + addedCount + ' من ' + results.length + ' طالب</div>';
+  if (results.length) {
+    html += '<div class="bulk-results-table-wrap"><table class="bulk-results-table"><thead><tr><th>الكود</th><th>الاسم</th><th>كلمة المرور</th><th>الحالة</th></tr></thead><tbody>';
+    results.forEach(function(r) {
+      html += '<tr><td dir="ltr">' + escapeHtml(r.code) + '</td><td>' + escapeHtml(r.name) + '</td><td dir="ltr">' + escapeHtml(r.password) + '</td><td>' + r.status + '</td></tr>';
+    });
+    html += '</tbody></table></div>';
+    html += '<div class="bulk-results-actions">' +
+      '<button onclick="copyBulkResults()">📋 نسخ القائمة كاملة</button>' +
+      '<button onclick="downloadBulkResultsCSV()">⬇️ تحميل CSV</button>' +
+      '</div>';
+  }
+  if (errors.length) {
+    html += '<div class="bulk-results-errors">⚠️ ' + errors.length + ' سطر اتجاهل:<br>' + errors.map(function(e) { return escapeHtml(e); }).join('<br>') + '</div>';
+  }
+
+  box.innerHTML = html;
+  box.style.display = 'block';
+  box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+window.copyBulkResults = function() {
+  if (!lastBulkImportResults.length) return;
+  const text = lastBulkImportResults.map(function(r) {
+    return r.code + '\t' + r.name + '\t' + r.password + '\t' + r.status;
+  }).join('\n');
+  navigator.clipboard && navigator.clipboard.writeText(text).then(function() {
+    showAdminToast && showAdminToast();
+  }).catch(function() {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+  });
+};
+
+window.downloadBulkResultsCSV = function() {
+  if (!lastBulkImportResults.length) return;
+  let csv = '\uFEFFالكود,الاسم,كلمة المرور,الحالة\n';
+  lastBulkImportResults.forEach(function(r) {
+    csv += '"' + r.code + '","' + r.name.replace(/"/g, '""') + '","' + r.password + '","' + r.status + '"\n';
+  });
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'الطلاب-المستوردين-' + Date.now() + '.csv';
+  link.click();
+};
+
 // الصفوف الدراسية المتاحة لكل مرحلة
 const STUDENT_GRADE_OPTIONS = {
   'ابتدائي': ['الرابع الابتدائي', 'الخامس الابتدائي', 'السادس الابتدائي'],
@@ -8078,8 +8295,8 @@ window.adminAddStudent = function() {
   }
 
   const customCode = codeEl.value.trim();
-  if (customCode && !/^[0-9]{4,}$/.test(customCode)) {
-    alert('⚠️ الكود المخصص لازم يكون أرقام بس (4 أرقام على الأقل)، عشان الطالب يقدر يسجل بيه دخول.');
+  if (customCode && !/^[A-Za-z0-9\-]{4,}$/.test(customCode)) {
+    alert('⚠️ الكود المخصص لازم يكون أرقام أو حروف إنجليزي أو شرطة (-) بس، 4 خانات على الأقل.');
     codeEl.focus(); codeEl.style.borderColor = '#ff6b6b';
     setTimeout(() => codeEl.style.borderColor = '', 1200);
     return;
@@ -8092,6 +8309,7 @@ window.adminAddStudent = function() {
   }
 
   const code = customCode || generateUniqueStudentCode();
+  const generatedPassword = generateStudentPassword();
   const newStudent = {
     name: name,
     phone: phone,
@@ -8099,6 +8317,7 @@ window.adminAddStudent = function() {
     stage: stageEl.value || '',
     grade: gradeSelectEl.value || '',
     center: center,
+    password: generatedPassword,
     active: true,
     createdAt: Date.now(),
     loginCount: 0
@@ -8116,7 +8335,7 @@ window.adminAddStudent = function() {
       centerEl.value = '';
       codeEl.value = '';
       showAdminToast();
-      openStudentQR(code, name);
+      openStudentQR(code, name, generatedPassword);
     }).catch(() => alert('⚠️ حصل خطأ، حاول تاني'));
   });
 };
@@ -8164,12 +8383,14 @@ window.openAdminStudentDetail = function(code) {
   currentAdminStudentCode = code;
   document.getElementById('admin-student-detail-modal').classList.add('open');
   document.getElementById('sd-edit-form').style.display = 'none';
+  document.getElementById('student-pw-modal').classList.remove('open');
   renderAdminStudentDetail(code);
 };
 
 window.closeAdminStudentDetail = function() {
   currentAdminStudentCode = null;
   document.getElementById('sd-edit-form').style.display = 'none';
+  document.getElementById('student-pw-modal').classList.remove('open');
   document.getElementById('admin-student-detail-modal').classList.remove('open');
 };
 
@@ -8294,12 +8515,45 @@ window.adminSaveStudentEdits = function() {
   });
 };
 
-window.adminResetStudentPassword = function() {
+window.adminEditStudentPassword = function() {
+  if (!currentAdminStudentCode) return;
+  const s = adminStudentsCache[currentAdminStudentCode];
+  document.getElementById('pwEditStudentName').textContent = s ? s.name : '';
+  document.getElementById('pwEditInput').value = (s && s.password) ? s.password : generateStudentPassword();
+  document.getElementById('student-pw-modal').classList.add('open');
+};
+
+window.closePasswordEditModal = function() {
+  document.getElementById('student-pw-modal').classList.remove('open');
+};
+
+window.pwEditRegenerate = function() {
+  document.getElementById('pwEditInput').value = generateStudentPassword();
+};
+
+window.savePasswordEdit = function() {
+  if (!currentAdminStudentCode) return;
+  const val = document.getElementById('pwEditInput').value.trim();
+  if (!val) { alert('⚠️ كلمة المرور متقدرش تبقى فاضية، اكتب واحدة أو دوس 🎲'); return; }
+  waitForDb(function(ready) {
+    if (!ready || !db) { alert('⚠️ تعذر الاتصال، حاول تاني'); return; }
+    db.ref('students/' + currentAdminStudentCode + '/password').set(val).then(() => {
+      showAdminToast();
+      closePasswordEditModal();
+    }).catch(() => alert('⚠️ حصل خطأ، حاول تاني'));
+  });
+};
+
+window.clearPasswordEdit = function() {
   if (!currentAdminStudentCode) return;
   if (!confirm('هيتم مسح كلمة المرور الحالية، وأول مرة الطالب يسجل دخول هيقدر يحط كلمة مرور جديدة. متأكد؟')) return;
-  db.ref('students/' + currentAdminStudentCode + '/password').remove().then(() => {
-    showAdminToast();
-  }).catch(() => alert('⚠️ حصل خطأ، حاول تاني'));
+  waitForDb(function(ready) {
+    if (!ready || !db) { alert('⚠️ تعذر الاتصال، حاول تاني'); return; }
+    db.ref('students/' + currentAdminStudentCode + '/password').remove().then(() => {
+      showAdminToast();
+      closePasswordEditModal();
+    }).catch(() => alert('⚠️ حصل خطأ، حاول تاني'));
+  });
 };
 
 window.adminToggleStudentActive = function() {
