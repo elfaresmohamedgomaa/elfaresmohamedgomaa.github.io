@@ -13,16 +13,16 @@
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 <meta name="language" content="Arabic">
 <meta name="revisit-after" content="7 days">
-<link rel="canonical" href="https://alfares-math.com/">
+<link rel="canonical" href="https://elfaresmohamedgomaa.github.io/">
 
 <!-- ===== SEO: Open Graph (Facebook / WhatsApp) ===== -->
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ar_EG">
-<meta property="og:url" content="https://alfares-math.com/">
+<meta property="og:url" content="https://elfaresmohamedgomaa.github.io/">
 <meta property="og:title" content="محمد جمعة | الفارس في الرياضيات">
 <meta property="og:description" content="أستاذ محمد جمعة — الفارس في الرياضيات. مدرس رياضيات للثانوي والإعدادي. حصص أونلاين، مذكرات، ونتائج في متناول يدك. سجّل الآن!">
 <meta property="og:site_name" content="الفارس في الرياضيات">
-<meta property="og:image" content="https://alfares-math.com/og-image.png">
+<meta property="og:image" content="https://elfaresmohamedgomaa.github.io/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="الفارس في الرياضيات — محمد جمعة، مدرس رياضيات ثانوي وإعدادي">
@@ -31,7 +31,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="محمد جمعة | الفارس في الرياضيات">
 <meta name="twitter:description" content="مدرس رياضيات متميز للثانوي والإعدادي — حصص أونلاين، مذكرات، وأكثر. سجّل الآن!">
-<meta name="twitter:image" content="https://alfares-math.com/og-image.png">
+<meta name="twitter:image" content="https://elfaresmohamedgomaa.github.io/og-image.png">
 
 <!-- ===== SEO: Structured Data (JSON-LD) ===== -->
 <script type="application/ld+json">
@@ -42,7 +42,7 @@
   "alternateName": "الفارس في الرياضيات",
   "description": "مدرس رياضيات متخصص للمرحلة الثانوية والإعدادية في مصر، يقدم حصصاً أونلاين ومذكرات وامتحانات تجريبية.",
   "jobTitle": "مدرس رياضيات",
-  "url": "https://alfares-math.com/",
+  "url": "https://elfaresmohamedgomaa.github.io/",
   "knowsAbout": ["الرياضيات", "الجبر", "الهندسة", "التفاضل والتكامل", "الإحصاء"],
   "teaches": "الرياضيات للمرحلة الثانوية والإعدادية",
   "sameAs": []
@@ -54,7 +54,7 @@
   "@type": "EducationalOrganization",
   "name": "الفارس في الرياضيات",
   "description": "منصة تعليمية لمادة الرياضيات للمرحلة الثانوية والإعدادية بإشراف أستاذ محمد جمعة.",
-  "url": "https://alfares-math.com/",
+  "url": "https://elfaresmohamedgomaa.github.io/",
   "educationalCredentialAwarded": "شهادة إتمام الدورة",
   "teaches": "الرياضيات",
   "knowsAbout": ["رياضيات الثانوية العامة", "رياضيات إعدادي", "الجبر", "الهندسة"]
@@ -68,6 +68,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Cairo:wght@300;400;600;700;900&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
   :root {
     --gold: #c9a84c;
@@ -4605,7 +4606,16 @@
 .admin-reset-btn:hover { background: rgba(255,107,107,0.2); }
 
 /* ===== ADMIN: STUDENTS LIST ===== */
-.admin-students-search { margin-bottom: 16px; }
+.admin-students-search { margin-bottom: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+.admin-students-search .admin-input { flex: 1; min-width: 200px; }
+.admin-qr-export-btn {
+  background: none; border: 1px solid rgba(201,168,76,0.3); color: var(--gold);
+  padding: 0 18px; border-radius: 50px; white-space: nowrap;
+  font-family: 'IBM Plex Sans Arabic', sans-serif; font-size: 0.82rem; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+}
+.admin-qr-export-btn:hover { background: rgba(201,168,76,0.1); }
+.admin-qr-export-btn:disabled { opacity: 0.6; cursor: default; }
 .admin-students-list { display: flex; flex-direction: column; gap: 10px; }
 .admin-student-item {
   background: var(--dark3);
@@ -7100,6 +7110,7 @@ STU-26-0003	معاذ خالد" style="resize:vertical; font-family:'IBM Plex San
 
         <div class="admin-students-search">
           <input class="admin-input" id="student-search-input" placeholder="🔍 دوّر بالاسم أو الكود..." dir="rtl" oninput="renderAdminStudentsList()">
+          <button class="admin-qr-export-btn" id="qrExportBtn" onclick="exportAllStudentsQR()">📦 تصدير كل أكواد QR (ZIP)</button>
         </div>
 
         <div class="admin-students-list" id="admin-students-list"></div>
@@ -7936,6 +7947,98 @@ window.printStudentQR = function() {
     '</body></html>'
   );
   w.document.close();
+};
+
+// ===== تصدير جماعي لكل أكواد QR الخاصة بالطلاب في ملف ZIP =====
+function sanitizeZipFileName(str) {
+  return (str || 'طالب').replace(/[\\/:*?"<>|]/g, '').trim() || 'طالب';
+}
+
+window.exportAllStudentsQR = async function() {
+  const btn = document.getElementById('qrExportBtn');
+  if (!btn || btn.disabled) return;
+
+  const searchEl = document.getElementById('student-search-input');
+  const query = (searchEl ? searchEl.value.trim() : '').toLowerCase();
+  let entries = Object.entries(adminStudentsCache);
+  if (query) {
+    entries = entries.filter(([code, s]) =>
+      code.toLowerCase().includes(query) || (s.name || '').toLowerCase().includes(query)
+    );
+  }
+
+  if (!entries.length) { alert('⚠️ لا يوجد طلاب لتصدير أكوادهم'); return; }
+  if (!window.QRCode) { alert('⚠️ تعذر تحميل مكتبة QR، تأكد من الاتصال بالإنترنت وحاول تاني'); return; }
+  if (!window.JSZip) { alert('⚠️ تعذر تحميل مكتبة ضغط الملفات (JSZip)، تأكد من الاتصال بالإنترنت وحاول تاني'); return; }
+
+  const confirmMsg = query
+    ? 'هيتم تجهيز ملف ZIP فيه أكواد QR لـ ' + entries.length + ' طالب (حسب نتيجة البحث الحالية). تكمل؟'
+    : 'هيتم تجهيز ملف ZIP فيه أكواد QR لكل الطلاب (' + entries.length + ' طالب). العملية ممكن تاخد شوية وقت حسب عدد الطلاب، تكمل؟';
+  if (!confirm(confirmMsg)) return;
+
+  const originalText = btn.textContent;
+  btn.disabled = true;
+
+  const hiddenWrap = document.createElement('div');
+  hiddenWrap.style.cssText = 'position:fixed; left:-9999px; top:-9999px; width:400px; height:400px;';
+  document.body.appendChild(hiddenWrap);
+
+  try {
+    const zip = new JSZip();
+    const usedNames = {};
+
+    for (let i = 0; i < entries.length; i++) {
+      const code = entries[i][0];
+      const s = entries[i][1];
+      btn.textContent = '⏳ جاري التجهيز (' + (i + 1) + '/' + entries.length + ')';
+
+      const link = getStudentLoginLink(code);
+      hiddenWrap.innerHTML = '';
+      await new Promise(function(resolve) {
+        new QRCode(hiddenWrap, {
+          text: link,
+          width: 400,
+          height: 400,
+          colorDark: '#0a0a0f',
+          colorLight: '#f5f0e8',
+          correctLevel: QRCode.CorrectLevel.M
+        });
+        setTimeout(resolve, 25);
+      });
+
+      const canvas = hiddenWrap.querySelector('canvas');
+      if (canvas) {
+        const dataUrl = canvas.toDataURL('image/png');
+        const base64 = dataUrl.split(',')[1];
+        let fileName = code + ' - ' + sanitizeZipFileName(s.name) + '.png';
+        if (usedNames[fileName]) {
+          usedNames[fileName]++;
+          fileName = code + ' - ' + sanitizeZipFileName(s.name) + ' (' + usedNames[fileName] + ').png';
+        } else {
+          usedNames[fileName] = 1;
+        }
+        zip.file(fileName, base64, { base64: true });
+      }
+    }
+
+    btn.textContent = '📦 جاري ضغط الملف...';
+    const blob = await zip.generateAsync({ type: 'blob' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'أكواد-QR-الطلاب-' + Date.now() + '.zip';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showAdminToast && showAdminToast();
+  } catch (e) {
+    alert('⚠️ حصل خطأ أثناء تجهيز ملف الـ ZIP، حاول تاني');
+  } finally {
+    document.body.removeChild(hiddenWrap);
+    btn.disabled = false;
+    btn.textContent = originalText;
+  }
 };
 
 // ===== AUTO-FILL STUDENT CODE FROM QR LINK (?code=xxxx) =====
