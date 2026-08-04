@@ -4015,6 +4015,61 @@
 }
 .bulk-results-actions button:hover { background: rgba(201,168,76,0.1); }
 
+.bulk-results-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.bulk-results-header .bulk-results-title { margin-bottom: 0; }
+.bulk-results-close {
+  background: none; border: 1px solid rgba(255,255,255,0.15); color: var(--white2);
+  width: 26px; height: 26px; min-width: 26px; border-radius: 50%;
+  font-size: 0.85rem; line-height: 1; cursor: pointer; display: flex;
+  align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0;
+}
+.bulk-results-close:hover { background: rgba(255,90,90,0.15); border-color: rgba(255,90,90,0.4); color: #ff8a8a; }
+
+/* Bulk import history */
+.bulk-history-btn {
+  background: none; border: 1px solid rgba(201,168,76,0.3); color: var(--gold);
+  padding: 12px 16px; border-radius: 50px; width: 100%; margin-top: 10px;
+  font-family: 'IBM Plex Sans Arabic', sans-serif; font-size: 0.85rem; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+}
+.bulk-history-btn:hover { background: rgba(201,168,76,0.1); }
+
+.bulk-history-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 3000; padding: 20px; backdrop-filter: blur(3px);
+}
+.bulk-history-overlay[hidden] { display: none; }
+.bulk-history-box {
+  background: var(--dark3); border: 1px solid rgba(201,168,76,0.25);
+  border-radius: 16px; width: 100%; max-width: 560px; max-height: 80vh;
+  display: flex; flex-direction: column; overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.bulk-history-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px; border-bottom: 1px solid rgba(201,168,76,0.15);
+}
+.bulk-history-head h3 { font-size: 1rem; color: var(--gold-light); margin: 0; }
+.bulk-history-body { padding: 14px 20px; overflow-y: auto; }
+.bulk-history-empty { color: var(--white2); opacity: 0.6; font-size: 0.85rem; text-align: center; padding: 30px 0; }
+.bulk-history-item {
+  border: 1px solid rgba(255,255,255,0.08); border-radius: 10px;
+  padding: 12px 14px; margin-bottom: 10px; background: rgba(255,255,255,0.02);
+}
+.bulk-history-item-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; cursor: pointer; }
+.bulk-history-date { font-size: 0.82rem; color: var(--white); font-weight: 700; }
+.bulk-history-count { font-size: 0.78rem; color: var(--gold-light); background: rgba(201,168,76,0.1); padding: 2px 10px; border-radius: 50px; }
+.bulk-history-names { font-size: 0.78rem; color: var(--white2); opacity: 0.75; line-height: 1.9; display: none; margin-top: 8px; border-top: 1px dashed rgba(255,255,255,0.08); padding-top: 8px; }
+.bulk-history-names.open { display: block; }
+.bulk-history-foot { padding: 12px 20px; border-top: 1px solid rgba(201,168,76,0.15); }
+.bulk-history-clear {
+  width: 100%; background: none; border: 1px solid rgba(255,90,90,0.3); color: #ff8a8a;
+  padding: 9px 12px; border-radius: 50px; font-family: 'IBM Plex Sans Arabic', sans-serif;
+  font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
+}
+.bulk-history-clear:hover { background: rgba(255,90,90,0.1); }
+
 /* Heart message cards in admin */
 .admin-heart-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; margin-bottom: 20px; }
 .admin-heart-card {
@@ -7021,7 +7076,21 @@ adminLoadFromStorage();
           <textarea class="admin-input" id="bulkImportTextarea" rows="6" dir="ltr" placeholder="STU-26-0001	ادهم سمير
 STU-26-0003	معاذ خالد" style="resize:vertical; font-family:'IBM Plex Sans Arabic', monospace; line-height:1.8;"></textarea>
           <button class="admin-add-btn" onclick="runBulkImport()">📥 استيراد كل الأسطر</button>
+          <button class="bulk-history-btn" onclick="openBulkImportHistory()">🕘 تاريخ التعديلات</button>
           <div id="bulkImportResults" style="display:none; margin-top:16px;"></div>
+        </div>
+
+        <div class="bulk-history-overlay" id="bulkHistoryOverlay" hidden onclick="if(event.target===this) closeBulkImportHistory()">
+          <div class="bulk-history-box">
+            <div class="bulk-history-head">
+              <h3>🕘 تاريخ التعديلات — الاستيراد بالجملة</h3>
+              <button class="bulk-results-close" onclick="closeBulkImportHistory()">✕</button>
+            </div>
+            <div class="bulk-history-body" id="bulkHistoryBody"></div>
+            <div class="bulk-history-foot">
+              <button class="bulk-history-clear" onclick="clearBulkImportHistory()">🗑️ مسح كل السجل</button>
+            </div>
+          </div>
         </div>
 
         <div class="admin-students-search">
@@ -8202,7 +8271,12 @@ function renderBulkImportResults(results, errors) {
   const box = document.getElementById('bulkImportResults');
   const addedCount = results.filter(function(r) { return r.status.indexOf('✅') === 0; }).length;
 
-  let html = '<div class="bulk-results-title">📋 نتيجة الاستيراد — تم إضافة ' + addedCount + ' من ' + results.length + ' طالب</div>';
+  if (addedCount > 0) {
+    saveBulkImportHistoryEntry(results, addedCount);
+  }
+
+  let html = '<div class="bulk-results-header"><div class="bulk-results-title">📋 نتيجة الاستيراد — تم إضافة ' + addedCount + ' من ' + results.length + ' طالب</div>' +
+    '<button class="bulk-results-close" onclick="closeBulkImportResults()" title="إخفاء">✕</button></div>';
   if (results.length) {
     html += '<div class="bulk-results-table-wrap"><table class="bulk-results-table"><thead><tr><th>الكود</th><th>الاسم</th><th>كلمة المرور</th><th>الحالة</th></tr></thead><tbody>';
     results.forEach(function(r) {
@@ -8248,6 +8322,91 @@ window.downloadBulkResultsCSV = function() {
   link.href = URL.createObjectURL(blob);
   link.download = 'الطلاب-المستوردين-' + Date.now() + '.csv';
   link.click();
+};
+
+window.closeBulkImportResults = function() {
+  const box = document.getElementById('bulkImportResults');
+  if (box) { box.style.display = 'none'; box.innerHTML = ''; }
+};
+
+// ===== سجل تاريخ عمليات الاستيراد بالجملة =====
+const BULK_IMPORT_HISTORY_KEY = 'bulkImportHistory';
+
+function getBulkImportHistory() {
+  try {
+    const raw = localStorage.getItem(BULK_IMPORT_HISTORY_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) { return []; }
+}
+
+function saveBulkImportHistoryEntry(results, addedCount) {
+  const addedStudents = results
+    .filter(function(r) { return r.status.indexOf('✅') === 0; })
+    .map(function(r) { return { code: r.code, name: r.name }; });
+
+  const history = getBulkImportHistory();
+  history.unshift({
+    date: Date.now(),
+    addedCount: addedCount,
+    total: results.length,
+    students: addedStudents
+  });
+  // نحتفظ بآخر 50 عملية بس
+  if (history.length > 50) history.length = 50;
+  try {
+    localStorage.setItem(BULK_IMPORT_HISTORY_KEY, JSON.stringify(history));
+  } catch (e) { /* تجاهل لو الذاكرة ممتلئة */ }
+}
+
+function formatBulkHistoryDate(ts) {
+  const d = new Date(ts);
+  return d.toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' }) +
+    ' — ' + d.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+}
+
+window.openBulkImportHistory = function() {
+  renderBulkImportHistory();
+  document.getElementById('bulkHistoryOverlay').hidden = false;
+};
+
+window.closeBulkImportHistory = function() {
+  document.getElementById('bulkHistoryOverlay').hidden = true;
+};
+
+function renderBulkImportHistory() {
+  const body = document.getElementById('bulkHistoryBody');
+  const history = getBulkImportHistory();
+
+  if (!history.length) {
+    body.innerHTML = '<div class="bulk-history-empty">لا يوجد سجل عمليات استيراد لحد دلوقتي.</div>';
+    return;
+  }
+
+  let html = '';
+  history.forEach(function(entry, idx) {
+    const namesHtml = entry.students.map(function(s) {
+      return escapeHtml(s.code) + ' — ' + escapeHtml(s.name);
+    }).join('<br>');
+    html += '<div class="bulk-history-item">' +
+      '<div class="bulk-history-item-top" onclick="toggleBulkHistoryItem(' + idx + ')">' +
+        '<span class="bulk-history-date">🗓️ ' + formatBulkHistoryDate(entry.date) + '</span>' +
+        '<span class="bulk-history-count">+' + entry.addedCount + ' طالب</span>' +
+      '</div>' +
+      '<div class="bulk-history-names" id="bulkHistoryNames-' + idx + '">' + (namesHtml || 'لا يوجد تفاصيل') + '</div>' +
+    '</div>';
+  });
+  body.innerHTML = html;
+}
+
+window.toggleBulkHistoryItem = function(idx) {
+  const el = document.getElementById('bulkHistoryNames-' + idx);
+  if (el) el.classList.toggle('open');
+};
+
+window.clearBulkImportHistory = function() {
+  if (!confirm('متأكد إنك عايز تمسح سجل تاريخ التعديلات بالكامل؟')) return;
+  try { localStorage.removeItem(BULK_IMPORT_HISTORY_KEY); } catch (e) {}
+  renderBulkImportHistory();
 };
 
 // الصفوف الدراسية المتاحة لكل مرحلة
