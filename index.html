@@ -7849,13 +7849,16 @@ window.closeStudentLogin = function() {
 };
 
 // ===== STUDENT QR LOGIN LINK / CODE =====
-function getStudentLoginLink(code) {
+var qrAutoLoginPending = false;
+function getStudentLoginLink(code, password) {
   const base = window.location.origin + window.location.pathname;
-  return base + '?code=' + encodeURIComponent(code);
+  let link = base + '?code=' + encodeURIComponent(code);
+  if (password) link += '&pass=' + encodeURIComponent(password);
+  return link;
 }
 
 window.openStudentQR = function(code, name, password) {
-  const link = getStudentLoginLink(code);
+  const link = getStudentLoginLink(code, password);
   document.getElementById('qrBoxStudentName').textContent = name || '';
   document.getElementById('qrBoxCodeLabel').textContent = code;
   document.getElementById('qrBoxLinkInput').value = link;
@@ -7992,7 +7995,7 @@ window.exportAllStudentsQR = async function() {
       const s = entries[i][1];
       btn.textContent = '⏳ جاري التجهيز (' + (i + 1) + '/' + entries.length + ')';
 
-      const link = getStudentLoginLink(code);
+      const link = getStudentLoginLink(code, s.password);
       hiddenWrap.innerHTML = '';
       await new Promise(function(resolve) {
         new QRCode(hiddenWrap, {
@@ -8041,20 +8044,31 @@ window.exportAllStudentsQR = async function() {
   }
 };
 
-// ===== AUTO-FILL STUDENT CODE FROM QR LINK (?code=xxxx) =====
+// ===== AUTO-FILL / AUTO-LOGIN STUDENT FROM QR LINK (?code=xxxx&pass=yyyy) =====
 document.addEventListener('DOMContentLoaded', function() {
   try {
     const params = new URLSearchParams(window.location.search);
     const codeFromLink = params.get('code');
+    const passFromLink = params.get('pass');
     if (codeFromLink && /^[A-Za-z0-9\-]+$/.test(codeFromLink)) {
       openStudentLogin();
       const codeInput = document.getElementById('studentCodeInput');
       const passInput = document.getElementById('studentPassInput');
       if (codeInput) codeInput.value = codeFromLink;
-      if (passInput) setTimeout(() => passInput.focus(), 250);
-      // تنظيف الرابط من الكود عشان ميفضلش ظاهر في شريط العنوان
+      if (passInput) passInput.value = passFromLink || '';
+
+      // تنظيف الرابط من الكود وكلمة المرور عشان ميفضلوش ظاهرين في شريط العنوان
       const cleanUrl = window.location.origin + window.location.pathname;
       window.history.replaceState({}, document.title, cleanUrl);
+
+      if (passFromLink) {
+        // كود القراءة من QR فيه كلمة المرور كمان → ندخّل الطالب على البروفايل تلقائي
+        qrAutoLoginPending = true;
+        setTimeout(() => doStudentLogin(), 200);
+      } else if (passInput) {
+        // كود قديم من غير كلمة مرور → استكمال يدوي زي الأول
+        setTimeout(() => passInput.focus(), 250);
+      }
     }
   } catch (e) { /* تجاهل أي خطأ في قراءة الرابط */ }
 });
@@ -8148,6 +8162,7 @@ window.doStudentLogin = function() {
   btn.textContent = 'جاري التحقق...';
 
   function fail(msg) {
+    qrAutoLoginPending = false;
     btn.disabled = false;
     btn.textContent = 'دخول ←';
     errEl.textContent = msg || '❌ كود الطالب أو كلمة المرور غلط';
@@ -8213,7 +8228,13 @@ function loginStudentSuccess(code, name) {
   const btn = document.getElementById('studentLoginSubmitBtn');
   btn.disabled = false;
   btn.textContent = 'دخول ←';
-  openStudentWelcome();
+  if (qrAutoLoginPending) {
+    qrAutoLoginPending = false;
+    closeStudentLogin();
+    openStudentDashboard();
+  } else {
+    openStudentWelcome();
+  }
 }
 
 window.doStudentLogout = function() {
