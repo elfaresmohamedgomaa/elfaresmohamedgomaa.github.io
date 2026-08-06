@@ -8311,6 +8311,21 @@ function generateUniqueStudentCode() {
   return code;
 }
 
+// بيتأكد إن اسم الطالب مش متكرر مع طالب موجود، ولو متكرر بيضيف رقم بعده (مثال: "أحمد" -> "أحمد 2")
+function getUniqueStudentName(name, extraNamesInUse) {
+  const existingNames = Object.values(adminStudentsCache || {}).map(function(s) { return (s.name || '').trim().toLowerCase(); });
+  if (extraNamesInUse && extraNamesInUse.length) {
+    extraNamesInUse.forEach(function(n) { existingNames.push(n.trim().toLowerCase()); });
+  }
+  let finalName = name;
+  let counter = 2;
+  while (existingNames.indexOf(finalName.trim().toLowerCase()) !== -1) {
+    finalName = name + ' ' + counter;
+    counter++;
+  }
+  return finalName;
+}
+
 // كلمة مرور عشوائية 7 خانات (أرقام + حروف إنجليزي)، بدون رموز ملتبسة زي 0/O أو 1/l/I
 function generateStudentPassword(length) {
   length = length || 7;
@@ -8354,6 +8369,7 @@ window.runBulkImport = function() {
     db.ref('students').once('value').then(function(snap) {
       const existing = snap.val() || {};
       const results = [];
+      const namesAddedThisBatch = [];
       let chain = Promise.resolve();
 
       parsed.forEach(function(item) {
@@ -8362,9 +8378,11 @@ window.runBulkImport = function() {
             results.push({ code: item.code, name: item.name, password: '—', status: '⚠️ الكود موجود قبل كده، اتخطّى' });
             return;
           }
+          const uniqueName = getUniqueStudentName(item.name, namesAddedThisBatch);
+          namesAddedThisBatch.push(uniqueName);
           const pass = generateStudentPassword();
           const record = {
-            name: item.name,
+            name: uniqueName,
             password: pass,
             phone: '',
             parentPhone: '',
@@ -8377,7 +8395,7 @@ window.runBulkImport = function() {
           };
           return db.ref('students/' + item.code).set(record).then(function() {
             existing[item.code] = record;
-            results.push({ code: item.code, name: item.name, password: pass, status: '✅ تمت الإضافة' });
+            results.push({ code: item.code, name: uniqueName, password: pass, status: uniqueName !== item.name ? '✅ تمت الإضافة (تم تعديل الاسم لتكراره: ' + uniqueName + ')' : '✅ تمت الإضافة' });
           }).catch(function() {
             results.push({ code: item.code, name: item.name, password: '—', status: '❌ فشلت الإضافة' });
           });
@@ -8596,10 +8614,11 @@ window.adminAddStudent = function() {
     return;
   }
 
+  const uniqueName = getUniqueStudentName(name);
   const code = customCode || generateUniqueStudentCode();
   const generatedPassword = generateStudentPassword();
   const newStudent = {
-    name: name,
+    name: uniqueName,
     phone: phone,
     parentPhone: parentPhone,
     stage: stageEl.value || '',
@@ -8623,7 +8642,7 @@ window.adminAddStudent = function() {
       centerEl.value = '';
       codeEl.value = '';
       showAdminToast();
-      openStudentQR(code, name, generatedPassword);
+      openStudentQR(code, uniqueName, generatedPassword);
     }).catch(() => alert('⚠️ حصل خطأ، حاول تاني'));
   });
 };
