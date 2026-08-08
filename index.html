@@ -3899,6 +3899,78 @@
 .admin-section { display: none; }
 .admin-section.active { display: block; }
 
+/* Wheel presentation mode — hides everything that reveals this is the admin/control panel */
+#admin-panel.wheel-presentation .admin-panel-header,
+#admin-panel.wheel-presentation .admin-sidebar,
+#admin-panel.wheel-presentation #admin-wheel .admin-section-title,
+#admin-panel.wheel-presentation #admin-wheel .admin-wheel-hint {
+  display: none !important;
+}
+#admin-panel.wheel-presentation .admin-content {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; padding: 20px;
+}
+#admin-panel.wheel-presentation #admin-wheel { display: block; width: 100%; }
+.wheel-presentation-back-btn {
+  display: none;
+  position: fixed; top: 18px; right: 18px; z-index: 5;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(240,208,128,0.3);
+  color: var(--gold-light);
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-family: 'IBM Plex Sans Arabic', sans-serif;
+  font-size: 0.85rem; font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.wheel-presentation-back-btn:hover { background: rgba(240,208,128,0.15); }
+#admin-panel.wheel-presentation .wheel-presentation-back-btn { display: block; }
+
+#wheel-exit-modal {
+  position: fixed; inset: 0; z-index: 100000;
+  background: rgba(5,5,10,0.75);
+  display: none; align-items: center; justify-content: center;
+  padding: 20px;
+}
+#wheel-exit-modal.open { display: flex; }
+.wheel-exit-box {
+  background: var(--dark2);
+  border: 1px solid rgba(201,168,76,0.25);
+  border-radius: 16px;
+  padding: 28px 26px;
+  max-width: 340px; width: 100%;
+  text-align: center;
+}
+.wheel-exit-box h3 {
+  font-family: 'Tajawal', sans-serif;
+  color: var(--gold-light); font-size: 1.05rem; margin-bottom: 14px;
+}
+.wheel-exit-box input {
+  width: 100%; padding: 11px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.05);
+  color: var(--white);
+  font-family: 'IBM Plex Sans Arabic', sans-serif;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.wheel-exit-error {
+  color: #ff6b6b; font-size: 0.8rem; min-height: 18px; margin-bottom: 8px;
+}
+.wheel-exit-actions { display: flex; gap: 10px; justify-content: center; }
+.wheel-exit-actions button {
+  flex: 1; padding: 10px 12px; border-radius: 10px; cursor: pointer;
+  font-family: 'IBM Plex Sans Arabic', sans-serif; font-size: 0.85rem; font-weight: 700;
+  border: 1px solid transparent; transition: all 0.2s;
+}
+.wheel-exit-confirm-btn { background: var(--gold); color: var(--dark); }
+.wheel-exit-confirm-btn:hover { background: var(--gold-light); }
+.wheel-exit-cancel-btn { background: rgba(255,255,255,0.06); color: var(--white2); border-color: rgba(255,255,255,0.12); }
+.wheel-exit-cancel-btn:hover { background: rgba(255,255,255,0.1); }
+
 .admin-section-title {
   font-family: 'Tajawal', sans-serif;
   font-size: 1.4rem; font-weight: 900;
@@ -3908,6 +3980,198 @@
   border-bottom: 1px solid rgba(201,168,76,0.15);
   display: flex; align-items: center; gap: 10px;
 }
+
+/* ===== عجلة الحظ ===== */
+.wheel-wrap {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 28px; padding: 20px 0 30px;
+}
+.wheel-container {
+  position: relative;
+  width: 320px; height: 320px;
+  max-width: 88vw; max-height: 88vw;
+}
+.wheel-pointer {
+  position: absolute; top: -20px; left: 50%;
+  transform: translateX(-50%);
+  width: 34px; height: 46px;
+  z-index: 6;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5)) drop-shadow(0 0 10px rgba(240,208,128,0.65));
+}
+.wheel-pointer::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%;
+  width: 26px; height: 34px;
+  transform: translateX(-50%);
+  background: linear-gradient(160deg, var(--gold-light), var(--gold) 55%, var(--gold-dark));
+  clip-path: polygon(50% 100%, 0% 32%, 18% 0%, 82% 0%, 100% 32%);
+  border-radius: 3px;
+}
+.wheel-pointer::after {
+  content: '';
+  position: absolute;
+  bottom: -6px; left: 50%;
+  width: 16px; height: 16px;
+  transform: translateX(-50%);
+  background: radial-gradient(circle at 35% 30%, var(--gold-light), var(--gold) 60%, var(--gold-dark));
+  border-radius: 50%;
+  border: 2px solid var(--dark3);
+  box-shadow: 0 0 10px rgba(201,168,76,0.6);
+}
+.wheel-disc {
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  position: relative;
+  border: 8px solid var(--gold);
+  box-shadow:
+    0 0 0 3px var(--dark3),
+    0 0 0 7px rgba(240,208,128,0.45),
+    0 0 40px rgba(201,168,76,0.4),
+    inset 0 0 30px rgba(0,0,0,0.45);
+  transition: transform 4s cubic-bezier(0.13,0.66,0.1,1);
+  overflow: hidden;
+}
+.wheel-segment-divider {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 50%; height: 2px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.6), rgba(255,255,255,0.1));
+  transform-origin: 0% 50%;
+  z-index: 2;
+  border-radius: 2px;
+  box-shadow: 0 0 4px rgba(0,0,0,0.45);
+}
+.wheel-segment-label {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 50%; height: 2px;
+  transform-origin: 0% 50%;
+  display: flex; align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 3;
+}
+.wheel-segment-label span {
+  display: inline-block;
+  font-family: 'IBM Plex Sans Arabic', sans-serif;
+  font-size: 11px; font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+  white-space: nowrap;
+  max-width: 100px;
+  overflow: hidden; text-overflow: ellipsis;
+  transform: translateX(30%);
+}
+.wheel-center-hub {
+  position: absolute; top: 50%; left: 50%;
+  width: 54px; height: 54px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--gold-light), var(--gold) 60%, var(--gold-dark));
+  border: 3px solid var(--dark3);
+  box-shadow: 0 0 18px rgba(201,168,76,0.6);
+  z-index: 4;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+}
+.wheel-spin-btn {
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-light));
+  color: var(--dark);
+  border: none;
+  padding: 14px 46px;
+  border-radius: 30px;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 1.05rem; font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(201,168,76,0.4);
+  transition: all 0.25s;
+}
+.wheel-spin-btn:hover:not(:disabled) { transform: translateY(-2px) scale(1.03); box-shadow: 0 6px 24px rgba(201,168,76,0.55); }
+.wheel-spin-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* نبضة توهج هادية حوالين العجلة وهي واقفة، عشان تشد نظر الطالب */
+@keyframes wheelIdleGlow {
+  0%, 100% { box-shadow: 0 0 0 3px var(--dark3), 0 0 0 7px rgba(240,208,128,0.45), 0 0 40px rgba(201,168,76,0.4), inset 0 0 30px rgba(0,0,0,0.45); }
+  50%      { box-shadow: 0 0 0 3px var(--dark3), 0 0 0 9px rgba(240,208,128,0.7),  0 0 62px rgba(201,168,76,0.65), inset 0 0 30px rgba(0,0,0,0.45); }
+}
+.wheel-disc.idle-glow { animation: wheelIdleGlow 2.4s ease-in-out infinite; }
+.wheel-disc.spinning-glow {
+  animation: none !important;
+  box-shadow:
+    0 0 0 3px var(--dark3),
+    0 0 0 10px rgba(240,208,128,0.9),
+    0 0 75px rgba(201,168,76,0.85),
+    inset 0 0 30px rgba(0,0,0,0.45) !important;
+}
+
+/* هالة ضوء بتومض على شريحة الجايزة الفايزة لحظة توقف العجلة */
+.wheel-winner-highlight {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0;
+}
+.wheel-winner-highlight.show { opacity: 1; animation: wheelWinnerFade 2.4s ease-out forwards; }
+.wheel-winner-highlight::before {
+  content: '';
+  position: absolute; top: 50%; left: 50%;
+  width: 50%; height: 100%;
+  transform-origin: 0% 50%;
+  transform: rotate(var(--winner-angle, 0deg)) translateY(-50%);
+  background: radial-gradient(ellipse at 0% 50%, rgba(255,255,255,0.75), rgba(255,255,255,0) 68%);
+  animation: wheelWinnerPulse 0.7s ease-in-out 3;
+}
+@keyframes wheelWinnerPulse { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.8); } }
+@keyframes wheelWinnerFade { 0%, 70% { opacity: 1; } 100% { opacity: 0; } }
+
+/* نبضة دعوة للضغط على زرار اللف وهو واقف */
+@keyframes spinBtnInvite { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.045); } }
+.wheel-spin-btn.idle-pulse:not(:disabled) { animation: spinBtnInvite 1.7s ease-in-out infinite; }
+.wheel-spin-btn.idle-pulse:hover:not(:disabled) { animation: none; }
+
+/* زرار كتم/تشغيل صوت العجلة */
+.wheel-sound-toggle {
+  position: absolute; top: -8px; left: -8px;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(240,208,128,0.35);
+  color: var(--gold-light);
+  font-size: 15px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  z-index: 7;
+  transition: all 0.2s;
+}
+.wheel-sound-toggle:hover { background: rgba(240,208,128,0.18); transform: scale(1.08); }
+
+.wheel-result-overlay {
+  position: fixed; inset: 0;
+  background: rgba(5,5,10,0.82);
+  display: none;
+  align-items: center; justify-content: center;
+  z-index: 99999;
+  backdrop-filter: blur(4px);
+}
+.wheel-result-overlay.show { display: flex; }
+.wheel-result-box {
+  background: linear-gradient(160deg, var(--dark3), var(--dark2));
+  border: 1px solid rgba(201,168,76,0.4);
+  border-radius: 22px;
+  padding: 40px 34px;
+  text-align: center;
+  max-width: 340px;
+  box-shadow: 0 0 50px rgba(201,168,76,0.3);
+  animation: wheelPop 0.4s cubic-bezier(0.17,0.67,0.35,1.3);
+}
+@keyframes wheelPop { from { transform: scale(0.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.wheel-result-emoji { font-size: 3rem; margin-bottom: 10px; }
+.wheel-result-title { color: var(--gold-light); font-family:'Tajawal',sans-serif; font-size:1rem; opacity:0.75; margin-bottom: 8px; }
+.wheel-result-prize { color: #fff; font-family:'Tajawal',sans-serif; font-size:1.35rem; font-weight:900; margin-bottom: 22px; line-height:1.5; }
+.wheel-result-close { background: linear-gradient(135deg, var(--gold-dark), var(--gold)); color: var(--dark); border:none; padding:10px 34px; border-radius:24px; font-weight:800; cursor:pointer; font-family:'Tajawal',sans-serif; }
 
 /* Level Accordion */
 .admin-level-block {
@@ -6486,6 +6750,35 @@ window.switchAdminTab = function(tab, btn) {
   btn.classList.add('active');
 }
 
+// ---- WHEEL PRESENTATION MODE (fullscreen, hides everything that shows this is the admin panel) ----
+const WHEEL_EXIT_PASSWORD = 'alfares mohamed gomaa';
+
+window.openWheelPresentation = function(btn) {
+  switchAdminTab('wheel', btn);
+  renderLuckyWheel();
+  document.getElementById('admin-panel').classList.add('wheel-presentation');
+}
+window.requestExitWheelPresentation = function() {
+  document.getElementById('wheel-exit-modal').classList.add('open');
+  document.getElementById('wheelExitPassInput').value = '';
+  document.getElementById('wheelExitError').textContent = '';
+  setTimeout(() => document.getElementById('wheelExitPassInput').focus(), 150);
+}
+window.closeWheelExitModal = function() {
+  document.getElementById('wheel-exit-modal').classList.remove('open');
+}
+window.confirmExitWheelPresentation = function() {
+  const val = document.getElementById('wheelExitPassInput').value.trim();
+  if (val === WHEEL_EXIT_PASSWORD) {
+    document.getElementById('admin-panel').classList.remove('wheel-presentation');
+    closeWheelExitModal();
+  } else {
+    document.getElementById('wheelExitError').textContent = '❌ كلمة المرور غلط';
+    document.getElementById('wheelExitPassInput').value = '';
+    document.getElementById('wheelExitPassInput').focus();
+  }
+}
+
 // ---- LEVEL TOGGLE ----
 window.toggleLevel = function(id) {
   const body = document.getElementById(id + '-body');
@@ -6920,6 +7213,9 @@ adminLoadFromStorage();
       <button class="admin-tab-btn" onclick="switchAdminTab('notifications', this); renderAdminNotifList()">
         <span class="admin-tab-icon">🔔</span><span>الإشعارات</span>
       </button>
+      <button class="admin-tab-btn" onclick="openWheelPresentation(this)">
+        <span class="admin-tab-icon">🎡</span><span>عجلة الحظ</span>
+      </button>
     </div>
 
     <!-- Content -->
@@ -7137,11 +7433,51 @@ STU-26-0003	معاذ خالد" style="resize:vertical; font-family:'IBM Plex San
         </div>
       </div>
 
+      <!-- ===== LUCKY WHEEL TAB ===== -->
+      <div class="admin-section" id="admin-wheel">
+        <button class="wheel-presentation-back-btn" onclick="requestExitWheelPresentation()">رجوع 🔒</button>
+        <div class="admin-section-title">🎡 عجلة الحظ</div>
+        <p class="admin-wheel-hint" style="font-size:0.85rem; color:var(--white2); opacity:0.6; margin-bottom:10px;">لفّ العجلة عشان تدّي الطالب اللي قدامك جايزة عشوائية.</p>
+
+        <div class="wheel-wrap">
+          <div class="wheel-container">
+            <button class="wheel-sound-toggle" id="wheelSoundToggle" onclick="toggleWheelSound()" title="كتم/تشغيل صوت العجلة">🔊</button>
+            <div class="wheel-pointer"></div>
+            <div class="wheel-disc idle-glow" id="luckyWheelDisc"></div>
+            <div class="wheel-winner-highlight" id="wheelWinnerHighlight"></div>
+            <div class="wheel-center-hub">🎯</div>
+          </div>
+          <button class="wheel-spin-btn idle-pulse" id="wheelSpinBtn" onclick="spinLuckyWheel()">🎡 لف العجلة</button>
+        </div>
+      </div>
+
     </div><!-- .admin-content -->
   </div><!-- .admin-panel-body -->
 </div>
 
 <!-- ===== ADMIN: STUDENT DETAIL MODAL (grades / attendance / password) ===== -->
+<!-- ===== LUCKY WHEEL RESULT OVERLAY ===== -->
+<div id="wheel-exit-modal">
+  <div class="wheel-exit-box">
+    <h3>🔒 كلمة مرور الرجوع للوحة التحكم</h3>
+    <input type="text" id="wheelExitPassInput" dir="ltr" autocomplete="off" placeholder="اكتب كلمة المرور" onkeydown="if(event.key==='Enter') confirmExitWheelPresentation()">
+    <div class="wheel-exit-error" id="wheelExitError"></div>
+    <div class="wheel-exit-actions">
+      <button class="wheel-exit-cancel-btn" onclick="closeWheelExitModal()">إلغاء</button>
+      <button class="wheel-exit-confirm-btn" onclick="confirmExitWheelPresentation()">تأكيد</button>
+    </div>
+  </div>
+</div>
+
+<div class="wheel-result-overlay" id="wheelResultOverlay">
+  <div class="wheel-result-box">
+    <div class="wheel-result-emoji">🎉</div>
+    <div class="wheel-result-title">مبروك! الجائزة هي</div>
+    <div class="wheel-result-prize" id="wheelResultPrizeText">—</div>
+    <button class="wheel-result-close" onclick="closeWheelResult()">تمام 🎊</button>
+  </div>
+</div>
+
 <div id="admin-student-detail-modal">
   <div class="student-detail-box">
     <button class="legal-close-btn" style="position:absolute; top:16px; left:16px;" onclick="closeAdminStudentDetail()" aria-label="إغلاق">✕</button>
@@ -7758,6 +8094,335 @@ window.adminAddNotification = function() {
     });
   } catch(e) {}
 }
+
+// ===================== عجلة الحظ =====================
+
+// --- تشغيل/كتم صوت العجلة (بيتفكر في localStorage) ---
+let wheelSoundEnabled = localStorage.getItem('af_wheel_sound') !== 'off';
+window.toggleWheelSound = function() {
+  wheelSoundEnabled = !wheelSoundEnabled;
+  localStorage.setItem('af_wheel_sound', wheelSoundEnabled ? 'on' : 'off');
+  updateWheelSoundToggleUI();
+  if (wheelSoundEnabled) getWheelAudioCtx(); // فعّل الصوت فورًا من نفس ضغطة الزرار
+}
+function updateWheelSoundToggleUI() {
+  const btn = document.getElementById('wheelSoundToggle');
+  if (!btn) return;
+  btn.textContent = wheelSoundEnabled ? '🔊' : '🔇';
+  btn.title = wheelSoundEnabled ? 'كتم صوت العجلة' : 'تشغيل صوت العجلة';
+}
+updateWheelSoundToggleUI();
+
+// --- كل أصوات العجلة بتستخدم نفس الـ AudioContext بدل ما تعمل واحد جديد كل مرة ---
+// (المتصفح بيوقف/يمنع الـ AudioContext الجديدة بعد عدد معين، فده كان بيمنع صوت الفوز من الشغل)
+let wheelAudioCtx = null;
+function getWheelAudioCtx() {
+  if (!wheelAudioCtx) {
+    try { wheelAudioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+    catch(e) { return null; }
+  }
+  if (wheelAudioCtx.state === 'suspended') {
+    try { wheelAudioCtx.resume(); } catch(e) {}
+  }
+  return wheelAudioCtx;
+}
+
+// --- صوت ضغطة زرار اللف ---
+function playWheelClickSound() {
+  if (!wheelSoundEnabled) return;
+  const ctx = getWheelAudioCtx();
+  if (!ctx) return;
+  try {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(320, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(500, ctx.currentTime + 0.05);
+    gain.gain.setValueAtTime(0.14, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.09);
+  } catch(e) {}
+}
+
+// --- صوت "خشخشة" بيبدأ مع أول لفة العجلة ---
+function playWheelWhooshSound() {
+  if (!wheelSoundEnabled) return;
+  const ctx = getWheelAudioCtx();
+  if (!ctx) return;
+  try {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(120, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(680, ctx.currentTime + 0.45);
+    gain.gain.setValueAtTime(0.001, ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + 0.12);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.52);
+  } catch(e) {}
+}
+
+// --- صوت اللف باستخدام Web Audio API ---
+function playWheelTickSound() {
+  if (!wheelSoundEnabled) return;
+  const ctx = getWheelAudioCtx();
+  if (!ctx) return;
+  try {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(600, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.08);
+    gain.gain.setValueAtTime(0.18, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.12);
+  } catch(e) {}
+}
+
+// --- صوت الفوز: فانفير احتفالي (أرباجيو صاعد + طبقة "لمعان" شارب) ---
+function playWheelWinSound() {
+  if (!wheelSoundEnabled) return;
+  const ctx = getWheelAudioCtx();
+  if (!ctx) return;
+  try {
+    // الأرباجيو الأساسي (طبقة الجرس الدافئة)
+    const notes = [523.25, 659.25, 784.0, 1046.5, 1318.5];
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const t = ctx.currentTime + i * 0.11;
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(0.26, t + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+      osc.start(t);
+      osc.stop(t + 0.52);
+    });
+    // طبقة اللمعان (شارب/تريمولو خفيف فوق الأرباجيو عشان يحس إنها جايزة)
+    const sparkleFreqs = [1568.0, 2093.0, 2637.0];
+    sparkleFreqs.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'triangle';
+      osc.frequency.value = freq;
+      const t = ctx.currentTime + 0.45 + i * 0.07;
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(0.14, t + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+      osc.start(t);
+      osc.stop(t + 0.42);
+    });
+    // "طبلة" احتفال خفيفة في أول لحظة الفوز
+    const boomOsc = ctx.createOscillator();
+    const boomGain = ctx.createGain();
+    boomOsc.connect(boomGain);
+    boomGain.connect(ctx.destination);
+    boomOsc.type = 'sine';
+    boomOsc.frequency.setValueAtTime(160, ctx.currentTime);
+    boomOsc.frequency.exponentialRampToValueAtTime(50, ctx.currentTime + 0.25);
+    boomGain.gain.setValueAtTime(0.3, ctx.currentTime);
+    boomGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+    boomOsc.start(ctx.currentTime);
+    boomOsc.stop(ctx.currentTime + 0.32);
+  } catch(e) {}
+}
+
+// --- confetti عند الفوز ---
+function launchConfetti() {
+  const colors = ['#c9a84c','#f0d080','#4a90d9','#7b4fa0','#fff','#ff6b6b','#6bffb8'];
+  const container = document.createElement('div');
+  container.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:999998;overflow:hidden;';
+  document.body.appendChild(container);
+  for (let i = 0; i < 80; i++) {
+    const el = document.createElement('div');
+    const size = Math.random() * 10 + 5;
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const left = Math.random() * 100;
+    const delay = Math.random() * 0.6;
+    const dur = Math.random() * 2 + 2;
+    const rot = Math.random() * 720 - 360;
+    el.style.cssText = `position:absolute;top:-20px;left:${left}%;width:${size}px;height:${size}px;background:${color};border-radius:${Math.random()>0.5?'50%':'2px'};animation:confettiFall ${dur}s ${delay}s ease-in forwards;transform:rotate(${rot}deg);opacity:1;`;
+    container.appendChild(el);
+  }
+  if (!document.getElementById('confetti-style')) {
+    const s = document.createElement('style');
+    s.id = 'confetti-style';
+    s.textContent = `@keyframes confettiFall { to { transform: translateY(110vh) rotate(720deg); opacity:0; } }`;
+    document.head.appendChild(s);
+  }
+  setTimeout(() => container.remove(), 4000);
+}
+
+// الجوائز الحالية — كل جايزة معاها وزن احتمالي (weight): كل ما قيمة الجايزة تزيد كل ما الوزن يقل
+const luckyWheelPrizes = [
+  { text: 'حظ أوفر المرة الجاية 🍀', color: '#e63946', weight: 10 },
+  { text: 'لف مرة أخرى 🔄',          color: '#4a90d9', weight: 9  },
+  { text: '1 جنيه 💵',               color: '#2ecc71', weight: 15 },
+  { text: '5 جنيه 💵',               color: '#c9a84c', weight: 8  },
+  { text: 'صورة مع الفارس 📸',       color: '#7b4fa0', weight: 5  },
+  { text: '10 جنيه 💵',              color: '#e63946', weight: 30 },
+  { text: '20 جنيه 💵',              color: '#4a90d9', weight: 7  },
+  { text: '30 جنيه 💵',              color: '#2ecc71', weight: 6  },
+  { text: '50 جنيه 💵',              color: '#c9a84c', weight: 4  },
+  { text: '100 جنيه 🤑',             color: '#7b4fa0', weight: 2  },
+  { text: '200 جنيه 💎',             color: '#e63946', weight: 1  },
+  { text: 'حصة مجانية 🎓',           color: '#4a90d9', weight: 3  }
+];
+
+let luckyWheelRotation = 0;
+let luckyWheelSpinning = false;
+let luckyWheelBuilt = false;
+
+// بيختار index جايزة عشوائي بناءً على الوزن (weight) بتاع كل جايزة
+// كل ما الوزن يكون أعلى كل ما احتمال اختياره يزيد
+function pickWeightedIndex(prizes) {
+  const totalWeight = prizes.reduce((sum, p) => sum + (p.weight || 1), 0);
+  let r = Math.random() * totalWeight;
+  for (let i = 0; i < prizes.length; i++) {
+    r -= (prizes[i].weight || 1);
+    if (r <= 0) return i;
+  }
+  return prizes.length - 1; // fallback احترازي
+}
+
+// بيرسم العجلة بالجوائز (شرايح + كتابة كل جايزة)
+function renderLuckyWheel() {
+  const disc = document.getElementById('luckyWheelDisc');
+  if (!disc || luckyWheelBuilt) return;
+  luckyWheelBuilt = true;
+
+  const n = luckyWheelPrizes.length;
+  const segAngle = 360 / n;
+
+  // خلفية العجلة (conic-gradient) بألوان الشرايح
+  const stops = luckyWheelPrizes.map((p, i) => {
+    const start = (i * segAngle).toFixed(2);
+    const end = ((i + 1) * segAngle).toFixed(2);
+    return p.color + ' ' + start + 'deg ' + end + 'deg';
+  }).join(', ');
+  disc.style.background = 'conic-gradient(from 0deg, ' + stops + ')';
+
+  // كتابة اسم كل جايزة داخل شريحتها
+  let labelsHtml = '';
+  luckyWheelPrizes.forEach((p, i) => {
+    const midAngle = (i * segAngle) + (segAngle / 2);
+    labelsHtml += '<div class="wheel-segment-label" style="transform: rotate(' + (midAngle - 90) + 'deg);">' +
+      '<span>' + escapeHtml(p.text) + '</span></div>';
+  });
+
+  // خطوط حواف فاصلة بين الشرائح
+  let dividersHtml = '';
+  luckyWheelPrizes.forEach((p, i) => {
+    dividersHtml += '<div class="wheel-segment-divider" style="transform: rotate(' + (i * segAngle) + 'deg);"></div>';
+  });
+
+  disc.innerHTML = dividersHtml + labelsHtml;
+}
+
+// بيلف العجلة ويحدد جايزة عشوائية
+window.spinLuckyWheel = function() {
+  if (luckyWheelSpinning) return;
+  const disc = document.getElementById('luckyWheelDisc');
+  const btn = document.getElementById('wheelSpinBtn');
+  const highlight = document.getElementById('wheelWinnerHighlight');
+  if (!disc) return;
+
+  luckyWheelSpinning = true;
+  if (btn) {
+    btn.disabled = true;
+    btn.dataset.origText = btn.textContent;
+    btn.textContent = '🎡 العجلة بتلف...';
+    btn.classList.remove('idle-pulse');
+  }
+  disc.classList.remove('idle-glow');
+  disc.classList.add('spinning-glow');
+  if (highlight) highlight.classList.remove('show');
+
+  playWheelClickSound();
+  playWheelWhooshSound();
+  if (navigator.vibrate) { try { navigator.vibrate(25); } catch(e) {} }
+
+  const n = luckyWheelPrizes.length;
+  const segAngle = 360 / n;
+  const winningIndex = pickWeightedIndex(luckyWheelPrizes);
+  const jitter = (Math.random() * segAngle * 0.6) - (segAngle * 0.3);
+
+  const desiredMod = (360 - (winningIndex * segAngle + segAngle / 2 + jitter) + 360) % 360;
+  const currentMod = ((luckyWheelRotation % 360) + 360) % 360;
+  const deltaToAdd = (desiredMod - currentMod + 360) % 360;
+  const extraFullSpins = 6;
+  const spinDuration = 4200;
+
+  luckyWheelRotation += extraFullSpins * 360 + deltaToAdd;
+  disc.style.transform = 'rotate(' + luckyWheelRotation + 'deg)';
+
+  // صوت تيك بيتسرع في الأول وبيبطأ في الآخر
+  let tickCount = 0;
+  const totalTicks = 28;
+  function scheduleTick(i) {
+    // تسارع في الأول وتباطؤ في الآخر
+    const progress = i / totalTicks;
+    const eased = progress < 0.5
+      ? 2 * progress * progress
+      : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+    const minInterval = 60;
+    const maxInterval = 420;
+    const interval = minInterval + (maxInterval - minInterval) * eased;
+    const elapsed = spinDuration * eased;
+    setTimeout(() => { playWheelTickSound(); }, elapsed);
+  }
+  for (let i = 0; i < totalTicks; i++) scheduleTick(i);
+
+  setTimeout(function() {
+    luckyWheelSpinning = false;
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = btn.dataset.origText || '🎡 لف العجلة';
+      btn.classList.add('idle-pulse');
+    }
+    disc.classList.remove('spinning-glow');
+    disc.classList.add('idle-glow');
+
+    // تسليط ضوء على شريحة الجايزة الفايزة
+    if (highlight) {
+      const midAngle = (winningIndex * segAngle) + (segAngle / 2);
+      highlight.style.setProperty('--winner-angle', (midAngle - 90) + 'deg');
+      highlight.classList.remove('show');
+      void highlight.offsetWidth; // إعادة تشغيل الأنيميشن
+      highlight.classList.add('show');
+    }
+
+    if (navigator.vibrate) { try { navigator.vibrate([40, 60, 90]); } catch(e) {} }
+    playWheelWinSound();
+    launchConfetti();
+    showWheelResult(luckyWheelPrizes[winningIndex]);
+  }, spinDuration);
+};
+
+function showWheelResult(prize) {
+  const overlay = document.getElementById('wheelResultOverlay');
+  const textEl = document.getElementById('wheelResultPrizeText');
+  if (!overlay || !textEl) return;
+  textEl.textContent = prize.text;
+  overlay.classList.add('show');
+}
+
+window.closeWheelResult = function() {
+  const overlay = document.getElementById('wheelResultOverlay');
+  if (overlay) overlay.classList.remove('show');
+};
 
 // ---- ADMIN: Render notification list in admin panel ----
 function renderAdminNotifList() {
