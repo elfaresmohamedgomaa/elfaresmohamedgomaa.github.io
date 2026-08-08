@@ -4952,14 +4952,38 @@
   background: var(--dark3);
   border: 1px solid rgba(201,168,76,0.15);
   border-radius: 14px;
-  padding: 16px 10px;
+  padding: 20px 10px 16px;
   text-align: center;
+  transition: transform 0.25s, border-color 0.25s;
 }
+.dash-stat-card:hover { transform: translateY(-3px); border-color: rgba(201,168,76,0.35); }
+.dash-stat-icon {
+  width: 46px; height: 46px;
+  margin: 0 auto 12px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 40% 60% 55% 45% / 45% 40% 60% 55%;
+  flex-shrink: 0;
+}
+.dash-stat-icon svg { width: 22px; height: 22px; }
+.dash-stat-icon.ic-gold   { background: linear-gradient(135deg, rgba(201,168,76,0.24), rgba(240,208,128,0.06)); color: var(--gold); }
+.dash-stat-icon.ic-blue   { background: linear-gradient(135deg, rgba(74,144,217,0.24), rgba(74,144,217,0.06)); color: var(--accent); }
+.dash-stat-icon.ic-purple { background: linear-gradient(135deg, rgba(123,79,160,0.24), rgba(123,79,160,0.06)); color: var(--accent2); }
 .dash-stat-value { font-size: 1.4rem; font-weight: 800; color: var(--gold); }
 .dash-stat-label { font-size: 0.72rem; color: var(--white2); opacity: 0.6; margin-top: 4px; }
 @media (max-width: 560px) {
   .dash-stats { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* Section titles with icon badge (grades / attendance lists) */
+.student-detail-section-title { display: flex; align-items: center; gap: 8px; }
+.sd-title-icon {
+  width: 26px; height: 26px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  border-radius: 40% 60% 55% 45% / 45% 40% 60% 55%;
+  background: rgba(201,168,76,0.15);
+  color: var(--gold);
+}
+.sd-title-icon svg { width: 14px; height: 14px; }
 
 </style>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -6221,10 +6245,10 @@
     btn.textContent = '⏳ جارٍ التسجيل...';
     btn.disabled = true;
 
-    fetch(`https://api.telegram.org/bot8127404323:AAEWSLx9ij48HVR58SoYcLOS9y6JEWCT7SI/sendMessage`, {
+    fetch(`https://api.telegram.org/bot8127404323:AAGGcpmxjE3_qEpPO8F7ntYT2RkfIFM0IYo/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: '7824899931', text: tgText })
+      body: JSON.stringify({ chat_id: '8127404323', text: tgText })
     })
     .finally(() => {
       document.getElementById('form-fields').style.display = 'none';
@@ -9683,14 +9707,32 @@ function renderStudentDashboard(data) {
 
   document.getElementById('dash-stats').innerHTML = `
     <div class="dash-stat-card">
+      <div class="dash-stat-icon ic-gold">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20V13"/><path d="M4 20h16"/>
+        </svg>
+      </div>
       <div class="dash-stat-value">${avgPercent !== null ? avgPercent + '%' : '—'}</div>
       <div class="dash-stat-label">متوسط الدرجات</div>
     </div>
     <div class="dash-stat-card">
+      <div class="dash-stat-icon ic-blue">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3.5" y="5" width="17" height="15" rx="2.5"/>
+          <path d="M3.5 9.5h17"/><path d="M8 3v3"/><path d="M16 3v3"/>
+          <path d="M8.3 14l2 2 4-4"/>
+        </svg>
+      </div>
       <div class="dash-stat-value">${attendancePercent !== null ? attendancePercent + '%' : '—'}</div>
       <div class="dash-stat-label">نسبة الحضور</div>
     </div>
     <div class="dash-stat-card">
+      <div class="dash-stat-icon ic-purple">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="8.5" cy="8.5" r="3.3"/>
+          <path d="M10.8 10.8L19 19"/><path d="M15.3 15.3l2-2"/><path d="M17.6 17.6l2-2"/>
+        </svg>
+      </div>
       <div class="dash-stat-value">${data.loginCount || 0}</div>
       <div class="dash-stat-label">مرات الدخول</div>
     </div>
@@ -10195,10 +10237,30 @@ function initPushSystem() {
   <div class="legal-body">
     <div class="dash-stats" id="dash-stats"></div>
 
-    <div class="student-detail-section-title">📝 درجاتي</div>
+    <div class="student-detail-section-title">
+      <span class="sd-title-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 4h9l4 4v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/>
+          <path d="M15 4v4h4"/>
+          <path d="M8.5 12.5h7M8.5 16h5"/>
+        </svg>
+      </span>
+      درجاتي
+    </div>
     <div class="student-detail-list" id="dash-grades-list"></div>
 
-    <div class="student-detail-section-title">📅 حضوري</div>
+    <div class="student-detail-section-title">
+      <span class="sd-title-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3.5" y="5" width="17" height="15" rx="2.5"/>
+          <path d="M3.5 9.5h17"/>
+          <path d="M8 3v3"/>
+          <path d="M16 3v3"/>
+          <path d="M8.3 14l2 2 4-4"/>
+        </svg>
+      </span>
+      حضوري
+    </div>
     <div class="student-detail-list" id="dash-attendance-list"></div>
   </div>
 </div>
