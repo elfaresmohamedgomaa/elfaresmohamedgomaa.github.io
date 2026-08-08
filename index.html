@@ -4964,6 +4964,7 @@
 </style>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 </head>
 <body>
 
@@ -6614,7 +6615,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <script>
 // ===== ADMIN SYSTEM =====
-const ADMIN_CREDS = { user: 'alfares 2026', pass: 'fares 2026' };
+// بيانات الدخول اتشالت من هنا خالص. تسجيل الدخول بقى بيتم عن طريق
+// Firebase Authentication (إيميل + باسورد اتضافوا من Firebase Console مباشرة)
 let adminLoggedIn = false;
 
 // Default data snapshots (will be overridden by localStorage)
@@ -6671,8 +6673,8 @@ function showAdminToast() {
 
 // ---- OPEN / CLOSE ----
 window.openAdminLogin = function() {
-  // If already logged in before, skip login modal
-  if (localStorage.getItem('af_admin_auth') === 'true') {
+  // لو Firebase Auth لسه بيحمّل الجلسة، امنع الدخول لحد ما يتأكد من الحالة
+  if (auth && auth.currentUser) {
     adminLoggedIn = true;
     openAdminPanel();
     return;
@@ -6687,18 +6689,37 @@ window.closeAdminLogin = function() {
   document.getElementById('admin-login-modal').classList.remove('open');
 }
 window.doAdminLogin = function() {
-  const u = document.getElementById('adminUserInput').value.trim();
-  const p = document.getElementById('adminPassInput').value.trim();
-  if (u === ADMIN_CREDS.user && p === ADMIN_CREDS.pass) {
-    adminLoggedIn = true;
-    localStorage.setItem('af_admin_auth', 'true');
-    closeAdminLogin();
-    openAdminPanel();
-  } else {
-    document.getElementById('adminLoginError').textContent = '❌ بيانات خاطئة، حاول تاني';
-    document.getElementById('adminPassInput').value = '';
-    document.getElementById('adminPassInput').focus();
+  const email = document.getElementById('adminUserInput').value.trim();
+  const pass  = document.getElementById('adminPassInput').value.trim();
+  const errEl = document.getElementById('adminLoginError');
+  const btn   = document.querySelector('.admin-login-submit');
+
+  if (!auth) {
+    errEl.textContent = '❌ لسه النظام بيحمّل، حاول بعد لحظة';
+    return;
   }
+  if (!email || !pass) {
+    errEl.textContent = '❌ اكتب الإيميل والباسورد';
+    return;
+  }
+
+  errEl.textContent = '';
+  if (btn) { btn.disabled = true; btn.textContent = '...جاري الدخول'; }
+
+  auth.signInWithEmailAndPassword(email, pass)
+    .then(function() {
+      adminLoggedIn = true;
+      if (btn) { btn.disabled = false; btn.textContent = 'دخول ←'; }
+      closeAdminLogin();
+      openAdminPanel();
+    })
+    .catch(function(err) {
+      if (btn) { btn.disabled = false; btn.textContent = 'دخول ←'; }
+      errEl.textContent = '❌ بيانات خاطئة، حاول تاني';
+      document.getElementById('adminPassInput').value = '';
+      document.getElementById('adminPassInput').focus();
+      console.error('Admin login error:', err.code);
+    });
 }
 window.openAdminPanel = function() {
   document.getElementById('admin-panel').classList.add('open');
@@ -6718,17 +6739,25 @@ window.closeAdminPanel = function() {
   }
 }
 window.adminLogout = function() {
-  localStorage.removeItem('af_admin_auth');
+  if (auth) auth.signOut();
   adminLoggedIn = false;
   closeAdminPanel();
 }
 
 // إعادة فتح لوحة التحكم تلقائياً لو الرابط فيه #dashboard (بعد الريفرش مثلاً)
-document.addEventListener('DOMContentLoaded', function() {
-  if (location.hash === '#dashboard') {
-    openAdminLogin(); // لو مسجّل دخول قبل كده هتفتح اللوحة على طول، ولو لأ هيظهر فورم تسجيل الدخول
+// بننتظر أول رد من Firebase Auth (onAuthStateChanged) قبل ما نقرر نفتح اللوحة
+// أو نطلب تسجيل دخول، عشان منورّيش فورم الدخول لأدمن هو أصلاً مسجل دخول فعلاً
+let dashboardHashHandled = false;
+function handleDashboardHashOnAuthReady(user) {
+  if (dashboardHashHandled) return;
+  if (location.hash !== '#dashboard') return;
+  dashboardHashHandled = true;
+  if (user) {
+    openAdminPanel();
+  } else {
+    openAdminLogin();
   }
-});
+}
 
 // لو المستخدم دوس زرار "رجوع" في المتصفح وهو في لوحة التحكم، اقفلها بشكل طبيعي
 window.addEventListener('popstate', function() {
@@ -7094,12 +7123,12 @@ adminLoadFromStorage();
     <h2 class="admin-login-title">لوحة التحكم</h2>
     <p class="admin-login-sub">تسجيل دخول المدرس</p>
     <div class="admin-login-field">
-      <label>اسم المستخدم</label>
-      <input type="text" id="adminUserInput" placeholder="admin" dir="ltr" autocomplete="off">
+      <label>البريد الإلكتروني</label>
+      <input type="email" id="adminUserInput" placeholder="admin@example.com" dir="ltr" autocomplete="username" onkeydown="if(event.key==='Enter') document.getElementById('adminPassInput').focus()">
     </div>
     <div class="admin-login-field">
       <label>كلمة المرور</label>
-      <input type="password" id="adminPassInput" placeholder="••••••••" dir="ltr" onkeydown="if(event.key==='Enter') doAdminLogin()">
+      <input type="password" id="adminPassInput" placeholder="••••••••" dir="ltr" autocomplete="current-password" onkeydown="if(event.key==='Enter') doAdminLogin()">
     </div>
     <div class="admin-login-error" id="adminLoginError"></div>
     <button class="admin-login-submit" onclick="doAdminLogin()">دخول ←</button><br>
@@ -7737,6 +7766,7 @@ let notifDropOpen = false;
 // ===== FIREBASE INITIALIZATION =====
 let db = null;
 let notificationsRef = null;
+let auth = null;
 let firebaseRetries = 0;
 const MAX_FIREBASE_RETRIES = 20;
 
@@ -7772,6 +7802,22 @@ function initFirebase() {
 
     db = firebase.database();
     notificationsRef = db.ref('notifications');
+    auth = firebase.auth();
+
+    // راقب حالة تسجيل دخول الأدمن عن طريق Firebase Authentication الحقيقي
+    auth.onAuthStateChanged(function(user) {
+      adminLoggedIn = !!user;
+      if (!user) {
+        // لو حصل تسجيل خروج أو انتهت الجلسة، اقفل لوحة التحكم لو مفتوحة
+        const panel = document.getElementById('admin-panel');
+        if (panel && panel.classList.contains('open')) {
+          closeAdminPanel();
+        }
+      }
+      if (typeof handleDashboardHashOnAuthReady === 'function') {
+        handleDashboardHashOnAuthReady(user);
+      }
+    });
 
     // استمع للتحديثات الحية
     notificationsRef.on('value', snapshot => {
