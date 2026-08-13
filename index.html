@@ -4378,13 +4378,14 @@
   border: 1px solid rgba(201,168,76,0.12);
   border-radius: 16px;
   margin-bottom: 16px;
-  overflow: hidden;
+  overflow: visible;
 }
 .admin-level-header {
   padding: 16px 20px;
   display: flex; align-items: center; justify-content: space-between;
   cursor: pointer;
   transition: background 0.2s;
+  border-radius: 16px 16px 0 0;
 }
 .admin-level-header:hover { background: rgba(201,168,76,0.05); }
 .admin-level-title { font-weight: 700; color: var(--gold); font-size: 1rem; }
@@ -9254,6 +9255,39 @@ window.exportAllStudentsQR = async function() {
   }
 };
 
+// ===== DEEP LINK: OPEN EXAM PAGES FROM /exams/ OR /exams/001 =====
+function handleExamDeepLink() {
+  try {
+    let path = window.location.pathname.replace(/\/+$/, ''); // remove trailing slash
+    // لو جاي من صفحة 404 (GitHub Pages) هيبقى المسار الأصلي محفوظ في sessionStorage
+    let redirectPath = null;
+    try { redirectPath = sessionStorage.getItem('af_redirect_path'); } catch (e2) {}
+    if (redirectPath) {
+      try { sessionStorage.removeItem('af_redirect_path'); } catch (e3) {}
+      path = redirectPath.replace(/\/+$/, '');
+    }
+    const m = path.match(/\/exams(?:\/(\d+))?$/);
+    if (!m) return;
+    waitForDb(function() {
+      // امنح examsCache فرصة تتحمل من Firebase قبل ما نحاول نفتح امتحان معين
+      setTimeout(function() {
+        if (m[1]) {
+          const examId = getExamIdByNumber(m[1]);
+          if (examId) {
+            openExamListPage(true);
+            openExamInfoPage(examId, true);
+          } else {
+            openExamListPage(true);
+          }
+        } else {
+          openExamListPage(true);
+        }
+      }, 400);
+    });
+  } catch (e) { /* تجاهل أي خطأ في قراءة الرابط */ }
+}
+document.addEventListener('DOMContentLoaded', handleExamDeepLink);
+
 // ===== AUTO-FILL / AUTO-LOGIN STUDENT FROM QR LINK (?code=xxxx&pass=yyyy) =====
 document.addEventListener('DOMContentLoaded', function() {
   try {
@@ -10991,12 +11025,22 @@ if (document.readyState === 'loading') {
     const el = document.getElementById(id);
     if (el) el.classList.remove('open');
     document.body.style.overflow = '';
+    try {
+      const anyOpen = ['exam-list-page', 'exam-info-page', 'exam-register-page'].some(pid => {
+        const e = document.getElementById(pid);
+        return e && e.classList.contains('open');
+      });
+      if (!anyOpen) history.pushState({}, '', window.location.origin + '/');
+    } catch (err) {}
   };
 
-  window.openExamListPage = function() {
+  window.openExamListPage = function(skipUrlUpdate) {
     document.getElementById('exam-list-page').classList.add('open');
     document.body.style.overflow = 'hidden';
     renderExamListPage();
+    if (!skipUrlUpdate) {
+      try { history.pushState({ examList: true }, '', '/exams/'); } catch (e) {}
+    }
   };
 
   function renderExamListPage() {
@@ -11021,8 +11065,29 @@ if (document.readyState === 'loading') {
   }
   window.renderExamListPage = renderExamListPage;
 
+  // ===== EXAM NUMBER (order-based, e.g. 001) HELPERS =====
+  function getSortedExamEntries() {
+    const list = Object.entries(examsCache || {}).filter(([id, e]) => e && e.active !== false);
+    list.sort((a, b) => (a[1].order || 0) - (b[1].order || 0));
+    return list;
+  }
+  function getExamNumberById(examId) {
+    const list = getSortedExamEntries();
+    const idx = list.findIndex(([id]) => id === examId);
+    if (idx === -1) return null;
+    return String(idx + 1).padStart(3, '0');
+  }
+  function getExamIdByNumber(num) {
+    const list = getSortedExamEntries();
+    const idx = parseInt(num, 10) - 1;
+    if (isNaN(idx) || idx < 0 || idx >= list.length) return null;
+    return list[idx][0];
+  }
+  window.getExamNumberById = getExamNumberById;
+  window.getExamIdByNumber = getExamIdByNumber;
+
   // ===== PUBLIC: EXAM INFO PAGE =====
-  window.openExamInfoPage = function(examId) {
+  window.openExamInfoPage = function(examId, skipUrlUpdate) {
     const e = (examsCache || {})[examId];
     if (!e) return;
     currentExamId = examId;
@@ -11049,6 +11114,12 @@ if (document.readyState === 'loading') {
     `;
     document.getElementById('exam-list-page').classList.remove('open');
     document.getElementById('exam-info-page').classList.add('open');
+    if (!skipUrlUpdate) {
+      const num = getExamNumberById(examId);
+      if (num) {
+        try { history.pushState({ examId: examId }, '', '/exams/' + num); } catch (err) {}
+      }
+    }
   };
 
   // ===== PUBLIC: REGISTER PAGE =====
