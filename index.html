@@ -3827,6 +3827,200 @@
   .legal-update-badge { float: none; display: flex; width: fit-content; margin: 0 auto 24px; }
 }
 
+/* ===== EXAM SYSTEM ===== */
+.exam-list-item {
+  background: var(--dark3);
+  border: 1px solid rgba(201,168,76,0.15);
+  border-radius: 16px;
+  padding: 22px 24px;
+  display: flex; align-items: center; gap: 16px;
+  cursor: pointer;
+  transition: all 0.25s;
+  margin-bottom: 14px;
+}
+.exam-list-item:hover { border-color: rgba(201,168,76,0.4); transform: translateY(-2px); }
+.exam-list-item-icon { font-size: 1.8rem; flex-shrink: 0; }
+.exam-list-item-info { flex: 1; min-width: 0; }
+.exam-list-item-title { font-family:'Tajawal',sans-serif; font-weight:800; font-size:1.05rem; color: var(--white); margin-bottom: 4px; }
+.exam-list-item-desc { font-size: 0.85rem; color: var(--white2); opacity: 0.65; }
+.exam-list-item-arrow { color: var(--gold); font-size: 1.3rem; flex-shrink: 0; }
+.exam-list-empty { text-align:center; padding: 60px 20px; color: var(--white2); opacity: 0.55; font-size: 0.95rem; }
+
+.exam-info-card {
+  background: var(--dark3);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 20px;
+  padding: 32px 26px;
+  text-align: center;
+  margin-bottom: 24px;
+}
+.exam-info-icon { font-size: 3rem; margin-bottom: 14px; }
+.exam-info-title { font-family:'Tajawal',sans-serif; font-weight:900; font-size:1.4rem; color: var(--gold-light); margin-bottom: 10px; }
+.exam-info-desc { color: var(--white2); opacity: 0.8; font-size: 0.95rem; line-height: 1.9; margin-bottom: 22px; }
+.exam-info-meta { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-bottom: 24px; }
+.exam-info-meta-item {
+  background: rgba(201,168,76,0.08);
+  border: 1px solid rgba(201,168,76,0.2);
+  color: var(--white2);
+  padding: 10px 18px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  display:flex; align-items:center; gap:8px;
+}
+.exam-info-meta-item b { color: var(--gold-light); }
+.exam-start-btn {
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+  color: var(--dark);
+  border: none;
+  padding: 15px 40px;
+  border-radius: 50px;
+  font-family: 'IBM Plex Sans Arabic', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.exam-start-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(201,168,76,0.35); }
+.exam-start-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+.exam-taken-note {
+  background: rgba(255,107,107,0.08);
+  border: 1px solid rgba(255,107,107,0.3);
+  color: #ff9b9b;
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  margin-bottom: 18px;
+  line-height: 1.8;
+}
+
+.exam-form-box { max-width: 460px; margin: 0 auto; }
+.exam-form-label { font-size: 0.85rem; color: var(--gold); font-weight: 700; margin-bottom: 8px; display:block; }
+.exam-form-hint { font-size: 0.75rem; color: var(--white2); opacity: 0.55; margin: -4px 0 14px; }
+.exam-form-error { color: #ff6b6b; font-size: 0.8rem; margin: -6px 0 14px; display: none; }
+.exam-form-error.show { display: block; }
+
+.exam-timer-bar {
+  position: sticky; top: 0; z-index: 6;
+  background: rgba(10,10,15,0.96);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(201,168,76,0.2);
+  padding: 16px 24px;
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+}
+.exam-timer-clock {
+  font-family: 'Tajawal', sans-serif;
+  font-weight: 900;
+  font-size: 1.3rem;
+  color: var(--gold-light);
+  background: rgba(201,168,76,0.1);
+  border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 50px;
+  padding: 8px 20px;
+  direction: ltr;
+}
+.exam-timer-clock.low { color: #ff6b6b; border-color: rgba(255,107,107,0.4); background: rgba(255,107,107,0.08); animation: examPulse 1s infinite; }
+@keyframes examPulse { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
+.exam-progress-text { font-size: 0.85rem; color: var(--white2); opacity: 0.75; }
+.exam-progress-track { height: 4px; background: rgba(255,255,255,0.08); }
+.exam-progress-fill { height: 100%; background: linear-gradient(90deg, var(--gold-dark), var(--gold)); transition: width 0.3s; }
+
+.exam-question-box { max-width: 640px; margin: 32px auto; padding: 0 24px; }
+.exam-question-text {
+  font-family: 'Tajawal', sans-serif;
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: var(--white);
+  line-height: 1.9;
+  margin-bottom: 26px;
+}
+.exam-option {
+  background: var(--dark3);
+  border: 1.5px solid rgba(201,168,76,0.15);
+  border-radius: 14px;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 14px;
+  transition: all 0.2s;
+  font-size: 0.95rem;
+  color: var(--white2);
+}
+.exam-option:hover { border-color: rgba(201,168,76,0.4); }
+.exam-option.selected { border-color: var(--gold); background: rgba(201,168,76,0.1); color: var(--white); }
+.exam-option-letter {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: rgba(201,168,76,0.12);
+  display:flex; align-items:center; justify-content:center;
+  font-weight: 800; color: var(--gold); flex-shrink: 0; font-size: 0.85rem;
+}
+.exam-option.selected .exam-option-letter { background: var(--gold); color: var(--dark); }
+.exam-nav-row { display:flex; gap: 12px; margin-top: 28px; }
+.exam-nav-btn {
+  flex: 1;
+  padding: 14px;
+  border-radius: 12px;
+  font-family: 'IBM Plex Sans Arabic', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+  color: var(--white);
+  transition: all 0.2s;
+}
+.exam-nav-btn:hover { background: rgba(255,255,255,0.08); }
+.exam-nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.exam-nav-btn.primary {
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+  color: var(--dark); border: none;
+}
+.exam-nav-btn.finish {
+  background: linear-gradient(135deg, #3aa876, #57c690);
+  color: var(--dark); border: none;
+}
+
+.exam-result-card {
+  max-width: 480px; margin: 40px auto; text-align:center;
+  background: var(--dark3);
+  border: 1px solid rgba(201,168,76,0.25);
+  border-radius: 24px;
+  padding: 44px 30px;
+}
+.exam-result-score {
+  font-family: 'Tajawal', sans-serif;
+  font-weight: 900;
+  font-size: 3rem;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin: 14px 0 6px;
+}
+.exam-result-percent { font-size: 1rem; color: var(--white2); opacity: 0.75; margin-bottom: 20px; }
+.exam-result-msg { color: var(--white2); opacity: 0.85; line-height: 1.9; margin-bottom: 24px; font-size: 0.95rem; }
+
+.admin-exam-meta-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.admin-question-item {
+  background: var(--dark4);
+  border: 1px solid rgba(201,168,76,0.1);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+.admin-question-item-text { font-size:0.88rem; color:var(--white); margin-bottom:8px; font-weight:600; }
+.admin-question-opts { display:flex; flex-direction:column; gap:4px; margin-bottom: 8px; }
+.admin-question-opt { font-size:0.78rem; color:var(--white2); opacity:0.75; padding-right: 8px; }
+.admin-question-opt.correct { color: #57c690; opacity: 1; font-weight: 700; }
+.results-filter-row { display:flex; gap:10px; margin-bottom: 18px; flex-wrap:wrap; align-items:center; }
+.results-summary-badge {
+  background: rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.25);
+  color: var(--gold-light); padding: 6px 16px; border-radius: 50px; font-size: 0.8rem;
+}
+
+@media (max-width: 640px) {
+  .exam-info-meta { flex-direction: column; align-items: stretch; }
+  .exam-question-box { padding: 0 16px; }
+  .admin-exam-meta-grid { grid-template-columns: 1fr; }
+}
+
 /* Admin Panel Overlay */
 #admin-panel {
   position: fixed; inset: 0; z-index: 99998;
@@ -5309,7 +5503,7 @@
 
   <div id="tracking-cards-container" style="max-width:900px; margin:48px auto 0; display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:20px;">
 
-    <div class="reveal" style="background:var(--dark3); border:1px solid rgba(201,168,76,0.15); border-radius:20px; padding:32px 24px; text-align:center; position:relative; overflow:hidden;">
+    <div class="reveal tracking-card-clickable" onclick="openTrackingOverlay(0)" style="background:var(--dark3); border:1px solid rgba(201,168,76,0.15); border-radius:20px; padding:32px 24px; text-align:center; position:relative; overflow:hidden;">
       <div class="dash-stat-icon lg ic-gold" style="margin:0 auto 14px;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20V13"/><path d="M4 20h16"/>
@@ -5317,7 +5511,6 @@
       </div>
       <strong style="display:block; font-size:1rem; color:var(--white); margin-bottom:8px;">درجات الامتحانات</strong>
       <span style="font-size:0.8rem; color:var(--white2); opacity:0.6;">متابعة نتائج كل امتحان</span>
-      <div class="tracking-coming">قريباً</div>
     </div>
 
     <div class="reveal" style="background:var(--dark3); border:1px solid rgba(201,168,76,0.15); border-radius:20px; padding:32px 24px; text-align:center; position:relative; overflow:hidden;">
@@ -6681,7 +6874,7 @@ let adminHeartMessages = [...defaultHeartMessages];
 
 // Default tracking cards
 const defaultTracking = [
-  { emoji: '📊', title: 'درجات الامتحانات', desc: 'متابعة نتائج كل امتحان', coming: true },
+  { emoji: '📊', title: 'درجات الامتحانات', desc: 'متابعة نتائج كل امتحان', coming: false, action: 'exams' },
   { emoji: '🏆', title: 'مكافآت ومسابقات', desc: 'جوائز وتحديات للطلبة المتفوقين', coming: true },
   { emoji: '📅', title: 'الحضور والغياب', desc: 'سجل حضور الحصص', coming: true },
   { emoji: '⏰', title: 'مواعيد الحصص', desc: 'جدول مواعيد الأسبوع', coming: true }
@@ -7303,6 +7496,12 @@ adminLoadFromStorage();
       <button class="admin-tab-btn" onclick="switchAdminTab('students', this); renderAdminStudentsList()">
         <span class="admin-tab-icon">🎓</span><span>الطلاب</span>
       </button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('exams', this); renderAdminExamsSection()">
+        <span class="admin-tab-icon">📝</span><span>الاختبارات</span>
+      </button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('examresults', this); renderAdminExamResults()">
+        <span class="admin-tab-icon">🏅</span><span>درجات الطلاب</span>
+      </button>
       <button class="admin-tab-btn" onclick="switchAdminTab('notifications', this); renderAdminNotifList()">
         <span class="admin-tab-icon">🔔</span><span>الإشعارات</span>
       </button>
@@ -7506,6 +7705,39 @@ STU-26-0003	معاذ خالد" style="resize:vertical; font-family:'IBM Plex San
         <div class="admin-students-list" id="admin-students-list"></div>
       </div>
 
+      <!-- ===== EXAMS TAB ===== -->
+      <div class="admin-section" id="admin-exams">
+        <div class="admin-section-title">📝 إدارة الاختبارات</div>
+        <p style="font-size:0.85rem; color:var(--white2); opacity:0.6; margin-bottom:20px;">أضف اختبارات وأسئلة (اختيار من متعدد) هتظهر للطلاب في «درجات الامتحانات».</p>
+
+        <div id="admin-exams-list"></div>
+
+        <div class="admin-add-form" style="margin-top:16px;">
+          <div class="admin-add-form-title">+ إضافة اختبار جديد</div>
+          <input class="admin-input" id="exam-new-title" placeholder="اسم الاختبار... مثال: اختبار على الكورس التأسيسي" dir="rtl">
+          <input class="admin-input" id="exam-new-desc" placeholder="وصف بسيط عن الاختبار..." dir="rtl">
+          <div class="admin-exam-meta-grid">
+            <input class="admin-input" id="exam-new-duration" placeholder="مدة الاختبار بالدقايق (مثال: 20)" type="number" min="1" dir="ltr">
+          </div>
+          <button class="admin-add-btn" onclick="adminAddExam()">➕ إضافة الاختبار</button>
+        </div>
+      </div>
+
+      <!-- ===== EXAM RESULTS TAB ===== -->
+      <div class="admin-section" id="admin-examresults">
+        <div class="admin-section-title">🏅 درجات الطلاب</div>
+        <p style="font-size:0.85rem; color:var(--white2); opacity:0.6; margin-bottom:16px;">كل نتائج الاختبارات اللي الطلاب أدّوها.</p>
+
+        <div class="results-filter-row">
+          <select class="notif-type-select" id="examresults-filter" onchange="renderAdminExamResults()" style="max-width:280px;">
+            <option value="">كل الاختبارات</option>
+          </select>
+          <span class="results-summary-badge" id="examresults-count">0 نتيجة</span>
+        </div>
+
+        <div class="admin-students-list" id="admin-examresults-list"></div>
+      </div>
+
       <!-- ===== NOTIFICATIONS TAB ===== -->
       <div class="admin-section" id="admin-notifications">
         <div class="admin-section-title">🔔 إدارة الإشعارات</div>
@@ -7660,6 +7892,7 @@ function openTrackingOverlay(index) {
   var cards = typeof adminTracking !== "undefined" ? adminTracking : [];
   var card = cards[index];
   if (!card) return;
+  if (card.action === 'exams') { openExamListPage(); return; }
   var emojiEl = document.getElementById("overlay-emoji");
   var m = (typeof trackingIconMap !== "undefined") ? trackingIconMap[card.emoji] : null;
   if (m) {
@@ -7841,6 +8074,10 @@ let notifDropOpen = false;
 let db = null;
 let notificationsRef = null;
 let auth = null;
+let examsRef = null;
+let examResultsRef = null;
+let examsCache = {};
+let examResultsCache = {};
 let firebaseRetries = 0;
 const MAX_FIREBASE_RETRIES = 20;
 
@@ -7876,6 +8113,8 @@ function initFirebase() {
 
     db = firebase.database();
     notificationsRef = db.ref('notifications');
+    examsRef = db.ref('exams');
+    examResultsRef = db.ref('examResults');
     auth = firebase.auth();
 
     // راقب حالة تسجيل دخول الأدمن عن طريق Firebase Authentication الحقيقي
@@ -7906,6 +8145,29 @@ function initFirebase() {
         updateNotifBadge();
       } catch(e) {
         console.error('Error listening to Firebase:', e);
+      }
+    });
+
+    // استمع لتحديثات الاختبارات وأسئلتها لحظة بلحظة
+    examsRef.on('value', snapshot => {
+      try {
+        const data = snapshot.val();
+        examsCache = data || {};
+        if (typeof renderAdminExamsSection === 'function') renderAdminExamsSection();
+        if (typeof refreshExamResultsFilterOptions === 'function') refreshExamResultsFilterOptions();
+      } catch(e) {
+        console.error('Error listening to exams:', e);
+      }
+    });
+
+    // استمع لتحديثات نتائج الطلاب لحظة بلحظة
+    examResultsRef.on('value', snapshot => {
+      try {
+        const data = snapshot.val();
+        examResultsCache = data || {};
+        if (typeof renderAdminExamResults === 'function') renderAdminExamResults();
+      } catch(e) {
+        console.error('Error listening to exam results:', e);
       }
     });
 
@@ -10478,6 +10740,122 @@ function initPushSystem() {
   </div>
 </div>
 
+<!-- ===== EXAM: LIST PAGE ===== -->
+<div class="legal-overlay" id="exam-list-page">
+  <div class="legal-topbar"></div>
+  <div class="legal-header">
+    <button class="legal-close-btn" onclick="closeExamPage('exam-list-page')" aria-label="إغلاق">✕</button>
+    <div class="legal-header-title-wrap">
+      <div>
+        <div class="legal-header-title">درجات الامتحانات</div>
+        <div class="legal-header-sub">اختر الاختبار اللي عايز تأديه</div>
+      </div>
+      <div class="legal-header-icon">📊</div>
+    </div>
+  </div>
+  <div class="legal-body">
+    <div id="exam-list-container"><div class="exam-list-empty">جاري تحميل الاختبارات...</div></div>
+  </div>
+</div>
+
+<!-- ===== EXAM: INFO PAGE ===== -->
+<div class="legal-overlay" id="exam-info-page">
+  <div class="legal-topbar"></div>
+  <div class="legal-header">
+    <button class="legal-close-btn" onclick="closeExamPage('exam-info-page')" aria-label="إغلاق">✕</button>
+    <div class="legal-header-title-wrap">
+      <div>
+        <div class="legal-header-title">تفاصيل الاختبار</div>
+        <div class="legal-header-sub">الفارس في الرياضيات</div>
+      </div>
+      <div class="legal-header-icon">📝</div>
+    </div>
+  </div>
+  <div class="legal-body" id="exam-info-body"></div>
+</div>
+
+<!-- ===== EXAM: REGISTER PAGE ===== -->
+<div class="legal-overlay" id="exam-register-page">
+  <div class="legal-topbar"></div>
+  <div class="legal-header">
+    <button class="legal-close-btn" onclick="closeExamPage('exam-register-page')" aria-label="إغلاق">✕</button>
+    <div class="legal-header-title-wrap">
+      <div>
+        <div class="legal-header-title">بيانات الطالب</div>
+        <div class="legal-header-sub" id="exam-register-sub">قبل بدء الاختبار</div>
+      </div>
+      <div class="legal-header-icon">🧑‍🎓</div>
+    </div>
+  </div>
+  <div class="legal-body">
+    <div class="exam-form-box">
+      <label class="exam-form-label">الاسم ثلاثي</label>
+      <input class="admin-input" id="exam-reg-name" placeholder="مثال: أحمد محمد علي" dir="rtl">
+      <div class="exam-form-hint">اكتب اسمك كامل (٣ كلمات على الأقل)</div>
+      <div class="exam-form-error" id="exam-reg-name-err">من فضلك اكتب الاسم ثلاثي على الأقل</div>
+
+      <label class="exam-form-label">السنة الدراسية</label>
+      <select class="notif-type-select" id="exam-reg-grade">
+        <option value="">اختر السنة الدراسية</option>
+        <option value="الرابع الابتدائي">الرابع الابتدائي</option>
+        <option value="الخامس الابتدائي">الخامس الابتدائي</option>
+        <option value="السادس الابتدائي">السادس الابتدائي</option>
+        <option value="الأول الإعدادي">الأول الإعدادي</option>
+        <option value="الثاني الإعدادي">الثاني الإعدادي</option>
+        <option value="الثالث الإعدادي">الثالث الإعدادي</option>
+      </select>
+      <div class="exam-form-error" id="exam-reg-grade-err">من فضلك اختر السنة الدراسية</div>
+
+      <label class="exam-form-label" style="margin-top:14px;display:block;">رقم الهاتف</label>
+      <input class="admin-input" id="exam-reg-phone" placeholder="01xxxxxxxxx" dir="ltr" type="tel" inputmode="numeric">
+      <div class="exam-form-error" id="exam-reg-phone-err">من فضلك اكتب رقم هاتف صحيح</div>
+
+      <button class="exam-start-btn" style="width:100%;margin-top:10px;" onclick="examSubmitRegister()">🚀 ابدأ الاختبار</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== EXAM: TAKING PAGE ===== -->
+<div class="legal-overlay" id="exam-take-page">
+  <div class="exam-timer-bar">
+    <div class="exam-timer-clock" id="exam-timer-clock">20:00</div>
+    <div class="exam-progress-text" id="exam-progress-text">سؤال 1 من 10</div>
+  </div>
+  <div class="exam-progress-track"><div class="exam-progress-fill" id="exam-progress-fill" style="width:0%"></div></div>
+  <div class="exam-question-box">
+    <div class="exam-question-text" id="exam-question-text"></div>
+    <div id="exam-options-container"></div>
+    <div class="exam-nav-row">
+      <button class="exam-nav-btn" id="exam-prev-btn" onclick="examPrevQuestion()">◀ السابق</button>
+      <button class="exam-nav-btn primary" id="exam-next-btn" onclick="examNextQuestion()">التالي ▶</button>
+      <button class="exam-nav-btn finish" id="exam-finish-btn" onclick="examConfirmFinish()" style="display:none;">✅ إنهاء الاختبار</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== EXAM: RESULT PAGE ===== -->
+<div class="legal-overlay" id="exam-result-page">
+  <div class="legal-topbar"></div>
+  <div class="legal-header">
+    <div class="legal-header-title-wrap">
+      <div>
+        <div class="legal-header-title">نتيجة الاختبار</div>
+        <div class="legal-header-sub">الفارس في الرياضيات</div>
+      </div>
+      <div class="legal-header-icon">🏆</div>
+    </div>
+  </div>
+  <div class="legal-body">
+    <div class="exam-result-card">
+      <div style="font-size:2.4rem;">🎉</div>
+      <div class="exam-result-score" id="exam-result-score">0/0</div>
+      <div class="exam-result-percent" id="exam-result-percent">0%</div>
+      <div class="exam-result-msg" id="exam-result-msg"></div>
+      <button class="exam-start-btn" onclick="examCloseResult()">تمام، رجوع للصفحة الرئيسية</button>
+    </div>
+  </div>
+</div>
+
 <script>
   window.openLegalPage = function(type) {
     const overlay = document.getElementById(type === 'privacy' ? 'privacy-page' : 'terms-page');
@@ -10576,7 +10954,7 @@ function enhanceCustomSelect(selectEl) {
 }
 
 function initCustomSelects() {
-  ['inp-level', 'student-new-stage', 'student-new-grade-select', 'notif-new-type', 'sd-attendance-status', 'sd-edit-stage', 'sd-edit-grade-select'].forEach((id) => {
+  ['inp-level', 'student-new-stage', 'student-new-grade-select', 'notif-new-type', 'sd-attendance-status', 'sd-edit-stage', 'sd-edit-grade-select', 'exam-reg-grade', 'examresults-filter'].forEach((id) => {
     enhanceCustomSelect(document.getElementById(id));
   });
 }
@@ -10586,6 +10964,437 @@ if (document.readyState === 'loading') {
 } else {
   initCustomSelects();
 }
+</script>
+
+<!-- ===== EXAM SYSTEM LOGIC ===== -->
+<script>
+(function() {
+  const STUDENT_GRADE_LIST = ['الرابع الابتدائي','الخامس الابتدائي','السادس الابتدائي','الأول الإعدادي','الثاني الإعدادي','الثالث الإعدادي'];
+
+  let currentExamId = null;
+  let currentExamData = null;
+  let currentExamQuestionsArr = [];
+  let currentExamAnswers = {};
+  let currentExamRegistrant = null;
+  let examTimerInterval = null;
+  let examTimeLeftSeconds = 0;
+  let examCurrentQIndex = 0;
+
+  function escHtmlLocal(str) {
+    if (typeof escHtml === 'function') return escHtml(str);
+    if (!str) return '';
+    return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  // ===== PUBLIC: EXAM LIST PAGE =====
+  window.closeExamPage = function(id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('open');
+    document.body.style.overflow = '';
+  };
+
+  window.openExamListPage = function() {
+    document.getElementById('exam-list-page').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    renderExamListPage();
+  };
+
+  function renderExamListPage() {
+    const container = document.getElementById('exam-list-container');
+    if (!container) return;
+    const list = Object.entries(examsCache || {}).filter(([id, e]) => e && e.active !== false);
+    list.sort((a, b) => (a[1].order || 0) - (b[1].order || 0));
+    if (!list.length) {
+      container.innerHTML = '<div class="exam-list-empty">لا توجد اختبارات متاحة حالياً<br>تابعنا قريباً إن شاء الله ✨</div>';
+      return;
+    }
+    container.innerHTML = list.map(([id, e]) => `
+      <div class="exam-list-item" onclick="openExamInfoPage('${id}')">
+        <div class="exam-list-item-icon">📝</div>
+        <div class="exam-list-item-info">
+          <div class="exam-list-item-title">${escHtmlLocal(e.title || '')}</div>
+          <div class="exam-list-item-desc">${escHtmlLocal(e.description || '')}</div>
+        </div>
+        <div class="exam-list-item-arrow">◀</div>
+      </div>
+    `).join('');
+  }
+  window.renderExamListPage = renderExamListPage;
+
+  // ===== PUBLIC: EXAM INFO PAGE =====
+  window.openExamInfoPage = function(examId) {
+    const e = (examsCache || {})[examId];
+    if (!e) return;
+    currentExamId = examId;
+    currentExamData = e;
+    const qCount = e.questions ? Object.keys(e.questions).length : 0;
+    let taken = false;
+    try { taken = !!localStorage.getItem('af_exam_taken_' + examId); } catch (err) {}
+    const body = document.getElementById('exam-info-body');
+    body.innerHTML = `
+      <div class="exam-info-card">
+        <div class="exam-info-icon">📝</div>
+        <div class="exam-info-title">${escHtmlLocal(e.title || '')}</div>
+        <div class="exam-info-desc">${escHtmlLocal(e.description || '')}</div>
+        <div class="exam-info-meta">
+          <div class="exam-info-meta-item">❓ عدد الأسئلة: <b>${qCount}</b></div>
+          <div class="exam-info-meta-item">⏱ المدة: <b>${e.durationMinutes || 20} دقيقة</b></div>
+          <div class="exam-info-meta-item">✅ اختيار من متعدد</div>
+          <div class="exam-info-meta-item">🔒 محاولة واحدة فقط لكل جهاز</div>
+        </div>
+        ${taken ? '<div class="exam-taken-note">✋ لقد قمت بأداء هذا الاختبار من قبل من هذا الجهاز، ولا يمكن إعادته مرة أخرى.</div>' : ''}
+        ${!qCount ? '<div class="exam-taken-note">⏳ الأسئلة لسه بتتجهز، تابعنا قريباً.</div>' : ''}
+        <button class="exam-start-btn" ${(!qCount || taken) ? 'disabled' : ''} onclick="openExamRegisterPage()">🚀 بدء الاختبار</button>
+      </div>
+    `;
+    document.getElementById('exam-list-page').classList.remove('open');
+    document.getElementById('exam-info-page').classList.add('open');
+  };
+
+  // ===== PUBLIC: REGISTER PAGE =====
+  window.openExamRegisterPage = function() {
+    document.getElementById('exam-reg-name').value = '';
+    document.getElementById('exam-reg-phone').value = '';
+    const gradeEl = document.getElementById('exam-reg-grade');
+    gradeEl.value = '';
+    if (gradeEl._cselRefresh) gradeEl._cselRefresh();
+    document.querySelectorAll('#exam-register-page .exam-form-error').forEach(el => el.classList.remove('show'));
+    document.getElementById('exam-register-sub').textContent = currentExamData ? currentExamData.title : 'قبل بدء الاختبار';
+    document.getElementById('exam-info-page').classList.remove('open');
+    document.getElementById('exam-register-page').classList.add('open');
+  };
+
+  window.examSubmitRegister = function() {
+    const nameEl = document.getElementById('exam-reg-name');
+    const gradeEl = document.getElementById('exam-reg-grade');
+    const phoneEl = document.getElementById('exam-reg-phone');
+    const name = nameEl.value.trim().replace(/\s+/g, ' ');
+    const grade = gradeEl.value;
+    const phone = phoneEl.value.trim();
+
+    let valid = true;
+    const nameWords = name.split(' ').filter(Boolean);
+    const nameErr = document.getElementById('exam-reg-name-err');
+    if (nameWords.length < 3) { nameErr.classList.add('show'); valid = false; } else nameErr.classList.remove('show');
+
+    const gradeErr = document.getElementById('exam-reg-grade-err');
+    if (!grade || STUDENT_GRADE_LIST.indexOf(grade) === -1) { gradeErr.classList.add('show'); valid = false; } else gradeErr.classList.remove('show');
+
+    const phoneDigits = phone.replace(/[^0-9]/g, '');
+    const phoneErr = document.getElementById('exam-reg-phone-err');
+    if (phoneDigits.length < 10) { phoneErr.classList.add('show'); valid = false; } else phoneErr.classList.remove('show');
+
+    if (!valid) return;
+
+    currentExamRegistrant = { name, grade, phone: phoneDigits };
+    startExamTaking();
+  };
+
+  // ===== PUBLIC: TAKING THE EXAM =====
+  function startExamTaking() {
+    const qObj = (currentExamData && currentExamData.questions) || {};
+    currentExamQuestionsArr = Object.entries(qObj).sort((a, b) => (a[1].order || 0) - (b[1].order || 0));
+    currentExamAnswers = {};
+    examCurrentQIndex = 0;
+    examTimeLeftSeconds = (currentExamData.durationMinutes || 20) * 60;
+
+    document.getElementById('exam-register-page').classList.remove('open');
+    document.getElementById('exam-take-page').classList.add('open');
+    document.body.style.overflow = 'hidden';
+
+    renderExamQuestion();
+    updateExamTimerDisplay();
+    if (examTimerInterval) clearInterval(examTimerInterval);
+    examTimerInterval = setInterval(() => {
+      examTimeLeftSeconds--;
+      updateExamTimerDisplay();
+      if (examTimeLeftSeconds <= 0) {
+        clearInterval(examTimerInterval);
+        examFinishNow(true);
+      }
+    }, 1000);
+  }
+
+  function updateExamTimerDisplay() {
+    const m = Math.max(0, Math.floor(examTimeLeftSeconds / 60));
+    const s = Math.max(0, examTimeLeftSeconds % 60);
+    const el = document.getElementById('exam-timer-clock');
+    if (!el) return;
+    el.textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+    el.classList.toggle('low', examTimeLeftSeconds <= 60);
+  }
+
+  function renderExamQuestion() {
+    const total = currentExamQuestionsArr.length;
+    const entry = currentExamQuestionsArr[examCurrentQIndex];
+    if (!entry) return;
+    const q = entry[1];
+    document.getElementById('exam-progress-text').textContent = `سؤال ${examCurrentQIndex + 1} من ${total}`;
+    document.getElementById('exam-progress-fill').style.width = (((examCurrentQIndex + 1) / total) * 100) + '%';
+    document.getElementById('exam-question-text').textContent = q.text || '';
+    const letters = ['أ', 'ب', 'ج', 'د'];
+    const optsHtml = (q.options || []).map((opt, i) => `
+      <div class="exam-option ${currentExamAnswers[examCurrentQIndex] === i ? 'selected' : ''}" onclick="examSelectOption(${i})">
+        <span class="exam-option-letter">${letters[i] || (i + 1)}</span>
+        <span>${escHtmlLocal(opt)}</span>
+      </div>
+    `).join('');
+    document.getElementById('exam-options-container').innerHTML = optsHtml;
+
+    document.getElementById('exam-prev-btn').disabled = examCurrentQIndex === 0;
+    const isLast = examCurrentQIndex === total - 1;
+    document.getElementById('exam-next-btn').style.display = isLast ? 'none' : 'block';
+    document.getElementById('exam-finish-btn').style.display = isLast ? 'block' : 'none';
+  }
+
+  window.examSelectOption = function(i) {
+    currentExamAnswers[examCurrentQIndex] = i;
+    renderExamQuestion();
+  };
+
+  window.examNextQuestion = function() {
+    if (examCurrentQIndex < currentExamQuestionsArr.length - 1) {
+      examCurrentQIndex++;
+      renderExamQuestion();
+    }
+  };
+
+  window.examPrevQuestion = function() {
+    if (examCurrentQIndex > 0) {
+      examCurrentQIndex--;
+      renderExamQuestion();
+    }
+  };
+
+  window.examConfirmFinish = function() {
+    const total = currentExamQuestionsArr.length;
+    const answered = Object.keys(currentExamAnswers).length;
+    const msg = answered < total
+      ? `لسه في ${total - answered} سؤال من غير إجابة. متأكد عايز تنهي الاختبار؟`
+      : 'متأكد عايز تنهي الاختبار؟';
+    if (!confirm(msg)) return;
+    examFinishNow(false);
+  };
+
+  function examFinishNow(auto) {
+    if (examTimerInterval) clearInterval(examTimerInterval);
+    let score = 0;
+    currentExamQuestionsArr.forEach((entry, i) => {
+      const q = entry[1];
+      if (currentExamAnswers[i] === q.correctIndex) score++;
+    });
+    const total = currentExamQuestionsArr.length;
+    const percentage = total ? Math.round((score / total) * 100) : 0;
+
+    const resultData = {
+      examId: currentExamId,
+      examTitle: (currentExamData && currentExamData.title) || '',
+      name: currentExamRegistrant.name,
+      grade: currentExamRegistrant.grade,
+      phone: currentExamRegistrant.phone,
+      score, total, percentage,
+      timestamp: Date.now(),
+      date: new Date().toLocaleDateString('ar-EG')
+    };
+
+    try { if (examResultsRef) examResultsRef.push(resultData); } catch (e) { console.error('Error saving exam result:', e); }
+    try { localStorage.setItem('af_exam_taken_' + currentExamId, '1'); } catch (e) {}
+
+    document.getElementById('exam-take-page').classList.remove('open');
+    showExamResultPage(score, total, percentage, auto);
+  }
+
+  function showExamResultPage(score, total, percentage, auto) {
+    document.getElementById('exam-result-score').textContent = score + '/' + total;
+    document.getElementById('exam-result-percent').textContent = percentage + '%';
+    let msg;
+    if (percentage >= 85) msg = 'أداء رائع! استمر كده يا بطل 🌟';
+    else if (percentage >= 60) msg = 'كويس جداً، وبشوية مذاكرة هتبقى أحسن 👍';
+    else msg = 'مش نهاية الطريق، ذاكر كويس والأستاذ هيساعدك تتحسن 💪';
+    if (auto) msg = '⏰ انتهى وقت الاختبار تلقائياً. ' + msg;
+    document.getElementById('exam-result-msg').textContent = msg;
+    document.getElementById('exam-result-page').classList.add('open');
+  }
+
+  window.examCloseResult = function() {
+    document.getElementById('exam-result-page').classList.remove('open');
+    document.body.style.overflow = '';
+    currentExamId = null;
+    currentExamData = null;
+    currentExamRegistrant = null;
+    currentExamQuestionsArr = [];
+    currentExamAnswers = {};
+  };
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key !== 'Escape') return;
+    ['exam-list-page', 'exam-info-page', 'exam-register-page'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el && el.classList.contains('open')) closeExamPage(id);
+    });
+  });
+
+  // ===== ADMIN: EXAMS MANAGEMENT =====
+  window.renderAdminExamsSection = function() {
+    const listEl = document.getElementById('admin-exams-list');
+    if (!listEl) return;
+    const entries = Object.entries(examsCache || {});
+    if (!entries.length) {
+      listEl.innerHTML = '<p class="sd-empty">لا توجد اختبارات مضافة بعد.</p>';
+    } else {
+      entries.sort((a, b) => (a[1].order || 0) - (b[1].order || 0));
+      const letters = ['أ', 'ب', 'ج', 'د'];
+      listEl.innerHTML = entries.map(([examId, e]) => {
+        const questions = e.questions ? Object.entries(e.questions).sort((a, b) => (a[1].order || 0) - (b[1].order || 0)) : [];
+        const qHtml = questions.length ? questions.map(([qid, q]) => `
+          <div class="admin-question-item">
+            <div class="admin-question-item-text">${escHtmlLocal(q.text || '')}</div>
+            <div class="admin-question-opts">
+              ${(q.options || []).map((opt, i) => `<div class="admin-question-opt ${i === q.correctIndex ? 'correct' : ''}">${letters[i]}) ${escHtmlLocal(opt)}${i === q.correctIndex ? ' ✓' : ''}</div>`).join('')}
+            </div>
+            <button class="admin-btn-del" onclick="adminDeleteQuestion('${examId}','${qid}')">🗑</button>
+          </div>
+        `).join('') : '<p class="sd-empty">لا توجد أسئلة بعد.</p>';
+
+        return `
+        <div class="admin-level-block">
+          <div class="admin-level-header" onclick="toggleLevel('examblock-${examId}')">
+            <span class="admin-level-title">📝 ${escHtmlLocal(e.title || 'بدون عنوان')} ${e.active === false ? '(معطّل)' : ''} — ${questions.length} سؤال</span>
+            <span class="admin-level-toggle" id="examblock-${examId}-toggle">▾</span>
+          </div>
+          <div class="admin-level-body" id="examblock-${examId}-body">
+            <div class="admin-add-form" style="margin-bottom:14px;">
+              <div class="admin-add-form-title">⚙️ إعدادات الاختبار</div>
+              <input class="admin-input" id="exam-edit-title-${examId}" value="${escHtmlLocal(e.title || '')}" placeholder="اسم الاختبار" dir="rtl">
+              <input class="admin-input" id="exam-edit-desc-${examId}" value="${escHtmlLocal(e.description || '')}" placeholder="وصف الاختبار" dir="rtl">
+              <div class="admin-exam-meta-grid">
+                <input class="admin-input" id="exam-edit-duration-${examId}" value="${e.durationMinutes || 20}" type="number" min="1" placeholder="المدة بالدقايق" dir="ltr">
+              </div>
+              <label class="admin-checkbox-row">
+                <input type="checkbox" id="exam-edit-active-${examId}" ${e.active === false ? '' : 'checked'}>
+                <span>الاختبار متاح للطلاب</span>
+              </label>
+              <div style="display:flex; gap:8px; margin-top:10px;">
+                <button class="admin-save-tracking-btn" style="flex:1;" onclick="adminSaveExamMeta('${examId}')">💾 حفظ الإعدادات</button>
+                <button class="admin-reset-btn" style="flex:1;" onclick="adminDeleteExam('${examId}')">🗑 حذف الاختبار</button>
+              </div>
+            </div>
+
+            <div class="admin-item-list">${qHtml}</div>
+
+            <div class="admin-add-form">
+              <div class="admin-add-form-title">+ إضافة سؤال جديد</div>
+              <input class="admin-input" id="q-new-text-${examId}" placeholder="نص السؤال..." dir="rtl">
+              <input class="admin-input" id="q-new-opt0-${examId}" placeholder="الاختيار الأول (أ)" dir="rtl">
+              <input class="admin-input" id="q-new-opt1-${examId}" placeholder="الاختيار الثاني (ب)" dir="rtl">
+              <input class="admin-input" id="q-new-opt2-${examId}" placeholder="الاختيار الثالث (ج)" dir="rtl">
+              <input class="admin-input" id="q-new-opt3-${examId}" placeholder="الاختيار الرابع (د)" dir="rtl">
+              <select class="notif-type-select" id="q-new-correct-${examId}">
+                <option value="0">الإجابة الصحيحة: أ</option>
+                <option value="1">الإجابة الصحيحة: ب</option>
+                <option value="2">الإجابة الصحيحة: ج</option>
+                <option value="3">الإجابة الصحيحة: د</option>
+              </select>
+              <button class="admin-add-btn" onclick="adminAddQuestion('${examId}')">➕ إضافة السؤال</button>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+    if (typeof initCustomSelects === 'function') {
+      entries.forEach(([examId]) => enhanceCustomSelect(document.getElementById('q-new-correct-' + examId)));
+    }
+    refreshExamResultsFilterOptions();
+  };
+
+  window.adminAddExam = function() {
+    const titleEl = document.getElementById('exam-new-title');
+    const descEl = document.getElementById('exam-new-desc');
+    const durEl = document.getElementById('exam-new-duration');
+    const title = titleEl.value.trim();
+    const desc = descEl.value.trim();
+    const duration = parseInt(durEl.value, 10) || 20;
+    if (!title) { alert('من فضلك اكتب اسم الاختبار'); return; }
+    if (!examsRef) { alert('لسه بيتصل بقاعدة البيانات، حاول تاني بعد شوية'); return; }
+    examsRef.push().set({
+      title, description: desc, durationMinutes: duration,
+      active: true, order: Date.now(), questions: {}
+    }).then(() => {
+      titleEl.value = ''; descEl.value = ''; durEl.value = '';
+    }).catch(e => alert('حصل خطأ: ' + e.message));
+  };
+
+  window.adminSaveExamMeta = function(examId) {
+    if (!examsRef) return;
+    const title = document.getElementById('exam-edit-title-' + examId).value.trim();
+    const desc = document.getElementById('exam-edit-desc-' + examId).value.trim();
+    const duration = parseInt(document.getElementById('exam-edit-duration-' + examId).value, 10) || 20;
+    const active = document.getElementById('exam-edit-active-' + examId).checked;
+    examsRef.child(examId).update({ title, description: desc, durationMinutes: duration, active });
+  };
+
+  window.adminDeleteExam = function(examId) {
+    if (!confirm('متأكد عايز تحذف الاختبار ده وكل أسئلته؟')) return;
+    if (examsRef) examsRef.child(examId).remove();
+  };
+
+  window.adminAddQuestion = function(examId) {
+    const text = document.getElementById('q-new-text-' + examId).value.trim();
+    const opts = [0, 1, 2, 3].map(i => document.getElementById('q-new-opt' + i + '-' + examId).value.trim());
+    const correctIndex = parseInt(document.getElementById('q-new-correct-' + examId).value, 10) || 0;
+    if (!text || opts.some(o => !o)) { alert('من فضلك املأ نص السؤال والاختيارات الأربعة'); return; }
+    if (!examsRef) return;
+    examsRef.child(examId).child('questions').push().set({ text, options: opts, correctIndex, order: Date.now() });
+  };
+
+  window.adminDeleteQuestion = function(examId, qId) {
+    if (!confirm('حذف السؤال؟')) return;
+    if (examsRef) examsRef.child(examId).child('questions').child(qId).remove();
+  };
+
+  // ===== ADMIN: EXAM RESULTS =====
+  window.refreshExamResultsFilterOptions = function() {
+    const sel = document.getElementById('examresults-filter');
+    if (!sel) return;
+    const current = sel.value;
+    const entries = Object.entries(examsCache || {});
+    sel.innerHTML = '<option value="">كل الاختبارات</option>' +
+      entries.map(([id, e]) => `<option value="${id}">${escHtmlLocal(e.title || 'بدون عنوان')}</option>`).join('');
+    sel.value = current && entries.some(([id]) => id === current) ? current : '';
+    if (sel._cselRefresh) sel._cselRefresh();
+  };
+
+  window.renderAdminExamResults = function() {
+    const listEl = document.getElementById('admin-examresults-list');
+    const countEl = document.getElementById('examresults-count');
+    if (!listEl) return;
+    refreshExamResultsFilterOptions();
+    const filterSel = document.getElementById('examresults-filter');
+    const filterId = filterSel ? filterSel.value : '';
+    let entries = Object.entries(examResultsCache || {});
+    if (filterId) entries = entries.filter(([id, r]) => r.examId === filterId);
+    entries.sort((a, b) => (b[1].timestamp || 0) - (a[1].timestamp || 0));
+    if (countEl) countEl.textContent = entries.length + ' نتيجة';
+    if (!entries.length) {
+      listEl.innerHTML = '<p class="sd-empty">لا توجد نتائج بعد.</p>';
+      return;
+    }
+    listEl.innerHTML = entries.map(([rid, r]) => `
+      <div class="student-detail-entry">
+        <div class="sd-entry-info">
+          <b>${escHtmlLocal(r.name || '')}</b> — ${escHtmlLocal(r.examTitle || '')}<br>
+          <span style="opacity:0.75;">${escHtmlLocal(r.grade || '')} · 📱 ${escHtmlLocal(r.phone || '')} · ${r.score}/${r.total} (${r.percentage}%) · ${escHtmlLocal(r.date || '')}</span>
+        </div>
+        <button class="sd-entry-del" onclick="adminDeleteExamResult('${rid}')">🗑</button>
+      </div>
+    `).join('');
+  };
+
+  window.adminDeleteExamResult = function(rid) {
+    if (!confirm('حذف النتيجة دي؟')) return;
+    if (examResultsRef) examResultsRef.child(rid).remove();
+  };
+})();
 </script>
 
 </body>
