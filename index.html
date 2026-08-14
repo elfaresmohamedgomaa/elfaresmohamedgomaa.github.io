@@ -11138,6 +11138,17 @@ if (document.readyState === 'loading') {
   window.getExamNumberById = getExamNumberById;
   window.getExamIdByNumber = getExamIdByNumber;
 
+  // ===== EXAM ATTEMPT HELPERS (يسمح بمحاولتين، لكن الدرجة اللي بتتسجل هي الأولى بس) =====
+  const EXAM_MAX_ATTEMPTS = 2;
+  function getExamAttemptCount(examId) {
+    try { return parseInt(localStorage.getItem('af_exam_attempts_' + examId), 10) || 0; } catch (e) { return 0; }
+  }
+  function incrementExamAttemptCount(examId) {
+    const n = getExamAttemptCount(examId) + 1;
+    try { localStorage.setItem('af_exam_attempts_' + examId, String(n)); } catch (e) {}
+    return n;
+  }
+
   // ===== PUBLIC: EXAM INFO PAGE =====
   window.openExamInfoPage = function(examId, skipUrlUpdate) {
     const e = (examsCache || {})[examId];
@@ -11145,8 +11156,9 @@ if (document.readyState === 'loading') {
     currentExamId = examId;
     currentExamData = e;
     const qCount = e.questions ? Object.keys(e.questions).length : 0;
-    let taken = false;
-    try { taken = !!localStorage.getItem('af_exam_taken_' + examId); } catch (err) {}
+    const attemptsUsed = getExamAttemptCount(examId);
+    const attemptsLeft = Math.max(0, EXAM_MAX_ATTEMPTS - attemptsUsed);
+    const taken = attemptsLeft <= 0;
     const body = document.getElementById('exam-info-body');
     body.innerHTML = `
       <div class="exam-info-card">
@@ -11157,9 +11169,10 @@ if (document.readyState === 'loading') {
           <div class="exam-info-meta-item">❓ عدد الأسئلة: <b>${qCount}</b></div>
           <div class="exam-info-meta-item">⏱ المدة: <b>${e.durationMinutes || 20} دقيقة</b></div>
           <div class="exam-info-meta-item">✅ اختيار من متعدد</div>
-          <div class="exam-info-meta-item">🔒 محاولة واحدة فقط لكل جهاز</div>
+          <div class="exam-info-meta-item">🔁 يمكنك أداء الاختبار مرتين من نفس الجهاز (الدرجة المسجلة هي درجة المحاولة الأولى فقط)</div>
         </div>
-        ${taken ? '<div class="exam-taken-note">✋ لقد قمت بأداء هذا الاختبار من قبل من هذا الجهاز، ولا يمكن إعادته مرة أخرى.</div>' : ''}
+        ${(attemptsUsed > 0 && !taken) ? '<div class="exam-taken-note">ℹ️ ده هيبقى محاولتك التانية والأخيرة. درجة المحاولة الأولى هي اللي محفوظة عند الأستاذ.</div>' : ''}
+        ${taken ? '<div class="exam-taken-note">✋ لقد استنفدت عدد المحاولات المتاحة لهذا الاختبار من هذا الجهاز.</div>' : ''}
         ${!qCount ? '<div class="exam-taken-note">⏳ الأسئلة لسه بتتجهز، تابعنا قريباً.</div>' : ''}
         <button class="exam-start-btn" ${(!qCount || taken) ? 'disabled' : ''} onclick="openExamRegisterPage()">🚀 بدء الاختبار</button>
       </div>
@@ -11309,6 +11322,9 @@ if (document.readyState === 'loading') {
     const total = currentExamQuestionsArr.length;
     const percentage = total ? Math.round((score / total) * 100) : 0;
 
+    // هل ده أول محاولة على الجهاز ده؟ (قبل ما نزود العداد)
+    const isFirstAttempt = getExamAttemptCount(currentExamId) === 0;
+
     const resultData = {
       examId: currentExamId,
       examTitle: (currentExamData && currentExamData.title) || '',
@@ -11320,14 +11336,17 @@ if (document.readyState === 'loading') {
       date: new Date().toLocaleDateString('ar-EG')
     };
 
-    try { if (examResultsRef) examResultsRef.push(resultData); } catch (e) { console.error('Error saving exam result:', e); }
-    try { localStorage.setItem('af_exam_taken_' + currentExamId, '1'); } catch (e) {}
+    // نسجل النتيجة في لوحة التحكم فقط عند المحاولة الأولى؛ المحاولة الثانية تبقى محلية على جهاز الطالب فقط
+    if (isFirstAttempt) {
+      try { if (examResultsRef) examResultsRef.push(resultData); } catch (e) { console.error('Error saving exam result:', e); }
+    }
+    incrementExamAttemptCount(currentExamId);
 
     document.getElementById('exam-take-page').classList.remove('open');
-    showExamResultPage(score, total, percentage, auto);
+    showExamResultPage(score, total, percentage, auto, isFirstAttempt);
   }
 
-  function showExamResultPage(score, total, percentage, auto) {
+  function showExamResultPage(score, total, percentage, auto, isFirstAttempt) {
     document.getElementById('exam-result-score').textContent = score + '/' + total;
     document.getElementById('exam-result-percent').textContent = percentage + '%';
     let msg;
@@ -11335,6 +11354,7 @@ if (document.readyState === 'loading') {
     else if (percentage >= 60) msg = 'كويس جداً، وبشوية مذاكرة هتبقى أحسن 👍';
     else msg = 'مش نهاية الطريق، ذاكر كويس والأستاذ هيساعدك تتحسن 💪';
     if (auto) msg = '⏰ انتهى وقت الاختبار تلقائياً. ' + msg;
+    if (isFirstAttempt === false) msg += ' (ملحوظة: دي محاولتك التانية، والدرجة المسجلة عند الأستاذ هي درجة محاولتك الأولى)';
     document.getElementById('exam-result-msg').textContent = msg;
     document.getElementById('exam-result-page').classList.add('open');
   }
@@ -11525,11 +11545,11 @@ if (document.readyState === 'loading') {
 
       lines.forEach(line => {
         let m;
-        if ((m = line.match(/^سؤال\s*[:：]\s*(.+)$/))) {
+        if ((m = line.match(/^(?:ال)?سؤال\s*[:：]\s*(.+)$/))) {
           text = m[1].trim();
-        } else if ((m = line.match(/^اختيار\s*[١٢٣٤1234]\s*[:：]\s*(.+)$/))) {
+        } else if ((m = line.match(/^(?:ال)?اختيار\s*[١٢٣٤1234]\s*[:：]\s*(.+)$/))) {
           options.push(m[1].trim());
-        } else if ((m = line.match(/^الاجابة الصحيحة هي\s*[:：]?\s*(.+)$/) || line.match(/^الإجابة الصحيحة هي\s*[:：]?\s*(.+)$/))) {
+        } else if ((m = line.match(/^(?:ال)?اجابة\s+(?:ال)?صحيحة\s+هي\s*[:：]?\s*(.+)$/) || line.match(/^(?:ال)?إجابة\s+(?:ال)?صحيحة\s+هي\s*[:：]?\s*(.+)$/))) {
           correctNum = parseArabicOrEnglishNumber(m[1]);
         }
       });
