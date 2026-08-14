@@ -11072,6 +11072,51 @@ if (document.readyState === 'loading') {
     return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
 
+  // ===== تحويل رموز LaTeX الشائعة لرموز Unicode حقيقية عشان تتعرض صح =====
+  const LATEX_SYMBOL_MAP = [
+    // علاقات مجموعات
+    [/\\not\\subset/g, '⊄'], [/\\not\\supset/g, '⊅'], [/\\not\\in/g, '∉'],
+    [/\\subseteq/g, '⊆'], [/\\supseteq/g, '⊇'],
+    [/\\subset/g, '⊂'], [/\\supset/g, '⊃'],
+    [/\\notin/g, '∉'], [/\\in/g, '∈'],
+    [/\\cup/g, '∪'], [/\\cap/g, '∩'], [/\\emptyset/g, '∅'], [/\\varnothing/g, '∅'],
+    // مقارنات وعمليات
+    [/\\neq/g, '≠'], [/\\ne\b/g, '≠'], [/\\leq/g, '≤'], [/\\le\b/g, '≤'],
+    [/\\geq/g, '≥'], [/\\ge\b/g, '≥'], [/\\approx/g, '≈'], [/\\equiv/g, '≡'],
+    [/\\times/g, '×'], [/\\div/g, '÷'], [/\\pm/g, '±'], [/\\mp/g, '∓'], [/\\cdot/g, '·'],
+    // منطق وكميات
+    [/\\forall/g, '∀'], [/\\exists/g, '∃'], [/\\infty/g, '∞'],
+    [/\\rightarrow/g, '→'], [/\\to\b/g, '→'], [/\\leftarrow/g, '←'], [/\\leftrightarrow/g, '↔'],
+    [/\\Rightarrow/g, '⇒'], [/\\Leftrightarrow/g, '⇔'],
+    // حروف يونانية شائعة
+    [/\\alpha/g, 'α'], [/\\beta/g, 'β'], [/\\gamma/g, 'γ'], [/\\theta/g, 'θ'],
+    [/\\pi\b/g, 'π'], [/\\sigma/g, 'σ'], [/\\Delta/g, 'Δ'], [/\\lambda/g, 'λ'],
+    // فراغات/تنسيق بسيط
+    [/\\%/g, '%'], [/\\ /g, ' '],
+  ];
+
+  function renderLatexSymbols(str) {
+    let s = String(str);
+    // جذور: \sqrt{7} -> √7 ، \sqrt[3]{8} -> ∛8 (تقريبي بدون فهرس)
+    s = s.replace(/\\sqrt\[3\]\{([^{}]+)\}/g, '∛$1');
+    s = s.replace(/\\sqrt\{([^{}]+)\}/g, '√$1');
+    // كسور: \frac{a}{b} -> a⁄b
+    s = s.replace(/\\frac\{([^{}]+)\}\{([^{}]+)\}/g, '$1⁄$2');
+    // استبدال باقي رموز LaTeX الشائعة
+    LATEX_SYMBOL_MAP.forEach(([re, rep]) => { s = s.replace(re, rep); });
+    // شيل أي أقواس تنسيق متبقية زي {} أو \text{}
+    s = s.replace(/\\text\{([^{}]*)\}/g, '$1');
+    s = s.replace(/[{}]/g, '');
+    // شيل علامات $ المحيطة بالمعادلات (وضع inline-math في LaTeX)
+    s = s.replace(/\$/g, '');
+    return s;
+  }
+
+  // بيرندر نص السؤال/الاختيار: يحول LaTeX لرموز يونيكود ثم يهرب الـ HTML
+  function renderMathHtml(str) {
+    return escHtmlLocal(renderLatexSymbols(str || ''));
+  }
+
   // ===== PUBLIC: EXAM LIST PAGE =====
   window.closeExamPage = function(id) {
     const el = document.getElementById(id);
@@ -11267,12 +11312,12 @@ if (document.readyState === 'loading') {
     const q = entry[1];
     document.getElementById('exam-progress-text').textContent = `سؤال ${examCurrentQIndex + 1} من ${total}`;
     document.getElementById('exam-progress-fill').style.width = (((examCurrentQIndex + 1) / total) * 100) + '%';
-    document.getElementById('exam-question-text').textContent = q.text || '';
+    document.getElementById('exam-question-text').textContent = renderLatexSymbols(q.text || '');
     const letters = ['أ', 'ب', 'ج', 'د'];
     const optsHtml = (q.options || []).map((opt, i) => `
       <div class="exam-option ${currentExamAnswers[examCurrentQIndex] === i ? 'selected' : ''}" onclick="examSelectOption(${i})">
         <span class="exam-option-letter">${letters[i] || (i + 1)}</span>
-        <span>${escHtmlLocal(opt)}</span>
+        <span>${renderMathHtml(opt)}</span>
       </div>
     `).join('');
     document.getElementById('exam-options-container').innerHTML = optsHtml;
@@ -11391,9 +11436,9 @@ if (document.readyState === 'loading') {
         const questions = e.questions ? Object.entries(e.questions).sort((a, b) => (a[1].order || 0) - (b[1].order || 0)) : [];
         const qHtml = questions.length ? questions.map(([qid, q]) => `
           <div class="admin-question-item">
-            <div class="admin-question-item-text">${escHtmlLocal(q.text || '')}</div>
+            <div class="admin-question-item-text">${renderMathHtml(q.text || '')}</div>
             <div class="admin-question-opts">
-              ${(q.options || []).map((opt, i) => `<div class="admin-question-opt ${i === q.correctIndex ? 'correct' : ''}">${letters[i]}) ${escHtmlLocal(opt)}${i === q.correctIndex ? ' ✓' : ''}</div>`).join('')}
+              ${(q.options || []).map((opt, i) => `<div class="admin-question-opt ${i === q.correctIndex ? 'correct' : ''}">${letters[i]}) ${renderMathHtml(opt)}${i === q.correctIndex ? ' ✓' : ''}</div>`).join('')}
             </div>
             <button class="admin-btn-del" onclick="adminDeleteQuestion('${examId}','${qid}')">🗑</button>
           </div>
