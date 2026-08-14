@@ -66,7 +66,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Cairo:wght@300;400;600;700;900&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Cairo:wght@300;400;600;700;900&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700;800&family=Noto+Sans+Math&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
@@ -3924,9 +3924,15 @@
 .exam-progress-track { height: 4px; background: rgba(255,255,255,0.08); }
 .exam-progress-fill { height: 100%; background: linear-gradient(90deg, var(--gold-dark), var(--gold)); transition: width 0.3s; }
 
+/* خط يدعم الرموز الرياضية (⊂ ∈ ∀ ∑ √ ...) جنبًا إلى جنب مع العربي والإنجليزي.
+   لو الحرف مش موجود في Noto Sans Arabic، المتصفح بيسحبه تلقائيًا من Noto Sans Math كـ fallback. */
+.exam-math-font {
+  font-family: 'Noto Sans Arabic', 'Noto Sans Math', 'Tajawal', sans-serif;
+}
+
 .exam-question-box { max-width: 640px; margin: 32px auto; padding: 0 24px; }
 .exam-question-text {
-  font-family: 'Tajawal', sans-serif;
+  font-family: 'Noto Sans Arabic', 'Noto Sans Math', 'Tajawal', sans-serif;
   font-weight: 800;
   font-size: 1.15rem;
   color: var(--white);
@@ -3944,6 +3950,7 @@
   transition: all 0.2s;
   font-size: 0.95rem;
   color: var(--white2);
+  font-family: 'Noto Sans Arabic', 'Noto Sans Math', 'Tajawal', sans-serif;
 }
 .exam-option:hover { border-color: rgba(201,168,76,0.4); }
 .exam-option.selected { border-color: var(--gold); background: rgba(201,168,76,0.1); color: var(--white); }
@@ -4005,10 +4012,55 @@
   padding: 14px 16px;
   margin-bottom: 10px;
 }
-.admin-question-item-text { font-size:0.88rem; color:var(--white); margin-bottom:8px; font-weight:600; }
+.admin-question-item-text { font-size:0.88rem; color:var(--white); margin-bottom:8px; font-weight:600; font-family: 'Noto Sans Arabic', 'Noto Sans Math', 'Tajawal', sans-serif; }
 .admin-question-opts { display:flex; flex-direction:column; gap:4px; margin-bottom: 8px; }
-.admin-question-opt { font-size:0.78rem; color:var(--white2); opacity:0.75; padding-right: 8px; }
+.admin-question-opt { font-size:0.78rem; color:var(--white2); opacity:0.75; padding-right: 8px; font-family: 'Noto Sans Arabic', 'Noto Sans Math', 'Tajawal', sans-serif; }
 .admin-question-opt.correct { color: #57c690; opacity: 1; font-weight: 700; }
+.admin-input.exam-math-font { font-family: 'Noto Sans Arabic', 'Noto Sans Math', 'Tajawal', sans-serif; }
+.admin-bulk-textarea {
+  width: 100%;
+  min-height: 220px;
+  background: var(--dark3);
+  border: 1.5px solid rgba(201,168,76,0.2);
+  border-radius: 12px;
+  padding: 14px;
+  color: var(--white);
+  font-family: 'Noto Sans Arabic', 'Noto Sans Math', 'Tajawal', sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.9;
+  resize: vertical;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+.admin-bulk-textarea:focus { outline: none; border-color: var(--gold); }
+.admin-bulk-toggle-btn {
+  background: rgba(201,168,76,0.12);
+  color: var(--gold);
+  border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom: 10px;
+}
+.admin-bulk-toggle-btn:hover { background: rgba(201,168,76,0.2); }
+.admin-bulk-result { font-size: 0.8rem; margin-top: 8px; line-height: 1.8; white-space: pre-wrap; }
+.admin-bulk-result.ok { color: #57c690; }
+.admin-bulk-result.err { color: #e06666; }
+.admin-bulk-format-hint {
+  font-size: 0.72rem;
+  color: var(--white2);
+  opacity: 0.7;
+  line-height: 1.8;
+  margin-bottom: 10px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 8px;
+  padding: 10px;
+  white-space: pre-wrap;
+  font-family: 'Noto Sans Arabic', 'Noto Sans Math', 'Tajawal', sans-serif;
+}
 .results-filter-row { display:flex; gap:10px; margin-bottom: 18px; flex-wrap:wrap; align-items:center; }
 .results-summary-badge {
   background: rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.25);
@@ -11355,11 +11407,11 @@ if (document.readyState === 'loading') {
 
             <div class="admin-add-form">
               <div class="admin-add-form-title">+ إضافة سؤال جديد</div>
-              <input class="admin-input" id="q-new-text-${examId}" placeholder="نص السؤال..." dir="rtl">
-              <input class="admin-input" id="q-new-opt0-${examId}" placeholder="الاختيار الأول (أ)" dir="rtl">
-              <input class="admin-input" id="q-new-opt1-${examId}" placeholder="الاختيار الثاني (ب)" dir="rtl">
-              <input class="admin-input" id="q-new-opt2-${examId}" placeholder="الاختيار الثالث (ج)" dir="rtl">
-              <input class="admin-input" id="q-new-opt3-${examId}" placeholder="الاختيار الرابع (د)" dir="rtl">
+              <input class="admin-input exam-math-font" id="q-new-text-${examId}" placeholder="نص السؤال..." dir="rtl">
+              <input class="admin-input exam-math-font" id="q-new-opt0-${examId}" placeholder="الاختيار الأول (أ)" dir="rtl">
+              <input class="admin-input exam-math-font" id="q-new-opt1-${examId}" placeholder="الاختيار الثاني (ب)" dir="rtl">
+              <input class="admin-input exam-math-font" id="q-new-opt2-${examId}" placeholder="الاختيار الثالث (ج)" dir="rtl">
+              <input class="admin-input exam-math-font" id="q-new-opt3-${examId}" placeholder="الاختيار الرابع (د)" dir="rtl">
               <select class="notif-type-select" id="q-new-correct-${examId}">
                 <option value="0">الإجابة الصحيحة: أ</option>
                 <option value="1">الإجابة الصحيحة: ب</option>
@@ -11367,6 +11419,23 @@ if (document.readyState === 'loading') {
                 <option value="3">الإجابة الصحيحة: د</option>
               </select>
               <button class="admin-add-btn" onclick="adminAddQuestion('${examId}')">➕ إضافة السؤال</button>
+            </div>
+
+            <div class="admin-add-form">
+              <button class="admin-bulk-toggle-btn" onclick="toggleBulkAddBox('${examId}')" id="bulk-toggle-btn-${examId}">📋 إضافة أسئلة دفعة واحدة</button>
+              <div id="bulk-add-box-${examId}" style="display:none;">
+                <div class="admin-bulk-format-hint">الصيغة المطلوبة لكل سؤال (افصل بين الأسئلة بسطر فاضي):
+
+سؤال : نص السؤال هنا
+اختيار ١ : الاختيار الأول
+اختيار ٢ : الاختيار الثاني
+اختيار ٣ : الاختيار الثالث
+اختيار ٤ : الاختيار الرابع
+الاجابة الصحيحة هي ٣</div>
+                <textarea class="admin-bulk-textarea" id="bulk-add-text-${examId}" placeholder="الصق هنا كل الأسئلة دفعة واحدة..."></textarea>
+                <button class="admin-add-btn" onclick="adminBulkAddQuestions('${examId}')">➕ إضافة كل الأسئلة</button>
+                <div class="admin-bulk-result" id="bulk-add-result-${examId}"></div>
+              </div>
             </div>
           </div>
         </div>`;
@@ -11421,6 +11490,97 @@ if (document.readyState === 'loading') {
   window.adminDeleteQuestion = function(examId, qId) {
     if (!confirm('حذف السؤال؟')) return;
     if (examsRef) examsRef.child(examId).child('questions').child(qId).remove();
+  };
+
+  // ===== BULK ADD QUESTIONS =====
+  window.toggleBulkAddBox = function(examId) {
+    const box = document.getElementById('bulk-add-box-' + examId);
+    const btn = document.getElementById('bulk-toggle-btn-' + examId);
+    if (!box) return;
+    const isOpen = box.style.display !== 'none';
+    box.style.display = isOpen ? 'none' : 'block';
+    if (btn) btn.textContent = isOpen ? '📋 إضافة أسئلة دفعة واحدة' : '🔼 إخفاء الإضافة الجماعية';
+  };
+
+  // يحول أرقام عربية (١٢٣) أو إنجليزية لرقم صحيح
+  function parseArabicOrEnglishNumber(str) {
+    if (!str) return NaN;
+    const arabicDigits = '٠١٢٣٤٥٦٧٨٩';
+    const normalized = String(str).replace(/[٠-٩]/g, d => arabicDigits.indexOf(d));
+    const m = normalized.match(/\d+/);
+    return m ? parseInt(m[0], 10) : NaN;
+  }
+
+  // يحلل نص كتلة أسئلة بالصيغة المطلوبة إلى مصفوفة كائنات أسئلة
+  function parseBulkExamQuestions(raw) {
+    const blocks = raw.split(/\n\s*\n+/).map(b => b.trim()).filter(Boolean);
+    const questions = [];
+    const errors = [];
+
+    blocks.forEach((block, blockIdx) => {
+      const lines = block.split('\n').map(l => l.trim()).filter(Boolean);
+      let text = null;
+      const options = [];
+      let correctNum = null;
+
+      lines.forEach(line => {
+        let m;
+        if ((m = line.match(/^سؤال\s*[:：]\s*(.+)$/))) {
+          text = m[1].trim();
+        } else if ((m = line.match(/^اختيار\s*[١٢٣٤1234]\s*[:：]\s*(.+)$/))) {
+          options.push(m[1].trim());
+        } else if ((m = line.match(/^الاجابة الصحيحة هي\s*[:：]?\s*(.+)$/) || line.match(/^الإجابة الصحيحة هي\s*[:：]?\s*(.+)$/))) {
+          correctNum = parseArabicOrEnglishNumber(m[1]);
+        }
+      });
+
+      if (!text || options.length !== 4 || !correctNum || correctNum < 1 || correctNum > 4) {
+        errors.push(`السؤال رقم ${blockIdx + 1}: تنسيق غير مكتمل أو غير صحيح (لازم نص سؤال + 4 اختيارات + رقم إجابة من 1 لـ 4)`);
+        return;
+      }
+
+      questions.push({ text, options, correctIndex: correctNum - 1 });
+    });
+
+    return { questions, errors };
+  }
+
+  window.adminBulkAddQuestions = function(examId) {
+    const textarea = document.getElementById('bulk-add-text-' + examId);
+    const resultEl = document.getElementById('bulk-add-result-' + examId);
+    if (!textarea || !resultEl) return;
+    const raw = textarea.value.trim();
+    if (!raw) { resultEl.className = 'admin-bulk-result err'; resultEl.textContent = '⚠️ اكتب الأسئلة الأول'; return; }
+    if (!examsRef) { resultEl.className = 'admin-bulk-result err'; resultEl.textContent = '⚠️ لسه بيتصل بقاعدة البيانات، حاول تاني بعد شوية'; return; }
+
+    const { questions, errors } = parseBulkExamQuestions(raw);
+
+    if (!questions.length) {
+      resultEl.className = 'admin-bulk-result err';
+      resultEl.textContent = '❌ مفيش أي سؤال اتقرا صح:\n' + errors.join('\n');
+      return;
+    }
+
+    const qRef = examsRef.child(examId).child('questions');
+    let addedCount = 0;
+    const baseOrder = Date.now();
+    const promises = questions.map((q, i) => qRef.push().set({
+      text: q.text,
+      options: q.options,
+      correctIndex: q.correctIndex,
+      order: baseOrder + i
+    }).then(() => { addedCount++; }));
+
+    Promise.all(promises).then(() => {
+      let msg = `✅ تم إضافة ${addedCount} سؤال بنجاح`;
+      if (errors.length) msg += `\n⚠️ اتجاهل ${errors.length} بلوك فيه مشكلة:\n` + errors.join('\n');
+      resultEl.className = 'admin-bulk-result ok';
+      resultEl.textContent = msg;
+      textarea.value = '';
+    }).catch(e => {
+      resultEl.className = 'admin-bulk-result err';
+      resultEl.textContent = '❌ حصل خطأ أثناء الحفظ: ' + e.message;
+    });
   };
 
   // ===== ADMIN: EXAM RESULTS =====
