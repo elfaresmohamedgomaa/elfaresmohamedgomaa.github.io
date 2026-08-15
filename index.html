@@ -9097,7 +9097,11 @@ window.adminSaveWheelPrizes = function() {
   if (wheelPrizesRef) {
     wheelPrizesRef.set(cleaned)
       .then(() => showWheelPrizeSaveMsg('✅ اتحفظت الجوائز والاحتمالات بنجاح', false))
-      .catch(() => showWheelPrizeSaveMsg('✅ اتحفظت محليًا (تعذّر الحفظ على الإنترنت)', false));
+      .catch(err => {
+        console.error('Error saving wheel prizes to Firebase:', err);
+        const reason = (err && err.code) ? ' (' + err.code + ')' : '';
+        showWheelPrizeSaveMsg('⚠️ اتحفظت محليًا بس، وتعذّر الحفظ على Firebase' + reason, true);
+      });
   } else {
     showWheelPrizeSaveMsg('✅ اتحفظت الجوائز محليًا على الجهاز ده', false);
   }
