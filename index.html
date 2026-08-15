@@ -4236,11 +4236,122 @@
 .wheel-wrap {
   display: flex; flex-direction: column; align-items: center;
   gap: 28px; padding: 20px 0 30px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px;
+}
+/* خلفية ورق مربعات رياضي خفيفة جدًا خلف العجلة */
+.wheel-wrap::before {
+  content: '';
+  position: absolute; inset: -10%;
+  background-image:
+    linear-gradient(rgba(201,168,76,0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,168,76,0.07) 1px, transparent 1px);
+  background-size: 34px 34px;
+  z-index: 0;
+  pointer-events: none;
+  mask-image: radial-gradient(circle at 50% 42%, #000 55%, transparent 85%);
+  -webkit-mask-image: radial-gradient(circle at 50% 42%, #000 55%, transparent 85%);
 }
 .wheel-container {
   position: relative;
-  width: 420px; height: 420px;
+  z-index: 1;
+  width: min(52vw, 60vh, 460px); height: min(52vw, 60vh, 460px);
   max-width: 92vw; max-height: 92vw;
+  --wheel-radius: min(30vw, 34vh, 254px);
+}
+/* رموز رياضية عايمة صاعدة حوالين العجلة، لتوصيل هوية "الفارس في الرياضيات" */
+.wheel-math-bg {
+  position: absolute; inset: -12% -6%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+.wheel-math-bg span {
+  position: absolute;
+  bottom: -10%;
+  font-family: 'Tajawal', sans-serif;
+  font-weight: 900;
+  color: rgba(240,208,128,0.4);
+  text-shadow: 0 0 10px rgba(201,168,76,0.35);
+  animation-name: mathSymbolFloat;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+@keyframes mathSymbolFloat {
+  0%   { transform: translateY(0) rotate(0deg) scale(0.85); opacity: 0; }
+  12%  { opacity: 0.9; }
+  50%  { transform: translateY(-140px) rotate(12deg) scale(1.05); }
+  88%  { opacity: 0.7; }
+  100% { transform: translateY(-280px) rotate(-8deg) scale(0.9); opacity: 0; }
+}
+/* حلقة رموز رياضية بتلف حوالين العجلة برفق، مع رموز ثابتة الاتجاه (مبتلفش عكس الحلقة) */
+.wheel-orbit-ring {
+  position: absolute; inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  animation: wheelOrbitSpin 34s linear infinite;
+  transition: animation-duration 0.4s ease;
+}
+.wheel-orbit-ring.spin-fast { animation-duration: 3.2s; }
+.wheel-orbit-ring.spin-fast .wheel-orbit-item span { animation-duration: 3.2s; }
+.wheel-orbit-item {
+  position: absolute; top: 50%; left: 50%;
+  width: 0; height: 0;
+}
+.wheel-orbit-item span {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: inline-block;
+  font-family: 'Tajawal', sans-serif;
+  font-weight: 900;
+  font-size: 19px;
+  color: var(--gold-light);
+  text-shadow: 0 0 10px rgba(201,168,76,0.75), 0 0 2px rgba(0,0,0,0.5);
+  opacity: 0.85;
+  animation: wheelOrbitCounterSpin 34s linear infinite;
+}
+@keyframes wheelOrbitSpin { to { transform: rotate(360deg); } }
+@keyframes wheelOrbitCounterSpin { to { transform: translate(-50%, -50%) rotate(-360deg); } }
+
+/* زرار ملء الشاشة — عشان تتعرض العجلة على أي شاشة أو بروجيكتور باحترافية */
+.wheel-fullscreen-btn {
+  position: absolute; top: -8px; right: -8px;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(240,208,128,0.35);
+  color: var(--gold-light);
+  font-size: 15px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  z-index: 7;
+  transition: all 0.2s;
+}
+.wheel-fullscreen-btn:hover { background: rgba(240,208,128,0.18); transform: scale(1.08); }
+
+/* وضع العرض بملء الشاشة: تكبير كل حاجة وتوسيطها بشكل احترافي على أي شاشة */
+#admin-wheel:fullscreen,
+#admin-wheel:-webkit-full-screen {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: radial-gradient(ellipse at 50% 40%, var(--dark2), var(--dark) 75%);
+  padding: 0;
+}
+#admin-wheel:fullscreen .wheel-wrap,
+#admin-wheel:-webkit-full-screen .wheel-wrap { gap: 44px; }
+#admin-wheel:fullscreen .wheel-container,
+#admin-wheel:-webkit-full-screen .wheel-container {
+  width: min(60vw, 82vh, 720px); height: min(60vw, 82vh, 720px);
+  --wheel-radius: min(34vw, 46vh, 396px);
+}
+#admin-wheel:fullscreen .wheel-spin-btn,
+#admin-wheel:-webkit-full-screen .wheel-spin-btn {
+  font-size: 1.35rem; padding: 18px 62px;
+}
+#admin-wheel:fullscreen .wheel-segment-label span,
+#admin-wheel:-webkit-full-screen .wheel-segment-label span {
+  font-size: 20px; max-width: 190px;
 }
 .wheel-pointer {
   position: absolute; top: -26px; left: 50%;
@@ -7818,9 +7929,12 @@ STU-26-0003	معاذ خالد" style="resize:vertical; font-family:'IBM Plex San
         <div class="admin-section-title">🎡 عجلة الحظ</div>
         <p class="admin-wheel-hint" style="font-size:0.85rem; color:var(--white2); opacity:0.6; margin-bottom:10px;">لفّ العجلة عشان تدّي الطالب اللي قدامك جايزة عشوائية.</p>
 
-        <div class="wheel-wrap">
+        <div class="wheel-wrap" id="wheelWrap">
+          <div class="wheel-math-bg" id="wheelMathBg"></div>
           <div class="wheel-container">
             <button class="wheel-sound-toggle" id="wheelSoundToggle" onclick="toggleWheelSound()" title="كتم/تشغيل صوت العجلة">🔊</button>
+            <button class="wheel-fullscreen-btn" id="wheelFullscreenBtn" onclick="toggleWheelFullscreen()" title="عرض بملء الشاشة">⛶</button>
+            <div class="wheel-orbit-ring" id="wheelOrbitRing"></div>
             <div class="wheel-pointer"></div>
             <div class="wheel-disc idle-glow" id="luckyWheelDisc"></div>
             <div class="wheel-winner-highlight" id="wheelWinnerHighlight"></div>
@@ -8700,6 +8814,36 @@ function launchConfetti() {
   setTimeout(() => container.remove(), 4000);
 }
 
+// انفجار رموز رياضية (بديل احتفالي مناسب لهوية المنصة) بيصاحب الكونفتي وقت الفوز
+function launchMathSymbolBurst() {
+  const symbols = ['π', '√', '∑', '×', '÷', '=', '∞', '%', '+', '−', '²'];
+  const container = document.createElement('div');
+  container.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:999997;overflow:hidden;';
+  document.body.appendChild(container);
+  const centerX = 50, centerY = 45;
+  for (let i = 0; i < 22; i++) {
+    const el = document.createElement('div');
+    const symbol = symbols[Math.floor(Math.random() * symbols.length)];
+    const angle = Math.random() * Math.PI * 2;
+    const dist = Math.random() * 34 + 14;
+    const dx = (Math.cos(angle) * dist).toFixed(1);
+    const dy = (Math.sin(angle) * dist).toFixed(1);
+    const size = Math.random() * 16 + 20;
+    const dur = Math.random() * 0.8 + 1.1;
+    const delay = Math.random() * 0.25;
+    el.textContent = symbol;
+    el.style.cssText = 'position:absolute; left:' + centerX + '%; top:' + centerY + '%; font-family:"Tajawal",sans-serif; font-weight:900; font-size:' + size + 'px; color:#f0d080; text-shadow:0 0 10px rgba(201,168,76,0.85); opacity:0; --dx:' + dx + 'vw; --dy:' + dy + 'vh; animation: mathBurstFly ' + dur + 's ' + delay + 's ease-out forwards;';
+    container.appendChild(el);
+  }
+  if (!document.getElementById('math-burst-style')) {
+    const s = document.createElement('style');
+    s.id = 'math-burst-style';
+    s.textContent = '@keyframes mathBurstFly { 0% { transform: translate(-50%,-50%) scale(0.3) rotate(0deg); opacity:0; } 15% { opacity:1; } 100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.15) rotate(180deg); opacity:0; } }';
+    document.head.appendChild(s);
+  }
+  setTimeout(() => container.remove(), 2200);
+}
+
 // الجوائز الحالية — كل جايزة معاها وزن احتمالي (weight): كل ما قيمة الجايزة تزيد كل ما الوزن يقل
 const luckyWheelPrizes = [
   { text: 'حظ أوفر المرة الجاية 🍀', color: '#e63946', weight: 10 },
@@ -8733,10 +8877,49 @@ function pickWeightedIndex(prizes) {
 }
 
 // بيرسم العجلة بالجوائز (شرايح + كتابة كل جايزة)
+// رموز رياضية تتردد بصريًا حوالين العجلة، مناسبة لهوية "الفارس في الرياضيات"
+const WHEEL_MATH_SYMBOLS = ['π', '√', '∑', '÷', '×', '=', '∞', '%', '²', '∫', '∆', '+', '−'];
+
+// بيبني الرموز الرياضية العايمة الصاعدة خلف العجلة (تأثير فقاعات بصرية)
+function buildWheelMathBg() {
+  const el = document.getElementById('wheelMathBg');
+  if (!el || el.dataset.built) return;
+  el.dataset.built = '1';
+  const count = 16;
+  let html = '';
+  for (let i = 0; i < count; i++) {
+    const symbol = WHEEL_MATH_SYMBOLS[Math.floor(Math.random() * WHEEL_MATH_SYMBOLS.length)];
+    const left = (Math.random() * 100).toFixed(1);
+    const size = (Math.random() * 16 + 16).toFixed(0);
+    const duration = (Math.random() * 6 + 7).toFixed(1);
+    const delay = (Math.random() * 9).toFixed(1);
+    html += '<span style="left:' + left + '%; font-size:' + size + 'px; animation-duration:' + duration + 's; animation-delay:-' + delay + 's;">' + symbol + '</span>';
+  }
+  el.innerHTML = html;
+}
+
+// بيبني حلقة الرموز الرياضية اللي بتلف حوالين العجلة برفق
+function buildWheelOrbitRing() {
+  const ring = document.getElementById('wheelOrbitRing');
+  if (!ring || ring.dataset.built) return;
+  ring.dataset.built = '1';
+  const count = 8;
+  let html = '';
+  for (let i = 0; i < count; i++) {
+    const symbol = WHEEL_MATH_SYMBOLS[i % WHEEL_MATH_SYMBOLS.length];
+    const angle = (360 / count) * i;
+    html += '<div class="wheel-orbit-item" style="transform: rotate(' + angle + 'deg) translateY(calc(-1 * var(--wheel-radius)));">' +
+      '<span>' + symbol + '</span></div>';
+  }
+  ring.innerHTML = html;
+}
+
 function renderLuckyWheel() {
   const disc = document.getElementById('luckyWheelDisc');
   if (!disc || luckyWheelBuilt) return;
   luckyWheelBuilt = true;
+  buildWheelMathBg();
+  buildWheelOrbitRing();
 
   const n = luckyWheelPrizes.length;
   const segAngle = 360 / n;
@@ -8784,6 +8967,8 @@ window.spinLuckyWheel = function() {
   disc.classList.remove('idle-glow');
   disc.classList.add('spinning-glow');
   if (highlight) highlight.classList.remove('show');
+  const orbitRing = document.getElementById('wheelOrbitRing');
+  if (orbitRing) orbitRing.classList.add('spin-fast');
 
   playWheelClickSound();
   playWheelWhooshSound();
@@ -8829,6 +9014,7 @@ window.spinLuckyWheel = function() {
     }
     disc.classList.remove('spinning-glow');
     disc.classList.add('idle-glow');
+    if (orbitRing) orbitRing.classList.remove('spin-fast');
 
     // تسليط ضوء على شريحة الجايزة الفايزة
     if (highlight) {
@@ -8842,6 +9028,7 @@ window.spinLuckyWheel = function() {
     if (navigator.vibrate) { try { navigator.vibrate([40, 60, 90]); } catch(e) {} }
     playWheelWinSound();
     launchConfetti();
+    launchMathSymbolBurst();
     showWheelResult(luckyWheelPrizes[winningIndex]);
   }, spinDuration);
 };
@@ -8858,6 +9045,30 @@ window.closeWheelResult = function() {
   const overlay = document.getElementById('wheelResultOverlay');
   if (overlay) overlay.classList.remove('show');
 };
+
+// عرض عجلة الحظ بملء الشاشة — عشان تتعرض باحترافية على أي شاشة أو بروجيكتور
+window.toggleWheelFullscreen = function() {
+  const el = document.getElementById('admin-wheel');
+  if (!el) return;
+  const isFs = document.fullscreenElement || document.webkitFullscreenElement;
+  if (!isFs) {
+    const req = el.requestFullscreen || el.webkitRequestFullscreen;
+    if (req) req.call(el).catch(function(){});
+  } else {
+    const exit = document.exitFullscreen || document.webkitExitFullscreen;
+    if (exit) exit.call(document).catch(function(){});
+  }
+};
+
+function updateWheelFullscreenBtnUI() {
+  const btn = document.getElementById('wheelFullscreenBtn');
+  if (!btn) return;
+  const isFs = document.fullscreenElement || document.webkitFullscreenElement;
+  btn.textContent = isFs ? '✕' : '⛶';
+  btn.title = isFs ? 'الخروج من ملء الشاشة' : 'عرض بملء الشاشة';
+}
+document.addEventListener('fullscreenchange', updateWheelFullscreenBtnUI);
+document.addEventListener('webkitfullscreenchange', updateWheelFullscreenBtnUI);
 
 // ---- ADMIN: Render notification list in admin panel ----
 function renderAdminNotifList() {
