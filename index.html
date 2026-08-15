@@ -4154,7 +4154,8 @@
 #admin-panel.wheel-presentation .admin-panel-header,
 #admin-panel.wheel-presentation .admin-sidebar,
 #admin-panel.wheel-presentation #admin-wheel .admin-section-title,
-#admin-panel.wheel-presentation #admin-wheel .admin-wheel-hint {
+#admin-panel.wheel-presentation #admin-wheel .admin-wheel-hint,
+#admin-panel.wheel-presentation #admin-wheel .wheel-prize-editor {
   display: none !important;
 }
 #admin-panel.wheel-presentation .admin-content {
@@ -4534,6 +4535,51 @@
 .wheel-result-title { color: var(--gold-light); font-family:'Tajawal',sans-serif; font-size:1rem; opacity:0.75; margin-bottom: 8px; }
 .wheel-result-prize { color: #fff; font-family:'Tajawal',sans-serif; font-size:1.35rem; font-weight:900; margin-bottom: 22px; line-height:1.5; }
 .wheel-result-close { background: linear-gradient(135deg, var(--gold-dark), var(--gold)); color: var(--dark); border:none; padding:10px 34px; border-radius:24px; font-weight:800; cursor:pointer; font-family:'Tajawal',sans-serif; }
+
+/* محرر الجوائز واحتمالات الفوز */
+.wheel-prize-editor {
+  width: 100%; max-width: 460px;
+  margin: -6px auto 0;
+  border: 1px solid rgba(201,168,76,0.18);
+  border-radius: 16px;
+  background: rgba(255,255,255,0.02);
+  overflow: hidden;
+}
+.wheel-prize-editor-toggle {
+  width: 100%;
+  display: flex; align-items: center; justify-content: space-between;
+  background: none; border: none;
+  color: var(--gold-light);
+  font-family: 'Tajawal', sans-serif;
+  font-size: 0.88rem; font-weight: 800;
+  padding: 14px 18px;
+  cursor: pointer;
+}
+.wheel-prize-editor-arrow { transition: transform 0.25s; opacity: 0.7; }
+.wheel-prize-editor.open .wheel-prize-editor-arrow { transform: rotate(180deg); }
+.wheel-prize-editor-body {
+  display: none;
+  padding: 0 18px 20px;
+}
+.wheel-prize-editor.open .wheel-prize-editor-body { display: block; }
+.wheel-prize-row-title {
+  display: flex; align-items: center; justify-content: space-between;
+  color: var(--gold); font-weight: 700; font-size: 0.9rem; margin-bottom: 12px;
+}
+.wheel-prize-row-pct {
+  color: var(--gold-light); font-size: 0.78rem; font-weight: 800;
+  background: rgba(201,168,76,0.12); padding: 3px 10px; border-radius: 20px;
+}
+.wheel-prize-color-input {
+  width: 56px; height: 36px; border: none; border-radius: 8px;
+  cursor: pointer; background: none; padding: 0;
+}
+.wheel-prize-save-msg {
+  font-size: 0.8rem; color: var(--gold-light); opacity: 0;
+  transition: opacity 0.3s; margin-top: 10px; text-align: center; font-weight: 700;
+}
+.wheel-prize-save-msg.show { opacity: 1; }
+.wheel-prize-save-msg.error { color: #ff6b6b; }
 
 /* Level Accordion */
 .admin-level-block {
@@ -7942,6 +7988,26 @@ STU-26-0003	معاذ خالد" style="resize:vertical; font-family:'IBM Plex San
           </div>
           <button class="wheel-spin-btn idle-pulse" id="wheelSpinBtn" onclick="spinLuckyWheel()">🎡 لف العجلة</button>
         </div>
+
+        <!-- محرر الجوائز واحتمالات الفوز — بيختفي في وضع العرض النظيف قدام الطالب -->
+        <div class="wheel-prize-editor" id="wheelPrizeEditor">
+          <button class="wheel-prize-editor-toggle" id="wheelPrizeEditorToggle" onclick="toggleWheelPrizeEditor()">
+            <span>⚙️ تعديل الجوائز واحتمالات الفوز</span>
+            <span class="wheel-prize-editor-arrow">▾</span>
+          </button>
+          <div class="wheel-prize-editor-body" id="wheelPrizeEditorBody">
+            <p style="font-size:0.8rem; color:var(--white2); opacity:0.6; margin-bottom:14px;">
+              عدّل نص كل جايزة ولونها و"الوزن" بتاعها — كل ما الوزن يزيد كل ما فرصة ظهورها في العجلة تكبر. النسبة % بتتحدث تلقائي تحت كل جايزة.
+            </p>
+            <div id="admin-wheel-prizes-list"></div>
+            <button class="admin-add-btn" onclick="adminAddWheelPrize()" style="width:100%; margin-top:4px;">➕ إضافة جايزة جديدة</button>
+            <div style="display:flex; gap:10px; margin-top:14px;">
+              <button class="admin-save-tracking-btn" onclick="adminSaveWheelPrizes()" style="flex:1;">💾 حفظ الجوائز والاحتمالات</button>
+              <button class="admin-reset-btn" onclick="adminResetWheelPrizesToDefault()" style="flex:0 0 auto;">↩️ الافتراضي</button>
+            </div>
+            <div id="wheelPrizeSaveMsg" class="wheel-prize-save-msg"></div>
+          </div>
+        </div>
       </div>
 
     </div><!-- .admin-content -->
@@ -8243,6 +8309,7 @@ let notificationsRef = null;
 let auth = null;
 let examsRef = null;
 let examResultsRef = null;
+let wheelPrizesRef = null;
 let examsCache = {};
 let examResultsCache = {};
 let firebaseRetries = 0;
@@ -8282,6 +8349,7 @@ function initFirebase() {
     notificationsRef = db.ref('notifications');
     examsRef = db.ref('exams');
     examResultsRef = db.ref('examResults');
+    wheelPrizesRef = db.ref('wheelPrizes');
     auth = firebase.auth();
 
     // راقب حالة تسجيل دخول الأدمن عن طريق Firebase Authentication الحقيقي
@@ -8338,11 +8406,23 @@ function initFirebase() {
       }
     });
 
+    // استمع لتحديثات جوائز عجلة الحظ لحظة بلحظة (لو الأستاذ عدّل من جهاز تاني)
+    wheelPrizesRef.on('value', snapshot => {
+      try {
+        const raw = snapshot.val();
+        const arr = Array.isArray(raw) ? raw : (raw ? Object.values(raw) : null);
+        if (arr && arr.length >= 2) applyWheelPrizesUpdate(arr);
+      } catch(e) {
+        console.error('Error listening to wheel prizes:', e);
+      }
+    });
+
     console.log('✅ Firebase initialized successfully');
   } catch(e) {
     console.error('❌ Firebase error:', e);
     console.error('🔙 Falling back to localStorage...');
     loadNotificationsFromLocalStorage();
+    loadWheelPrizesFromLocalStorage();
   }
 }
 
@@ -8793,7 +8873,7 @@ function launchConfetti() {
   const colors = ['#c9a84c','#f0d080','#4a90d9','#7b4fa0','#fff','#ff6b6b','#6bffb8'];
   const container = document.createElement('div');
   container.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:999998;overflow:hidden;';
-  document.body.appendChild(container);
+  getWheelOverlayRoot().appendChild(container);
   for (let i = 0; i < 80; i++) {
     const el = document.createElement('div');
     const size = Math.random() * 10 + 5;
@@ -8819,7 +8899,7 @@ function launchMathSymbolBurst() {
   const symbols = ['π', '√', '∑', '×', '÷', '=', '∞', '%', '+', '−', '²'];
   const container = document.createElement('div');
   container.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:999997;overflow:hidden;';
-  document.body.appendChild(container);
+  getWheelOverlayRoot().appendChild(container);
   const centerX = 50, centerY = 45;
   for (let i = 0; i < 22; i++) {
     const el = document.createElement('div');
@@ -8844,8 +8924,9 @@ function launchMathSymbolBurst() {
   setTimeout(() => container.remove(), 2200);
 }
 
-// الجوائز الحالية — كل جايزة معاها وزن احتمالي (weight): كل ما قيمة الجايزة تزيد كل ما الوزن يقل
-const luckyWheelPrizes = [
+// الجوائز الافتراضية — كل جايزة معاها وزن احتمالي (weight): كل ما قيمة الجايزة تزيد كل ما الوزن يقل
+// دي بتُستخدم أول مرة بس، أو لو الأستاذ ضغط "استرجاع الافتراضي" من لوحة التحكم
+const DEFAULT_WHEEL_PRIZES = [
   { text: 'حظ أوفر المرة الجاية 🍀', color: '#e63946', weight: 10 },
   { text: 'لف مرة أخرى 🔄',          color: '#4a90d9', weight: 9  },
   { text: '1 جنيه 💵',               color: '#2ecc71', weight: 15 },
@@ -8860,9 +8941,181 @@ const luckyWheelPrizes = [
   { text: 'حصة مجانية 🎓',           color: '#4a90d9', weight: 3  }
 ];
 
+// الجوائز المستخدمة فعليًا في العجلة (ممكن تتغير من لوحة التحكم أو من Firebase)
+let luckyWheelPrizes = DEFAULT_WHEEL_PRIZES.map(p => ({ ...p }));
+// نسخة مسودة بتتعدل في فورم لوحة التحكم قبل ما الأستاذ يضغط "حفظ"
+let wheelPrizeDraft = luckyWheelPrizes.map(p => ({ ...p }));
+let pendingWheelRebuild = false;
+
 let luckyWheelRotation = 0;
 let luckyWheelSpinning = false;
 let luckyWheelBuilt = false;
+
+// بيطبّق تحديث جديد لقائمة الجوائز (من Firebase أو من لوحة التحكم) وبيعيد بناء العجلة
+function applyWheelPrizesUpdate(newPrizes, opts) {
+  if (!Array.isArray(newPrizes) || newPrizes.length < 2) return;
+  luckyWheelPrizes = newPrizes.map(p => ({
+    text: (p && p.text) ? String(p.text) : 'جايزة',
+    color: (p && p.color) ? String(p.color) : '#c9a84c',
+    weight: (p && p.weight && Number(p.weight) > 0) ? Number(p.weight) : 1
+  }));
+  if (!opts || !opts.skipDraftSync) {
+    wheelPrizeDraft = luckyWheelPrizes.map(p => ({ ...p }));
+  }
+  if (luckyWheelSpinning) {
+    pendingWheelRebuild = true;
+  } else {
+    rebuildWheelVisual();
+  }
+  if (document.getElementById('admin-wheel-prizes-list')) {
+    renderAdminWheelPrizesEditor();
+  }
+}
+
+// بيعيد رسم شكل العجلة (بعد أي تعديل على الجوائز)
+function rebuildWheelVisual() {
+  const disc = document.getElementById('luckyWheelDisc');
+  if (!disc) return;
+  luckyWheelBuilt = false;
+  renderLuckyWheel();
+}
+
+function loadWheelPrizesFromLocalStorage() {
+  try {
+    const raw = localStorage.getItem('af_wheelPrizes');
+    if (raw) {
+      const arr = JSON.parse(raw);
+      if (Array.isArray(arr) && arr.length >= 2) {
+        applyWheelPrizesUpdate(arr);
+        console.log('📂 Loaded wheel prizes from localStorage');
+      }
+    }
+  } catch(e) {
+    console.error('Error loading wheel prizes from localStorage:', e);
+  }
+}
+
+// ===== محرر الجوائز واحتمالات الفوز (لوحة التحكم) =====
+window.toggleWheelPrizeEditor = function() {
+  const editor = document.getElementById('wheelPrizeEditor');
+  if (!editor) return;
+  const opening = !editor.classList.contains('open');
+  editor.classList.toggle('open');
+  if (opening) {
+    wheelPrizeDraft = luckyWheelPrizes.map(p => ({ ...p }));
+    renderAdminWheelPrizesEditor();
+  }
+};
+
+function renderAdminWheelPrizesEditor() {
+  const list = document.getElementById('admin-wheel-prizes-list');
+  if (!list) return;
+  const total = wheelPrizeDraft.reduce((s, p) => s + (Number(p.weight) || 1), 0);
+  list.innerHTML = wheelPrizeDraft.map((p, i) => {
+    const pct = (((Number(p.weight) || 1) / total) * 100).toFixed(1);
+    return `
+    <div class="admin-tracking-card" style="margin-bottom:12px;">
+      <div class="wheel-prize-row-title">
+        <span>شريحة ${i + 1}</span>
+        <span class="wheel-prize-row-pct" id="wheel-prize-pct-${i}">${pct}%</span>
+      </div>
+      <div class="admin-tracking-row">
+        <span class="admin-tracking-label">نص الجايزة</span>
+        <input class="admin-input" style="margin:0;" value="${escHtml(p.text)}" oninput="adminUpdateWheelPrizeField(${i},'text',this.value)" dir="rtl">
+      </div>
+      <div class="admin-tracking-row" style="flex-direction:row; align-items:center; gap:10px;">
+        <span class="admin-tracking-label" style="flex:1;">لون الشريحة</span>
+        <input type="color" class="wheel-prize-color-input" value="${escHtml(p.color)}" oninput="adminUpdateWheelPrizeField(${i},'color',this.value)">
+      </div>
+      <div class="admin-tracking-row">
+        <span class="admin-tracking-label">الوزن (كل ما زاد كل ما فرصة الفوز كبرت)</span>
+        <input type="number" min="1" step="1" class="admin-input" style="margin:0;" value="${Number(p.weight) || 1}" oninput="adminUpdateWheelPrizeField(${i},'weight',this.value)" dir="ltr">
+      </div>
+      ${wheelPrizeDraft.length > 2 ? `<button class="admin-reset-btn" onclick="adminDeleteWheelPrize(${i})" style="width:100%; margin-top:6px;">🗑 حذف الجايزة دي</button>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function updateWheelPrizePercentages() {
+  const total = wheelPrizeDraft.reduce((s, p) => s + (Number(p.weight) || 1), 0);
+  wheelPrizeDraft.forEach((p, i) => {
+    const pctEl = document.getElementById('wheel-prize-pct-' + i);
+    if (pctEl) pctEl.textContent = (((Number(p.weight) || 1) / total) * 100).toFixed(1) + '%';
+  });
+}
+
+window.adminUpdateWheelPrizeField = function(i, field, value) {
+  if (!wheelPrizeDraft[i]) return;
+  if (field === 'weight') {
+    const num = parseInt(value, 10);
+    wheelPrizeDraft[i].weight = (isNaN(num) || num < 1) ? 1 : num;
+    updateWheelPrizePercentages();
+  } else {
+    wheelPrizeDraft[i][field] = value;
+  }
+  hideWheelPrizeSaveMsg();
+};
+
+window.adminAddWheelPrize = function() {
+  wheelPrizeDraft.push({ text: 'جايزة جديدة 🎁', color: '#c9a84c', weight: 5 });
+  renderAdminWheelPrizesEditor();
+  hideWheelPrizeSaveMsg();
+};
+
+window.adminDeleteWheelPrize = function(i) {
+  if (wheelPrizeDraft.length <= 2) return; // لازم يفضل شريحتين على الأقل
+  wheelPrizeDraft.splice(i, 1);
+  renderAdminWheelPrizesEditor();
+  hideWheelPrizeSaveMsg();
+};
+
+window.adminResetWheelPrizesToDefault = function() {
+  wheelPrizeDraft = DEFAULT_WHEEL_PRIZES.map(p => ({ ...p }));
+  renderAdminWheelPrizesEditor();
+  showWheelPrizeSaveMsg('رجّعنا القائمة الافتراضية — اضغط "حفظ" عشان تتثبّت', false);
+};
+
+window.adminSaveWheelPrizes = function() {
+  const cleaned = wheelPrizeDraft.map(p => ({
+    text: (p.text || '').trim() || 'جايزة',
+    color: p.color || '#c9a84c',
+    weight: (Number(p.weight) > 0) ? Number(p.weight) : 1
+  }));
+  if (cleaned.some(p => !p.text || p.text === '')) {
+    showWheelPrizeSaveMsg('⚠️ لازم كل جايزة تكون ليها نص', true);
+    return;
+  }
+  if (cleaned.length < 2) {
+    showWheelPrizeSaveMsg('⚠️ لازم يكون في جايزتين على الأقل', true);
+    return;
+  }
+  wheelPrizeDraft = cleaned;
+  applyWheelPrizesUpdate(cleaned, { skipDraftSync: true });
+
+  // حفظ في Firebase (يتشارك بين كل الأجهزة) مع نسخة احتياطية في localStorage
+  try { localStorage.setItem('af_wheelPrizes', JSON.stringify(cleaned)); } catch(e) {}
+  if (wheelPrizesRef) {
+    wheelPrizesRef.set(cleaned)
+      .then(() => showWheelPrizeSaveMsg('✅ اتحفظت الجوائز والاحتمالات بنجاح', false))
+      .catch(() => showWheelPrizeSaveMsg('✅ اتحفظت محليًا (تعذّر الحفظ على الإنترنت)', false));
+  } else {
+    showWheelPrizeSaveMsg('✅ اتحفظت الجوائز محليًا على الجهاز ده', false);
+  }
+};
+
+function showWheelPrizeSaveMsg(text, isError) {
+  const el = document.getElementById('wheelPrizeSaveMsg');
+  if (!el) return;
+  el.textContent = text;
+  el.classList.toggle('error', !!isError);
+  el.classList.add('show');
+  clearTimeout(el._hideTimer);
+  el._hideTimer = setTimeout(() => el.classList.remove('show'), 4000);
+}
+function hideWheelPrizeSaveMsg() {
+  const el = document.getElementById('wheelPrizeSaveMsg');
+  if (el) el.classList.remove('show');
+}
 
 // بيختار index جايزة عشوائي بناءً على الوزن (weight) بتاع كل جايزة
 // كل ما الوزن يكون أعلى كل ما احتمال اختياره يزيد
@@ -9033,10 +9286,26 @@ window.spinLuckyWheel = function() {
   }, spinDuration);
 };
 
+// بيرجع الحاوية الصحيحة اللي المفروض نحط فيها أي عنصر عايم (نتيجة/كونفتي)
+// عشان لو العجلة في وضع ملء الشاشة الحقيقي، لازم العنصر يتحط جوه نفس عنصر الفُل سكرين
+// وإلا مش هيظهر خالص (Fullscreen API بيعرض بس العنصر اللي دخل fullscreen وأولاده)
+function getWheelOverlayRoot() {
+  return document.fullscreenElement || document.webkitFullscreenElement || document.body;
+}
+
+// بينقل بطاقة النتيجة لمكانها الصح كل ما وضع ملء الشاشة يتغيّر
+function relocateWheelResultOverlay() {
+  const overlay = document.getElementById('wheelResultOverlay');
+  if (!overlay) return;
+  const root = getWheelOverlayRoot();
+  if (overlay.parentElement !== root) root.appendChild(overlay);
+}
+
 function showWheelResult(prize) {
   const overlay = document.getElementById('wheelResultOverlay');
   const textEl = document.getElementById('wheelResultPrizeText');
   if (!overlay || !textEl) return;
+  relocateWheelResultOverlay();
   textEl.textContent = prize.text;
   overlay.classList.add('show');
 }
@@ -9044,6 +9313,10 @@ function showWheelResult(prize) {
 window.closeWheelResult = function() {
   const overlay = document.getElementById('wheelResultOverlay');
   if (overlay) overlay.classList.remove('show');
+  if (pendingWheelRebuild) {
+    pendingWheelRebuild = false;
+    rebuildWheelVisual();
+  }
 };
 
 // عرض عجلة الحظ بملء الشاشة — عشان تتعرض باحترافية على أي شاشة أو بروجيكتور
@@ -9066,6 +9339,7 @@ function updateWheelFullscreenBtnUI() {
   const isFs = document.fullscreenElement || document.webkitFullscreenElement;
   btn.textContent = isFs ? '✕' : '⛶';
   btn.title = isFs ? 'الخروج من ملء الشاشة' : 'عرض بملء الشاشة';
+  relocateWheelResultOverlay();
 }
 document.addEventListener('fullscreenchange', updateWheelFullscreenBtnUI);
 document.addEventListener('webkitfullscreenchange', updateWheelFullscreenBtnUI);
