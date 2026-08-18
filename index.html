@@ -68,6 +68,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Cairo:wght@300;400;600;700;900&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700;800&family=Noto+Sans+Math&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
   :root {
@@ -7712,6 +7713,9 @@ adminLoadFromStorage();
       <button class="admin-tab-btn" onclick="switchAdminTab('examresults', this); renderAdminExamResults()">
         <span class="admin-tab-icon">🏅</span><span>درجات الطلاب</span>
       </button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('attendance-scan', this); initAttendanceScanSection()">
+        <span class="admin-tab-icon">📷</span><span>سكان الحضور</span>
+      </button>
       <button class="admin-tab-btn" onclick="switchAdminTab('notifications', this); renderAdminNotifList()">
         <span class="admin-tab-icon">🔔</span><span>الإشعارات</span>
       </button>
@@ -7946,6 +7950,30 @@ STU-26-0003	معاذ خالد" style="resize:vertical; font-family:'IBM Plex San
         </div>
 
         <div class="admin-students-list" id="admin-examresults-list"></div>
+      </div>
+
+      <!-- ===== ATTENDANCE QR SCAN TAB ===== -->
+      <div class="admin-section" id="admin-attendance-scan">
+        <div class="admin-section-title">📷 سكان حضور الحصص</div>
+        <p style="font-size:0.85rem; color:var(--white2); opacity:0.6; margin-bottom:20px;">اختار اسم الحصة، بعدين ابدأ السكان ووجّه الكاميرا على QR كود كل طالب قبل ما يدخل الحصة. كل طالب بيتسجل حضوره مرة واحدة بس في اليوم، وأي محاولة سكان تانية له نفس اليوم هيظهر إشعار إنه متسجل من قبل.</p>
+
+        <div class="admin-add-form">
+          <div class="admin-add-form-title">📋 بيانات الجلسة</div>
+          <input class="admin-input" id="scan-session-name" placeholder="اسم الحصة أو المجموعة (مثال: حصة الأحد - ثالثة إعدادي)" dir="rtl">
+          <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+            <button class="admin-add-btn" id="scan-start-btn" onclick="startAttendanceScan()">📷 ابدأ السكان</button>
+            <button class="admin-add-btn" id="scan-stop-btn" onclick="stopAttendanceScan()" style="display:none; background:linear-gradient(135deg,#8a2a2a,#c94c4c);">⏹ إيقاف السكان</button>
+          </div>
+        </div>
+
+        <div id="qr-scan-reader" style="width:100%; max-width:420px; margin:18px auto 4px; display:none; border-radius:14px; overflow:hidden; border:1px solid rgba(201,168,76,0.25);"></div>
+        <div id="scan-feedback" style="text-align:center; font-weight:700; min-height:26px; margin:10px 0 20px;"></div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <div style="font-size:0.88rem; color:var(--gold); font-weight:700;">✅ طلبة اتسجلوا في الجلسة دي</div>
+          <span class="results-summary-badge" id="scan-session-count">0 طالب</span>
+        </div>
+        <div class="student-detail-list" id="scan-session-list"></div>
       </div>
 
       <!-- ===== NOTIFICATIONS TAB ===== -->
@@ -9435,6 +9463,7 @@ function openStudentWelcome() {
 
 window.closeStudentLogin = function() {
   document.getElementById('student-login-modal').classList.remove('open');
+  window.__examLoginPending = false;
 };
 
 // ===== STUDENT QR LOGIN LINK / CODE =====
@@ -10044,6 +10073,11 @@ function loginStudentSuccess(code, name) {
     qrAutoLoginPending = false;
     closeStudentLogin();
     openStudentDashboard();
+  } else if (window.__examLoginPending) {
+    // كان الطالب بيحاول يبدأ امتحان قبل ما يسجل دخول - كمّله على طول لصفحة بيانات الاختبار
+    window.__examLoginPending = false;
+    closeStudentLogin();
+    if (typeof window.openExamRegisterPage === 'function') window.openExamRegisterPage();
   } else {
     openStudentWelcome();
   }
@@ -11393,7 +11427,7 @@ function initPushSystem() {
     <div class="exam-form-box">
       <label class="exam-form-label">الاسم ثلاثي</label>
       <input class="admin-input" id="exam-reg-name" placeholder="مثال: أحمد محمد علي" dir="rtl">
-      <div class="exam-form-hint">اكتب اسمك كامل (٣ كلمات على الأقل)</div>
+      <div class="exam-form-hint" id="exam-reg-name-hint">اكتب اسمك كامل (٣ كلمات على الأقل)</div>
       <div class="exam-form-error" id="exam-reg-name-err">من فضلك اكتب الاسم ثلاثي على الأقل</div>
 
       <label class="exam-form-label">السنة الدراسية</label>
@@ -11735,7 +11769,7 @@ if (document.readyState === 'loading') {
         ${(attemptsUsed > 0 && !taken) ? '<div class="exam-taken-note">ℹ️ ده هيبقى محاولتك التانية والأخيرة. درجة المحاولة الأولى هي اللي محفوظة عند الأستاذ.</div>' : ''}
         ${taken ? '<div class="exam-taken-note">✋ لقد استنفدت عدد المحاولات المتاحة لهذا الاختبار من هذا الجهاز.</div>' : ''}
         ${!qCount ? '<div class="exam-taken-note">⏳ الأسئلة لسه بتتجهز، تابعنا قريباً.</div>' : ''}
-        <button class="exam-start-btn" ${(!qCount || taken) ? 'disabled' : ''} onclick="openExamRegisterPage()">🚀 بدء الاختبار</button>
+        <button class="exam-start-btn" ${(!qCount || taken) ? 'disabled' : ''} onclick="examStartClicked()">🚀 بدء الاختبار</button>
       </div>
     `;
     document.getElementById('exam-list-page').classList.remove('open');
@@ -11748,9 +11782,34 @@ if (document.readyState === 'loading') {
     }
   };
 
+  // ===== PUBLIC: يتطلب تسجيل دخول الطالب قبل بدء أي امتحان =====
+  window.examStartClicked = function() {
+    if (typeof currentStudent !== 'undefined' && currentStudent) {
+      openExamRegisterPage();
+    } else {
+      window.__examLoginPending = true;
+      document.getElementById('exam-info-page').classList.remove('open');
+      if (typeof openStudentLogin === 'function') openStudentLogin();
+    }
+  };
+
   // ===== PUBLIC: REGISTER PAGE =====
   window.openExamRegisterPage = function() {
-    document.getElementById('exam-reg-name').value = '';
+    const nameEl = document.getElementById('exam-reg-name');
+    const nameHintEl = document.getElementById('exam-reg-name-hint');
+    if (typeof currentStudent !== 'undefined' && currentStudent) {
+      nameEl.value = currentStudent.name;
+      nameEl.readOnly = true;
+      nameEl.style.opacity = '0.7';
+      nameEl.style.cursor = 'not-allowed';
+      if (nameHintEl) nameHintEl.textContent = 'الاسم متسجل من حسابك تلقائياً';
+    } else {
+      nameEl.value = '';
+      nameEl.readOnly = false;
+      nameEl.style.opacity = '';
+      nameEl.style.cursor = '';
+      if (nameHintEl) nameHintEl.textContent = 'اكتب اسمك كامل (٣ كلمات على الأقل)';
+    }
     document.getElementById('exam-reg-phone').value = '';
     const gradeEl = document.getElementById('exam-reg-grade');
     gradeEl.value = '';
@@ -11770,9 +11829,15 @@ if (document.readyState === 'loading') {
     const phone = phoneEl.value.trim();
 
     let valid = true;
-    const nameWords = name.split(' ').filter(Boolean);
     const nameErr = document.getElementById('exam-reg-name-err');
-    if (nameWords.length < 3) { nameErr.classList.add('show'); valid = false; } else nameErr.classList.remove('show');
+    const isLoggedInStudent = typeof currentStudent !== 'undefined' && !!currentStudent;
+    if (isLoggedInStudent) {
+      // الاسم جاي من حساب الطالب مباشرة، مفيش داعي نتحقق من عدد الكلمات
+      nameErr.classList.remove('show');
+    } else {
+      const nameWords = name.split(' ').filter(Boolean);
+      if (nameWords.length < 3) { nameErr.classList.add('show'); valid = false; } else nameErr.classList.remove('show');
+    }
 
     const gradeErr = document.getElementById('exam-reg-grade-err');
     if (!grade || STUDENT_GRADE_LIST.indexOf(grade) === -1) { gradeErr.classList.add('show'); valid = false; } else gradeErr.classList.remove('show');
@@ -11783,7 +11848,7 @@ if (document.readyState === 'loading') {
 
     if (!valid) return;
 
-    currentExamRegistrant = { name, grade, phone: phoneDigits };
+    currentExamRegistrant = { name, grade, phone: phoneDigits, studentCode: isLoggedInStudent ? currentStudent.code : null };
     startExamTaking();
   };
 
@@ -11900,6 +11965,22 @@ if (document.readyState === 'loading') {
     // نسجل النتيجة في لوحة التحكم فقط عند المحاولة الأولى؛ المحاولة الثانية تبقى محلية على جهاز الطالب فقط
     if (isFirstAttempt) {
       try { if (examResultsRef) examResultsRef.push(resultData); } catch (e) { console.error('Error saving exam result:', e); }
+
+      // لو الطالب مسجل دخول بحسابه، سجّل النتيجة كمان في بروفايله الشخصي عشان تظهر في "تقدمي"
+      // ضمن نفس قائمة الدرجات (مع الدرجات اللي بيضيفها الأستاذ يدوي)، مرتبة بالتاريخ تلقائياً
+      const studentCode = currentExamRegistrant && currentExamRegistrant.studentCode;
+      if (studentCode && typeof db !== 'undefined' && db) {
+        try {
+          const gid = 'exam_' + currentExamId + '_' + Date.now();
+          db.ref('students/' + studentCode + '/grades/' + gid).set({
+            title: resultData.examTitle || 'اختبار',
+            score: score,
+            maxScore: total,
+            date: new Date().toISOString().slice(0, 10),
+            fromExam: true
+          });
+        } catch (e) { console.error('Error saving grade to student profile:', e); }
+      }
     }
     incrementExamAttemptCount(currentExamId);
 
@@ -12206,6 +12287,192 @@ if (document.readyState === 'loading') {
     if (!confirm('حذف النتيجة دي؟')) return;
     if (examResultsRef) examResultsRef.child(rid).remove();
   };
+})();
+</script>
+
+<!-- ===== ADMIN: QR ATTENDANCE SCAN ===== -->
+<script>
+(function() {
+  let attendanceScanner = null;
+  let attendanceScanActive = false;
+  let attendanceScanSessionName = '';
+  let attendanceScanRecent = {};    // { code: timestamp } لمنع التسجيل المزدوج السريع لنفس الكود
+  let attendanceScanSessionLog = []; // سجل الطلاب اللي اتسكن لهم QR في الجلسة الحالية بس (للعرض)
+
+  function todayDateStr() {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  // يستخرج كود الطالب من نص الـ QR، سواء كان رابط دخول كامل (فيه ?code=) أو الكود نفسه مكتوب مباشرة
+  function extractStudentCodeFromScan(text) {
+    if (!text) return null;
+    try {
+      const url = new URL(text);
+      const code = url.searchParams.get('code');
+      if (code) return code;
+    } catch (e) { /* مش رابط، جرّب كنص خام تحت */ }
+    const trimmed = text.trim();
+    if (/^[A-Za-z0-9\-]+$/.test(trimmed)) return trimmed;
+    return null;
+  }
+
+  window.initAttendanceScanSection = function() {
+    if (typeof attachAdminStudentsListener === 'function') attachAdminStudentsListener();
+    renderScanSessionList();
+  };
+
+  window.startAttendanceScan = function() {
+    const nameEl = document.getElementById('scan-session-name');
+    const sessionName = nameEl.value.trim();
+    if (!sessionName) {
+      alert('من فضلك اكتب اسم الحصة أو المجموعة الأول');
+      nameEl.focus();
+      return;
+    }
+    if (typeof Html5Qrcode === 'undefined') {
+      alert('⚠️ تعذر تحميل مكتبة الكاميرا، تأكد من اتصال الإنترنت وحاول تاني');
+      return;
+    }
+
+    attendanceScanSessionName = sessionName;
+    attendanceScanSessionLog = [];
+    attendanceScanRecent = {};
+    renderScanSessionList();
+    nameEl.disabled = true;
+
+    const readerEl = document.getElementById('qr-scan-reader');
+    readerEl.style.display = 'block';
+    document.getElementById('scan-start-btn').style.display = 'none';
+    document.getElementById('scan-stop-btn').style.display = 'inline-flex';
+    setScanFeedback('📷 وجّه الكاميرا على QR كود الطالب...', '');
+
+    attendanceScanner = new Html5Qrcode('qr-scan-reader');
+    attendanceScanner.start(
+      { facingMode: 'environment' },
+      { fps: 10, qrbox: { width: 250, height: 250 } },
+      onAttendanceScanSuccess,
+      function() { /* تجاهل، ده بيتنادى كل فريم مفيهوش QR */ }
+    ).then(() => {
+      attendanceScanActive = true;
+    }).catch(err => {
+      console.error('Camera start error:', err);
+      setScanFeedback('⚠️ تعذر تشغيل الكاميرا، لازم تسمح للموقع بالوصول للكاميرا', 'err');
+      stopAttendanceScan();
+    });
+  };
+
+  window.stopAttendanceScan = function() {
+    const nameEl = document.getElementById('scan-session-name');
+    if (nameEl) nameEl.disabled = false;
+    const startBtn = document.getElementById('scan-start-btn');
+    const stopBtn = document.getElementById('scan-stop-btn');
+    const readerEl = document.getElementById('qr-scan-reader');
+    if (startBtn) startBtn.style.display = 'inline-flex';
+    if (stopBtn) stopBtn.style.display = 'none';
+    if (readerEl) readerEl.style.display = 'none';
+    setScanFeedback('', '');
+    attendanceScanActive = false;
+    if (attendanceScanner) {
+      const s = attendanceScanner;
+      attendanceScanner = null;
+      s.stop().then(() => s.clear()).catch(() => {});
+    }
+  };
+
+  function setScanFeedback(msg, type) {
+    const el = document.getElementById('scan-feedback');
+    if (!el) return;
+    el.textContent = msg;
+    el.style.color = type === 'err' ? '#ff6b6b' : (type === 'dup' ? '#f0d080' : (type === 'ok' ? '#4ade80' : 'var(--white2)'));
+  }
+
+  function onAttendanceScanSuccess(decodedText) {
+    const code = extractStudentCodeFromScan(decodedText);
+    if (!code) {
+      setScanFeedback('⚠️ الـ QR ده مش تابع لأي طالب', 'err');
+      return;
+    }
+
+    // منع تسجيل مزدوج سريع لو الكاميرا لسه شايفة نفس QR (خلال ٤ ثواني)
+    const now = Date.now();
+    if (attendanceScanRecent[code] && (now - attendanceScanRecent[code]) < 4000) return;
+    attendanceScanRecent[code] = now;
+
+    const student = (typeof adminStudentsCache !== 'undefined' ? adminStudentsCache : {})[code];
+    if (!student || !student.name) {
+      setScanFeedback('❌ الكود ده مش مسجل في المنصة', 'err');
+      return;
+    }
+
+    const today = todayDateStr();
+    const existingAttendance = student.attendance ? Object.values(student.attendance) : [];
+    const alreadyToday = existingAttendance.some(a => a.date === today);
+
+    if (alreadyToday) {
+      setScanFeedback('ℹ️ تم تسجيل حضور "' + student.name + '" من قبل النهاردة', 'dup');
+      addToScanSessionLog(code, student.name, 'dup');
+      return;
+    }
+
+    const aid = 'scan' + Date.now();
+    db.ref('students/' + code + '/attendance/' + aid).set({
+      present: true,
+      note: 'حصة: ' + attendanceScanSessionName,
+      date: today
+    }).then(() => {
+      setScanFeedback('✅ تم تسجيل حضور "' + student.name + '"', 'ok');
+      addToScanSessionLog(code, student.name, 'ok');
+    }).catch(e => {
+      console.error('Attendance scan save error:', e);
+      setScanFeedback('⚠️ حصل خطأ أثناء تسجيل الحضور، حاول تاني', 'err');
+    });
+  }
+
+  function addToScanSessionLog(code, name, status) {
+    attendanceScanSessionLog.unshift({
+      code, name, status,
+      time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
+    });
+    renderScanSessionList();
+  }
+
+  function renderScanSessionList() {
+    const listEl = document.getElementById('scan-session-list');
+    const countEl = document.getElementById('scan-session-count');
+    if (!listEl) return;
+    const successCount = attendanceScanSessionLog.filter(e => e.status === 'ok').length;
+    if (countEl) countEl.textContent = successCount + ' طالب';
+    if (!attendanceScanSessionLog.length) {
+      listEl.innerHTML = '<p class="sd-empty">لسه محدش اتسجل في الجلسة دي.</p>';
+      return;
+    }
+    const esc = typeof escHtmlLocal === 'function' ? escHtmlLocal : (s => s);
+    listEl.innerHTML = attendanceScanSessionLog.map(e => `
+      <div class="student-detail-entry">
+        <div class="sd-entry-info">
+          ${e.status === 'ok' ? '✅' : 'ℹ️'} <b>${esc(e.name)}</b> — كود ${esc(e.code)}
+          ${e.status === 'dup' ? '<span style="opacity:0.7;"> (متسجل من قبل)</span>' : ''}
+        </div>
+        <div style="opacity:0.6; font-size:0.78rem;">${e.time}</div>
+      </div>
+    `).join('');
+  }
+
+  // لو الأدمن بدّل تبويب أو قفل اللوحة والكاميرا شغالة، وقّفها تلقائي عشان ميفضلش ضوء الكاميرا شغال من غير داعي
+  const _origSwitchAdminTab = window.switchAdminTab;
+  if (typeof _origSwitchAdminTab === 'function') {
+    window.switchAdminTab = function(tab, btn) {
+      if (attendanceScanActive && tab !== 'attendance-scan') stopAttendanceScan();
+      _origSwitchAdminTab(tab, btn);
+    };
+  }
+  const _origCloseAdminPanel = window.closeAdminPanel;
+  if (typeof _origCloseAdminPanel === 'function') {
+    window.closeAdminPanel = function() {
+      if (attendanceScanActive) stopAttendanceScan();
+      _origCloseAdminPanel();
+    };
+  }
 })();
 </script>
 
