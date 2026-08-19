@@ -7933,6 +7933,24 @@ STU-26-0003	معاذ خالد" style="resize:vertical; font-family:'IBM Plex San
           <div class="admin-exam-meta-grid">
             <input class="admin-input" id="exam-new-duration" placeholder="مدة الاختبار بالدقايق (مثال: 20)" type="number" min="1" dir="ltr">
           </div>
+          <select class="notif-type-select" id="exam-new-grade" dir="rtl">
+            <option value="">🌍 كل المراحل (يظهر لكل الطلاب)</option>
+            <option value="الأول الإعدادي">الأول الإعدادي</option>
+            <option value="الثاني الإعدادي">الثاني الإعدادي</option>
+            <option value="الثالث الإعدادي">الثالث الإعدادي</option>
+            <option value="الأول الثانوي">الأول الثانوي</option>
+            <option value="الثاني الثانوي">الثاني الثانوي</option>
+            <option value="الثالث الثانوي">الثالث الثانوي</option>
+          </select>
+          <label class="admin-checkbox-row">
+            <input type="checkbox" id="exam-new-sched-enabled" onchange="document.getElementById('exam-new-sched-fields').style.display = this.checked ? 'grid' : 'none'">
+            <span>⏰ جدولة الاختبار (يبقى متاح في يوم ووقت محددين بس، وبعد ما الوقت يخلص يتقفل تلقائي)</span>
+          </label>
+          <div class="admin-exam-meta-grid" id="exam-new-sched-fields" style="display:none;">
+            <input class="admin-input" id="exam-new-sched-date" type="date" dir="ltr">
+            <input class="admin-input" id="exam-new-sched-start" type="time" dir="ltr" placeholder="من">
+            <input class="admin-input" id="exam-new-sched-end" type="time" dir="ltr" placeholder="إلى">
+          </div>
           <button class="admin-add-btn" onclick="adminAddExam()">➕ إضافة الاختبار</button>
         </div>
       </div>
@@ -7969,10 +7987,11 @@ STU-26-0003	معاذ خالد" style="resize:vertical; font-family:'IBM Plex San
         <div id="qr-scan-reader" style="width:100%; max-width:420px; margin:18px auto 4px; display:none; border-radius:14px; overflow:hidden; border:1px solid rgba(201,168,76,0.25);"></div>
         <div id="scan-feedback" style="text-align:center; font-weight:700; min-height:26px; margin:10px 0 20px;"></div>
 
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
           <div style="font-size:0.88rem; color:var(--gold); font-weight:700;">✅ طلبة اتسجلوا في الجلسة دي</div>
           <span class="results-summary-badge" id="scan-session-count">0 طالب</span>
         </div>
+        <p style="font-size:0.75rem; opacity:0.5; margin-bottom:10px;">📡 القائمة دي متزامنة لحظياً عبر Firebase — لو فتحت نفس اسم الحصة من جهاز تاني هتلاقي نفس الطلبة اللي اتسجلوا.</p>
         <div class="student-detail-list" id="scan-session-list"></div>
       </div>
 
@@ -8153,7 +8172,7 @@ function openTrackingOverlay(index) {
   var cards = typeof adminTracking !== "undefined" ? adminTracking : [];
   var card = cards[index];
   if (!card) return;
-  if (card.action === 'exams') { openExamListPage(); return; }
+  if (card.action === 'exams') { openExamGradeSelectPage(); return; }
   var emojiEl = document.getElementById("overlay-emoji");
   var m = (typeof trackingIconMap !== "undefined") ? trackingIconMap[card.emoji] : null;
   if (m) {
@@ -9877,7 +9896,7 @@ function handleExamDeepLink() {
             openExamListPage(true);
           }
         } else {
-          openExamListPage(true);
+          openExamGradeSelectPage(true);
         }
       }, 400);
     });
@@ -11376,6 +11395,24 @@ function initPushSystem() {
   </div>
 </div>
 
+<!-- ===== EXAM: GRADE SELECT PAGE ===== -->
+<div class="legal-overlay" id="exam-grade-select-page">
+  <div class="legal-topbar"></div>
+  <div class="legal-header">
+    <button class="legal-close-btn" onclick="closeExamPage('exam-grade-select-page')" aria-label="إغلاق">✕</button>
+    <div class="legal-header-title-wrap">
+      <div>
+        <div class="legal-header-title">الامتحانات والدرجات</div>
+        <div class="legal-header-sub">اختار مرحلتك الدراسية الأول</div>
+      </div>
+      <div class="legal-header-icon">📊</div>
+    </div>
+  </div>
+  <div class="legal-body">
+    <div id="exam-grade-select-container" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:16px; margin-top:8px;"></div>
+  </div>
+</div>
+
 <!-- ===== EXAM: LIST PAGE ===== -->
 <div class="legal-overlay" id="exam-list-page">
   <div class="legal-topbar"></div>
@@ -11590,7 +11627,7 @@ function enhanceCustomSelect(selectEl) {
 }
 
 function initCustomSelects() {
-  ['inp-level', 'student-new-stage', 'student-new-grade-select', 'notif-new-type', 'sd-attendance-status', 'sd-edit-stage', 'sd-edit-grade-select', 'exam-reg-grade', 'examresults-filter'].forEach((id) => {
+  ['inp-level', 'student-new-stage', 'student-new-grade-select', 'notif-new-type', 'sd-attendance-status', 'sd-edit-stage', 'sd-edit-grade-select', 'exam-reg-grade', 'examresults-filter', 'exam-new-grade'].forEach((id) => {
     enhanceCustomSelect(document.getElementById(id));
   });
 }
@@ -11609,6 +11646,7 @@ if (document.readyState === 'loading') {
 
   let currentExamId = null;
   let currentExamData = null;
+  let currentExamGradeFilter = null; // اسم المرحلة المختارة (لو الطالب دخل من صفحة اختيار المرحلة)
   let currentExamQuestionsArr = [];
   let currentExamAnswers = {};
   let currentExamRegistrant = null;
@@ -11673,7 +11711,7 @@ if (document.readyState === 'loading') {
     if (el) el.classList.remove('open');
     document.body.style.overflow = '';
     try {
-      const anyOpen = ['exam-list-page', 'exam-info-page', 'exam-register-page'].some(pid => {
+      const anyOpen = ['exam-grade-select-page', 'exam-list-page', 'exam-info-page', 'exam-register-page'].some(pid => {
         const e = document.getElementById(pid);
         return e && e.classList.contains('open');
       });
@@ -11681,34 +11719,83 @@ if (document.readyState === 'loading') {
     } catch (err) {}
   };
 
-  window.openExamListPage = function(skipUrlUpdate) {
+  window.openExamListPage = function(skipUrlUpdate, filterGrade) {
     document.getElementById('exam-list-page').classList.add('open');
     document.body.style.overflow = 'hidden';
+    currentExamGradeFilter = (typeof filterGrade === 'string' && filterGrade) ? filterGrade : null;
+    const subEl = document.querySelector('#exam-list-page .legal-header-sub');
+    if (subEl) subEl.textContent = currentExamGradeFilter ? ('اختر الاختبار — ' + currentExamGradeFilter) : 'اختر الاختبار اللي عايز تأديه';
     renderExamListPage();
     if (!skipUrlUpdate) {
       try { history.pushState({ examList: true }, '', '/exams/'); } catch (e) {}
     }
   };
 
+  // ===== PUBLIC: صفحة اختيار المرحلة الدراسية قبل عرض الاختبارات =====
+  const EXAM_STAGE_GRADES = ['الأول الإعدادي', 'الثاني الإعدادي', 'الثالث الإعدادي', 'الأول الثانوي', 'الثاني الثانوي', 'الثالث الثانوي'];
+  const EXAM_STAGE_ICON_COLORS = ['ic-gold', 'ic-blue', 'ic-purple', 'ic-green'];
+
+  function renderExamGradeSelectPage() {
+    const container = document.getElementById('exam-grade-select-container');
+    if (!container) return;
+    container.innerHTML = EXAM_STAGE_GRADES.map((grade, i) => `
+      <div class="reveal tracking-card-clickable" onclick="selectExamGrade('${grade}')" style="background:var(--dark3); border:1px solid rgba(201,168,76,0.15); border-radius:20px; padding:30px 18px; text-align:center; cursor:pointer;">
+        <div class="dash-stat-icon lg ${EXAM_STAGE_ICON_COLORS[i % EXAM_STAGE_ICON_COLORS.length]}" style="margin:0 auto 14px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/>
+          </svg>
+        </div>
+        <strong style="display:block; font-size:1rem; color:var(--white);">${grade}</strong>
+      </div>
+    `).join('');
+  }
+
+  window.openExamGradeSelectPage = function(skipUrlUpdate) {
+    renderExamGradeSelectPage();
+    document.getElementById('exam-grade-select-page').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    if (!skipUrlUpdate) {
+      try { history.pushState({ examGradeSelect: true }, '', '/exams/'); } catch (e) {}
+    }
+  };
+
+  window.selectExamGrade = function(grade) {
+    document.getElementById('exam-grade-select-page').classList.remove('open');
+    openExamListPage(true, grade);
+  };
+
   function renderExamListPage() {
     const container = document.getElementById('exam-list-container');
     if (!container) return;
-    const list = Object.entries(examsCache || {}).filter(([id, e]) => e && e.active !== false);
+    const list = Object.entries(examsCache || {}).filter(([id, e]) => e && e.active !== false && (!currentExamGradeFilter || !e.targetGrade || e.targetGrade === currentExamGradeFilter));
     list.sort((a, b) => (a[1].order || 0) - (b[1].order || 0));
     if (!list.length) {
-      container.innerHTML = '<div class="exam-list-empty">لا توجد اختبارات متاحة حالياً<br>تابعنا قريباً إن شاء الله ✨</div>';
+      const emptyMsg = currentExamGradeFilter ? ('لا توجد اختبارات متاحة لـ' + currentExamGradeFilter + ' حالياً') : 'لا توجد اختبارات متاحة حالياً';
+      container.innerHTML = '<div class="exam-list-empty">' + emptyMsg + '<br>تابعنا قريباً إن شاء الله ✨</div>';
       return;
     }
-    container.innerHTML = list.map(([id, e]) => `
+    container.innerHTML = list.map(([id, e]) => {
+      const sched = getExamScheduleStatus(e);
+      let schedHtml = '';
+      if (sched.state === 'upcoming') {
+        schedHtml = `<div style="font-size:0.78rem; color:#f0d080; margin-top:4px;">🕒 هيبدأ ${formatDateArabic(e.scheduleDate)} — الساعة ${formatTimeArabic(e.scheduleStartTime)}</div>`;
+      } else if (sched.state === 'open') {
+        schedHtml = `<div style="font-size:0.78rem; color:#4ade80; margin-top:4px;">🟢 متاح الآن حتى الساعة ${formatTimeArabic(e.scheduleEndTime)}</div>`;
+      } else if (sched.state === 'ended') {
+        schedHtml = `<div style="font-size:0.78rem; color:#ff6b6b; margin-top:4px;">⏳ انتهى وقت الاختبار</div>`;
+      }
+      return `
       <div class="exam-list-item" onclick="openExamInfoPage('${id}')">
         <div class="exam-list-item-icon">📝</div>
         <div class="exam-list-item-info">
           <div class="exam-list-item-title">${escHtmlLocal(e.title || '')}</div>
           <div class="exam-list-item-desc">${escHtmlLocal(e.description || '')}</div>
+          ${schedHtml}
         </div>
         <div class="exam-list-item-arrow">◀</div>
       </div>
-    `).join('');
+    `;
+    }).join('');
   }
   window.renderExamListPage = renderExamListPage;
 
@@ -11754,6 +11841,14 @@ if (document.readyState === 'loading') {
     const attemptsUsed = getExamAttemptCount(examId);
     const attemptsLeft = Math.max(0, EXAM_MAX_ATTEMPTS - attemptsUsed);
     const taken = attemptsLeft <= 0;
+    const sched = getExamScheduleStatus(e);
+    const scheduleBlocked = sched.state === 'upcoming' || sched.state === 'ended';
+    let scheduleNote = '';
+    if (sched.state === 'upcoming') {
+      scheduleNote = `<div class="exam-info-meta-item">🕒 الاختبار هيبدأ يوم ${formatDateArabic(e.scheduleDate)} الساعة ${formatTimeArabic(e.scheduleStartTime)} وهيفضل متاح لحد الساعة ${formatTimeArabic(e.scheduleEndTime)}</div>`;
+    } else if (sched.state === 'open') {
+      scheduleNote = `<div class="exam-info-meta-item">🟢 الاختبار متاح دلوقتي، وهيتقفل تلقائي الساعة ${formatTimeArabic(e.scheduleEndTime)}</div>`;
+    }
     const body = document.getElementById('exam-info-body');
     body.innerHTML = `
       <div class="exam-info-card">
@@ -11765,11 +11860,14 @@ if (document.readyState === 'loading') {
           <div class="exam-info-meta-item">⏱ المدة: <b>${e.durationMinutes || 20} دقيقة</b></div>
           <div class="exam-info-meta-item">✅ اختيار من متعدد</div>
           <div class="exam-info-meta-item">🔁 يمكنك أداء الاختبار مرتين من نفس الجهاز (الدرجة المسجلة هي درجة المحاولة الأولى فقط)</div>
+          ${scheduleNote}
         </div>
+        ${sched.state === 'upcoming' ? `<div class="exam-taken-note">⏳ الاختبار لسه معادوش جاله، هيتفتح يوم ${formatDateArabic(e.scheduleDate)} الساعة ${formatTimeArabic(e.scheduleStartTime)}.</div>` : ''}
+        ${sched.state === 'ended' ? '<div class="exam-taken-note">✋ انتهى الوقت المحدد لأداء هذا الاختبار.</div>' : ''}
         ${(attemptsUsed > 0 && !taken) ? '<div class="exam-taken-note">ℹ️ ده هيبقى محاولتك التانية والأخيرة. درجة المحاولة الأولى هي اللي محفوظة عند الأستاذ.</div>' : ''}
         ${taken ? '<div class="exam-taken-note">✋ لقد استنفدت عدد المحاولات المتاحة لهذا الاختبار من هذا الجهاز.</div>' : ''}
         ${!qCount ? '<div class="exam-taken-note">⏳ الأسئلة لسه بتتجهز، تابعنا قريباً.</div>' : ''}
-        <button class="exam-start-btn" ${(!qCount || taken) ? 'disabled' : ''} onclick="examStartClicked()">🚀 بدء الاختبار</button>
+        <button class="exam-start-btn" ${(!qCount || taken || scheduleBlocked) ? 'disabled' : ''} onclick="examStartClicked()">🚀 بدء الاختبار</button>
       </div>
     `;
     document.getElementById('exam-list-page').classList.remove('open');
@@ -11784,6 +11882,11 @@ if (document.readyState === 'loading') {
 
   // ===== PUBLIC: يتطلب تسجيل دخول الطالب قبل بدء أي امتحان =====
   window.examStartClicked = function() {
+    if (currentExamData && !isExamCurrentlyAvailable(currentExamData)) {
+      alert('⏳ الاختبار مش متاح دلوقتي، راجع موعد الاختبار.');
+      openExamInfoPage(currentExamId, true);
+      return;
+    }
     if (typeof currentStudent !== 'undefined' && currentStudent) {
       openExamRegisterPage();
     } else {
@@ -11821,6 +11924,11 @@ if (document.readyState === 'loading') {
   };
 
   window.examSubmitRegister = function() {
+    if (currentExamData && !isExamCurrentlyAvailable(currentExamData)) {
+      alert('⏳ الاختبار مش متاح دلوقتي، راجع موعد الاختبار.');
+      openExamInfoPage(currentExamId, true);
+      return;
+    }
     const nameEl = document.getElementById('exam-reg-name');
     const gradeEl = document.getElementById('exam-reg-grade');
     const phoneEl = document.getElementById('exam-reg-phone');
@@ -12041,10 +12149,21 @@ if (document.readyState === 'loading') {
           </div>
         `).join('') : '<p class="sd-empty">لا توجد أسئلة بعد.</p>';
 
+        let schedBadgeText = '';
+        if (e.scheduleEnabled && e.scheduleDate && e.scheduleStartTime && e.scheduleEndTime) {
+          const st = getExamScheduleStatus(e);
+          const dateLbl = formatDateArabic(e.scheduleDate);
+          const rangeLbl = formatTimeArabic(e.scheduleStartTime) + ' - ' + formatTimeArabic(e.scheduleEndTime);
+          if (st.state === 'upcoming') schedBadgeText = ` — 🕒 مجدول ${dateLbl} (${rangeLbl})`;
+          else if (st.state === 'open') schedBadgeText = ` — 🟢 متاح الآن حتى ${formatTimeArabic(e.scheduleEndTime)}`;
+          else schedBadgeText = ` — ⏳ انتهى (${dateLbl})`;
+        }
+        const gradeBadgeText = e.targetGrade ? ` — 🎓 ${escHtmlLocal(e.targetGrade)}` : '';
+
         return `
         <div class="admin-level-block">
           <div class="admin-level-header" onclick="toggleLevel('examblock-${examId}')">
-            <span class="admin-level-title">📝 ${escHtmlLocal(e.title || 'بدون عنوان')} ${e.active === false ? '(معطّل)' : ''} — ${questions.length} سؤال</span>
+            <span class="admin-level-title">📝 ${escHtmlLocal(e.title || 'بدون عنوان')} ${e.active === false ? '(معطّل)' : ''}${gradeBadgeText}${schedBadgeText} — ${questions.length} سؤال</span>
             <span class="admin-level-toggle" id="examblock-${examId}-toggle">▾</span>
           </div>
           <div class="admin-level-body" id="examblock-${examId}-body">
@@ -12055,10 +12174,28 @@ if (document.readyState === 'loading') {
               <div class="admin-exam-meta-grid">
                 <input class="admin-input" id="exam-edit-duration-${examId}" value="${e.durationMinutes || 20}" type="number" min="1" placeholder="المدة بالدقايق" dir="ltr">
               </div>
+              <select class="notif-type-select" id="exam-edit-grade-${examId}" dir="rtl">
+                <option value="" ${!e.targetGrade ? 'selected' : ''}>🌍 كل المراحل (يظهر لكل الطلاب)</option>
+                <option value="الأول الإعدادي" ${e.targetGrade === 'الأول الإعدادي' ? 'selected' : ''}>الأول الإعدادي</option>
+                <option value="الثاني الإعدادي" ${e.targetGrade === 'الثاني الإعدادي' ? 'selected' : ''}>الثاني الإعدادي</option>
+                <option value="الثالث الإعدادي" ${e.targetGrade === 'الثالث الإعدادي' ? 'selected' : ''}>الثالث الإعدادي</option>
+                <option value="الأول الثانوي" ${e.targetGrade === 'الأول الثانوي' ? 'selected' : ''}>الأول الثانوي</option>
+                <option value="الثاني الثانوي" ${e.targetGrade === 'الثاني الثانوي' ? 'selected' : ''}>الثاني الثانوي</option>
+                <option value="الثالث الثانوي" ${e.targetGrade === 'الثالث الثانوي' ? 'selected' : ''}>الثالث الثانوي</option>
+              </select>
               <label class="admin-checkbox-row">
                 <input type="checkbox" id="exam-edit-active-${examId}" ${e.active === false ? '' : 'checked'}>
                 <span>الاختبار متاح للطلاب</span>
               </label>
+              <label class="admin-checkbox-row">
+                <input type="checkbox" id="exam-edit-sched-enabled-${examId}" ${e.scheduleEnabled ? 'checked' : ''} onchange="document.getElementById('exam-edit-sched-fields-${examId}').style.display = this.checked ? 'grid' : 'none'">
+                <span>⏰ جدولة الاختبار (يبقى متاح في يوم ووقت محددين بس)</span>
+              </label>
+              <div class="admin-exam-meta-grid" id="exam-edit-sched-fields-${examId}" style="display:${e.scheduleEnabled ? 'grid' : 'none'};">
+                <input class="admin-input" id="exam-edit-sched-date-${examId}" type="date" value="${e.scheduleDate || ''}" dir="ltr">
+                <input class="admin-input" id="exam-edit-sched-start-${examId}" type="time" value="${e.scheduleStartTime || ''}" dir="ltr">
+                <input class="admin-input" id="exam-edit-sched-end-${examId}" type="time" value="${e.scheduleEndTime || ''}" dir="ltr">
+              </div>
               <div style="display:flex; gap:8px; margin-top:10px;">
                 <button class="admin-save-tracking-btn" style="flex:1;" onclick="adminSaveExamMeta('${examId}')">💾 حفظ الإعدادات</button>
                 <button class="admin-reset-btn" style="flex:1;" onclick="adminDeleteExam('${examId}')">🗑 حذف الاختبار</button>
@@ -12104,25 +12241,96 @@ if (document.readyState === 'loading') {
       }).join('');
     }
     if (typeof initCustomSelects === 'function') {
-      entries.forEach(([examId]) => enhanceCustomSelect(document.getElementById('q-new-correct-' + examId)));
+      entries.forEach(([examId]) => {
+        enhanceCustomSelect(document.getElementById('q-new-correct-' + examId));
+        enhanceCustomSelect(document.getElementById('exam-edit-grade-' + examId));
+      });
     }
     refreshExamResultsFilterOptions();
   };
+
+  // ===== EXAM SCHEDULING HELPERS =====
+  // بيحسب حالة الجدولة: 'none' (مفيش جدولة، متاح عادي) | 'upcoming' (لسه معاده مجاش) | 'open' (في وقته دلوقتي) | 'ended' (خلص وقته)
+  function getExamScheduleStatus(e) {
+    if (!e || !e.scheduleEnabled || !e.scheduleDate || !e.scheduleStartTime || !e.scheduleEndTime) {
+      return { state: 'none' };
+    }
+    const start = new Date(e.scheduleDate + 'T' + e.scheduleStartTime + ':00');
+    const end = new Date(e.scheduleDate + 'T' + e.scheduleEndTime + ':00');
+    const now = new Date();
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) return { state: 'none' };
+    if (now < start) return { state: 'upcoming', start, end };
+    if (now > end) return { state: 'ended', start, end };
+    return { state: 'open', start, end };
+  }
+  function isExamCurrentlyAvailable(e) {
+    const st = getExamScheduleStatus(e);
+    return st.state === 'none' || st.state === 'open';
+  }
+  // '18:05' -> '6:05 م'
+  function formatTimeArabic(hhmm) {
+    if (!hhmm) return '';
+    const parts = hhmm.split(':');
+    const h = parseInt(parts[0], 10);
+    const m = parts[1] || '00';
+    const period = h >= 12 ? 'م' : 'ص';
+    let h12 = h % 12; if (h12 === 0) h12 = 12;
+    return h12 + ':' + String(m).padStart(2, '0') + ' ' + period;
+  }
+  // '2026-08-19' -> '19/08/2026'
+  function formatDateArabic(dateStr) {
+    if (!dateStr) return '';
+    const parts = dateStr.split('-');
+    if (parts.length !== 3) return dateStr;
+    return parts[2] + '/' + parts[1] + '/' + parts[0];
+  }
+  window.getExamScheduleStatus = getExamScheduleStatus;
+  window.isExamCurrentlyAvailable = isExamCurrentlyAvailable;
+  window.formatTimeArabic = formatTimeArabic;
+  window.formatDateArabic = formatDateArabic;
 
   window.adminAddExam = function() {
     const titleEl = document.getElementById('exam-new-title');
     const descEl = document.getElementById('exam-new-desc');
     const durEl = document.getElementById('exam-new-duration');
+    const gradeEl = document.getElementById('exam-new-grade');
+    const schedEnabledEl = document.getElementById('exam-new-sched-enabled');
+    const schedDateEl = document.getElementById('exam-new-sched-date');
+    const schedStartEl = document.getElementById('exam-new-sched-start');
+    const schedEndEl = document.getElementById('exam-new-sched-end');
     const title = titleEl.value.trim();
     const desc = descEl.value.trim();
     const duration = parseInt(durEl.value, 10) || 20;
+    const targetGrade = gradeEl ? gradeEl.value : '';
+    const scheduleEnabled = !!(schedEnabledEl && schedEnabledEl.checked);
     if (!title) { alert('من فضلك اكتب اسم الاختبار'); return; }
+    if (scheduleEnabled && (!schedDateEl.value || !schedStartEl.value || !schedEndEl.value)) {
+      alert('من فضلك حدد تاريخ الاختبار ووقت البداية والنهاية');
+      return;
+    }
+    if (scheduleEnabled && schedStartEl.value >= schedEndEl.value) {
+      alert('وقت النهاية لازم يكون بعد وقت البداية');
+      return;
+    }
     if (!examsRef) { alert('لسه بيتصل بقاعدة البيانات، حاول تاني بعد شوية'); return; }
     examsRef.push().set({
       title, description: desc, durationMinutes: duration,
-      active: true, order: Date.now(), questions: {}
+      active: true, order: Date.now(), questions: {},
+      targetGrade,
+      scheduleEnabled,
+      scheduleDate: scheduleEnabled ? schedDateEl.value : '',
+      scheduleStartTime: scheduleEnabled ? schedStartEl.value : '',
+      scheduleEndTime: scheduleEnabled ? schedEndEl.value : ''
     }).then(() => {
       titleEl.value = ''; descEl.value = ''; durEl.value = '';
+      if (gradeEl) gradeEl.value = '';
+      if (gradeEl && gradeEl._cselRefresh) gradeEl._cselRefresh();
+      if (schedEnabledEl) schedEnabledEl.checked = false;
+      if (schedDateEl) schedDateEl.value = '';
+      if (schedStartEl) schedStartEl.value = '';
+      if (schedEndEl) schedEndEl.value = '';
+      const fieldsEl = document.getElementById('exam-new-sched-fields');
+      if (fieldsEl) fieldsEl.style.display = 'none';
     }).catch(e => alert('حصل خطأ: ' + e.message));
   };
 
@@ -12132,7 +12340,27 @@ if (document.readyState === 'loading') {
     const desc = document.getElementById('exam-edit-desc-' + examId).value.trim();
     const duration = parseInt(document.getElementById('exam-edit-duration-' + examId).value, 10) || 20;
     const active = document.getElementById('exam-edit-active-' + examId).checked;
-    examsRef.child(examId).update({ title, description: desc, durationMinutes: duration, active });
+    const targetGrade = document.getElementById('exam-edit-grade-' + examId).value;
+    const scheduleEnabled = document.getElementById('exam-edit-sched-enabled-' + examId).checked;
+    const scheduleDate = document.getElementById('exam-edit-sched-date-' + examId).value;
+    const scheduleStartTime = document.getElementById('exam-edit-sched-start-' + examId).value;
+    const scheduleEndTime = document.getElementById('exam-edit-sched-end-' + examId).value;
+    if (scheduleEnabled && (!scheduleDate || !scheduleStartTime || !scheduleEndTime)) {
+      alert('من فضلك حدد تاريخ الاختبار ووقت البداية والنهاية');
+      return;
+    }
+    if (scheduleEnabled && scheduleStartTime >= scheduleEndTime) {
+      alert('وقت النهاية لازم يكون بعد وقت البداية');
+      return;
+    }
+    examsRef.child(examId).update({
+      title, description: desc, durationMinutes: duration, active,
+      targetGrade,
+      scheduleEnabled,
+      scheduleDate: scheduleEnabled ? scheduleDate : '',
+      scheduleStartTime: scheduleEnabled ? scheduleStartTime : '',
+      scheduleEndTime: scheduleEnabled ? scheduleEndTime : ''
+    });
   };
 
   window.adminDeleteExam = function(examId) {
@@ -12296,11 +12524,18 @@ if (document.readyState === 'loading') {
   let attendanceScanner = null;
   let attendanceScanActive = false;
   let attendanceScanSessionName = '';
-  let attendanceScanRecent = {};    // { code: timestamp } لمنع التسجيل المزدوج السريع لنفس الكود
-  let attendanceScanSessionLog = []; // سجل الطلاب اللي اتسكن لهم QR في الجلسة الحالية بس (للعرض)
+  let attendanceScanRecent = {};   // { code: timestamp } لمنع التسجيل المزدوج السريع لنفس الكود من نفس الكاميرا
+  let currentSessionStudentsRef = null; // مرجع Firebase لطلبة الجلسة الحالية
+  let currentSessionStudentsData = {};  // آخر نسخة وصلت من Firebase (بتتزامن على أي جهاز فاتح نفس الجلسة)
 
   function todayDateStr() {
     return new Date().toISOString().slice(0, 10);
+  }
+
+  // بيحوّل اسم الحصة لمعرّف صالح كمفتاح في Firebase (من غير . # $ [ ] /)
+  function slugifySessionName(name) {
+    const slug = name.trim().replace(/[.#$\[\]\/]/g, '').replace(/\s+/g, '_').slice(0, 60);
+    return slug || 'session';
   }
 
   // يستخرج كود الطالب من نص الـ QR، سواء كان رابط دخول كامل (فيه ?code=) أو الكود نفسه مكتوب مباشرة
@@ -12333,12 +12568,30 @@ if (document.readyState === 'loading') {
       alert('⚠️ تعذر تحميل مكتبة الكاميرا، تأكد من اتصال الإنترنت وحاول تاني');
       return;
     }
+    if (typeof db === 'undefined' || !db) {
+      alert('⚠️ تعذر الاتصال بقاعدة البيانات، تأكد من اتصال الإنترنت وحاول تاني');
+      return;
+    }
 
     attendanceScanSessionName = sessionName;
-    attendanceScanSessionLog = [];
     attendanceScanRecent = {};
-    renderScanSessionList();
     nameEl.disabled = true;
+
+    // معرّف الجلسة = التاريخ + اسم الحصة، عشان لو اتفتحت نفس الحصة من أكتر من جهاز في نفس اليوم
+    // كلهم يشتغلوا على نفس القائمة ويتزامنوا لحظياً مع بعض عبر Firebase
+    const sessionId = todayDateStr() + '_' + slugifySessionName(sessionName);
+    db.ref('attendanceSessions/' + sessionId + '/meta').update({
+      name: sessionName,
+      date: todayDateStr(),
+      updatedAt: Date.now()
+    });
+
+    currentSessionStudentsRef = db.ref('attendanceSessions/' + sessionId + '/students');
+    currentSessionStudentsData = {};
+    currentSessionStudentsRef.on('value', function(snapshot) {
+      currentSessionStudentsData = snapshot.val() || {};
+      renderScanSessionList();
+    });
 
     const readerEl = document.getElementById('qr-scan-reader');
     readerEl.style.display = 'block';
@@ -12377,6 +12630,11 @@ if (document.readyState === 'loading') {
       attendanceScanner = null;
       s.stop().then(() => s.clear()).catch(() => {});
     }
+    // بنسيب البيانات محفوظة في Firebase، بس بنوقف المزامنة اللحظية لحد ما جلسة جديدة تبدأ
+    if (currentSessionStudentsRef) {
+      currentSessionStudentsRef.off('value');
+      currentSessionStudentsRef = null;
+    }
   };
 
   function setScanFeedback(msg, type) {
@@ -12410,50 +12668,47 @@ if (document.readyState === 'loading') {
 
     if (alreadyToday) {
       setScanFeedback('ℹ️ تم تسجيل حضور "' + student.name + '" من قبل النهاردة', 'dup');
-      addToScanSessionLog(code, student.name, 'dup');
       return;
     }
 
     const aid = 'scan' + Date.now();
+    // 1) نسجل الحضور في بروفايل الطالب نفسه (زي ما كان)
     db.ref('students/' + code + '/attendance/' + aid).set({
       present: true,
       note: 'حصة: ' + attendanceScanSessionName,
       date: today
     }).then(() => {
       setScanFeedback('✅ تم تسجيل حضور "' + student.name + '"', 'ok');
-      addToScanSessionLog(code, student.name, 'ok');
+      // 2) نسجله كمان في قائمة الجلسة الحالية على Firebase، عشان يظهر لحظياً على أي جهاز فاتح نفس الجلسة
+      if (currentSessionStudentsRef) {
+        currentSessionStudentsRef.child(code).set({ name: student.name, time: Date.now() });
+      }
     }).catch(e => {
       console.error('Attendance scan save error:', e);
       setScanFeedback('⚠️ حصل خطأ أثناء تسجيل الحضور، حاول تاني', 'err');
     });
   }
 
-  function addToScanSessionLog(code, name, status) {
-    attendanceScanSessionLog.unshift({
-      code, name, status,
-      time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
-    });
-    renderScanSessionList();
-  }
-
   function renderScanSessionList() {
     const listEl = document.getElementById('scan-session-list');
     const countEl = document.getElementById('scan-session-count');
     if (!listEl) return;
-    const successCount = attendanceScanSessionLog.filter(e => e.status === 'ok').length;
-    if (countEl) countEl.textContent = successCount + ' طالب';
-    if (!attendanceScanSessionLog.length) {
+    const entries = Object.keys(currentSessionStudentsData).map(code => ({
+      code,
+      name: currentSessionStudentsData[code].name,
+      time: currentSessionStudentsData[code].time || 0
+    })).sort((a, b) => b.time - a.time);
+
+    if (countEl) countEl.textContent = entries.length + ' طالب';
+    if (!entries.length) {
       listEl.innerHTML = '<p class="sd-empty">لسه محدش اتسجل في الجلسة دي.</p>';
       return;
     }
     const esc = typeof escHtmlLocal === 'function' ? escHtmlLocal : (s => s);
-    listEl.innerHTML = attendanceScanSessionLog.map(e => `
+    listEl.innerHTML = entries.map(e => `
       <div class="student-detail-entry">
-        <div class="sd-entry-info">
-          ${e.status === 'ok' ? '✅' : 'ℹ️'} <b>${esc(e.name)}</b> — كود ${esc(e.code)}
-          ${e.status === 'dup' ? '<span style="opacity:0.7;"> (متسجل من قبل)</span>' : ''}
-        </div>
-        <div style="opacity:0.6; font-size:0.78rem;">${e.time}</div>
+        <div class="sd-entry-info">✅ <b>${esc(e.name)}</b> — كود ${esc(e.code)}</div>
+        <div style="opacity:0.6; font-size:0.78rem;">${e.time ? new Date(e.time).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }) : ''}</div>
       </div>
     `).join('');
   }
