@@ -11748,6 +11748,7 @@ if (document.readyState === 'loading') {
         <strong style="display:block; font-size:1rem; color:var(--white);">${grade}</strong>
       </div>
     `).join('');
+    container.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   }
 
   window.openExamGradeSelectPage = function(skipUrlUpdate) {
