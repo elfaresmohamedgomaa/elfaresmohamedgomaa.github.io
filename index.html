@@ -11908,20 +11908,14 @@ if (document.readyState === 'loading') {
     }
   };
 
-  // ===== PUBLIC: يتطلب تسجيل دخول الطالب قبل بدء أي امتحان =====
+  // ===== PUBLIC: مفيش داعي لتسجيل دخول الطالب قبل بدء الامتحان — لو مش مسجل، هيدخل بياناته في صفحة التسجيل مباشرة =====
   window.examStartClicked = function() {
     if (currentExamData && !isExamCurrentlyAvailable(currentExamData)) {
       alert('⏳ الاختبار مش متاح دلوقتي، راجع موعد الاختبار.');
       openExamInfoPage(currentExamId, true);
       return;
     }
-    if (typeof currentStudent !== 'undefined' && currentStudent) {
-      openExamRegisterPage();
-    } else {
-      window.__examLoginPending = true;
-      document.getElementById('exam-info-page').classList.remove('open');
-      if (typeof openStudentLogin === 'function') openStudentLogin();
-    }
+    openExamRegisterPage();
   };
 
   // ===== PUBLIC: REGISTER PAGE =====
