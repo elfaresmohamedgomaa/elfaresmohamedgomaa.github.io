@@ -9871,17 +9871,37 @@ window.exportAllStudentsQR = async function() {
   }
 };
 
-// ===== DEEP LINK: OPEN EXAM PAGES FROM /exams/ OR /exams/001 =====
+// ===== DEEP LINK: OPEN EXAM PAGES FROM /exams/ OR /exams/001 OR /exams/1/ (مرحلة) =====
 function handleExamDeepLink() {
   try {
-    let path = window.location.pathname.replace(/\/+$/, ''); // remove trailing slash
+    let rawPath = window.location.pathname;
     // لو جاي من صفحة 404 (GitHub Pages) هيبقى المسار الأصلي محفوظ في sessionStorage
     let redirectPath = null;
     try { redirectPath = sessionStorage.getItem('af_redirect_path'); } catch (e2) {}
     if (redirectPath) {
       try { sessionStorage.removeItem('af_redirect_path'); } catch (e3) {}
-      path = redirectPath.replace(/\/+$/, '');
+      rawPath = redirectPath;
     }
+
+    // ===== /exams/<رقم المرحلة>/ (بسلاش في الآخر) => صفحة قائمة اختبارات المرحلة دي =====
+    const gradeMatch = rawPath.match(/\/exams\/(\d+)\/$/);
+    if (gradeMatch) {
+      const grades = window.EXAM_STAGE_GRADES || [];
+      const grade = grades[parseInt(gradeMatch[1], 10) - 1];
+      waitForDb(function() {
+        setTimeout(function() {
+          if (grade) {
+            openExamListPage(true, grade);
+          } else {
+            openExamGradeSelectPage(true);
+          }
+        }, 400);
+      });
+      return;
+    }
+
+    // ===== /exams أو /exams/001 (رقم الاختبار نفسه، من غير سلاش في الآخر) =====
+    const path = rawPath.replace(/\/+$/, '');
     const m = path.match(/\/exams(?:\/(\d+))?$/);
     if (!m) return;
     waitForDb(function() {
@@ -11727,13 +11747,20 @@ if (document.readyState === 'loading') {
     if (subEl) subEl.textContent = currentExamGradeFilter ? ('اختر الاختبار — ' + currentExamGradeFilter) : 'اختر الاختبار اللي عايز تأديه';
     renderExamListPage();
     if (!skipUrlUpdate) {
-      try { history.pushState({ examList: true }, '', '/exams/'); } catch (e) {}
+      const gradeNum = currentExamGradeFilter ? getExamGradeNumber(currentExamGradeFilter) : null;
+      const url = gradeNum ? ('/exams/' + gradeNum + '/') : '/exams/';
+      try { history.pushState({ examList: true, grade: currentExamGradeFilter || null }, '', url); } catch (e) {}
     }
   };
 
   // ===== PUBLIC: صفحة اختيار المرحلة الدراسية قبل عرض الاختبارات =====
   const EXAM_STAGE_GRADES = ['الأول الإعدادي', 'الثاني الإعدادي', 'الثالث الإعدادي', 'الأول الثانوي', 'الثاني الثانوي', 'الثالث الثانوي'];
   const EXAM_STAGE_ICON_COLORS = ['ic-gold', 'ic-blue', 'ic-purple', 'ic-green'];
+  window.EXAM_STAGE_GRADES = EXAM_STAGE_GRADES;
+  function getExamGradeNumber(grade) {
+    const idx = EXAM_STAGE_GRADES.indexOf(grade);
+    return idx === -1 ? null : (idx + 1);
+  }
 
   function renderExamGradeSelectPage() {
     const container = document.getElementById('exam-grade-select-container');
@@ -11762,7 +11789,7 @@ if (document.readyState === 'loading') {
 
   window.selectExamGrade = function(grade) {
     document.getElementById('exam-grade-select-page').classList.remove('open');
-    openExamListPage(true, grade);
+    openExamListPage(false, grade);
   };
 
   function renderExamListPage() {
