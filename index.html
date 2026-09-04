@@ -11887,7 +11887,7 @@ if (document.readyState === 'loading') {
           <div class="exam-info-meta-item">❓ عدد الأسئلة: <b>${qCount}</b></div>
           <div class="exam-info-meta-item">⏱ المدة: <b>${e.durationMinutes || 20} دقيقة</b></div>
           <div class="exam-info-meta-item">✅ اختيار من متعدد</div>
-          <div class="exam-info-meta-item">🔁 يمكنك أداء الاختبار مرتين من نفس الجهاز (الدرجة المسجلة هي درجة المحاولة الأولى فقط)</div>
+          <div class="exam-info-meta-item">⚠️ الدرجة المسجلة هي درجة الاختبار في المحاولة الأولى فقط اي محاولة اخرى لن تسجل</div>
           ${scheduleNote}
         </div>
         ${sched.state === 'upcoming' ? `<div class="exam-taken-note">⏳ الاختبار لسه معادوش جاله، هيتفتح يوم ${formatDateArabic(e.scheduleDate)} الساعة ${formatTimeArabic(e.scheduleStartTime)}.</div>` : ''}
