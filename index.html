@@ -4067,6 +4067,14 @@
   background: rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.25);
   color: var(--gold-light); padding: 6px 16px; border-radius: 50px; font-size: 0.8rem;
 }
+.results-sort-dir-btn {
+  background: rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.25);
+  color: var(--gold-light); padding: 6px 14px; border-radius: 50px; font-size: 0.8rem;
+  cursor: pointer; display:inline-flex; align-items:center; gap:6px; font-weight:700;
+  transition: background 0.2s ease, transform 0.15s ease; font-family: inherit;
+}
+.results-sort-dir-btn:hover { background: rgba(201,168,76,0.2); }
+.results-sort-dir-btn:active { transform: scale(0.96); }
 
 @media (max-width: 640px) {
   .exam-info-meta { flex-direction: column; align-items: stretch; }
@@ -7964,6 +7972,12 @@ STU-26-0003	معاذ خالد" style="resize:vertical; font-family:'IBM Plex San
           <select class="notif-type-select" id="examresults-filter" onchange="renderAdminExamResults()" style="max-width:280px;">
             <option value="">كل الاختبارات</option>
           </select>
+          <select class="notif-type-select" id="examresults-sort-field" onchange="renderAdminExamResults()" style="max-width:170px;">
+            <option value="time">🕒 ترتيب حسب الوقت</option>
+            <option value="name">🔤 ترتيب حسب الاسم</option>
+            <option value="score">🏅 ترتيب حسب الدرجة</option>
+          </select>
+          <button type="button" class="results-sort-dir-btn" id="examresults-sort-dir" onclick="toggleExamResultsSortDir()">⬇️ تنازلي</button>
           <span class="results-summary-badge" id="examresults-count">0 نتيجة</span>
         </div>
 
@@ -11647,7 +11661,7 @@ function enhanceCustomSelect(selectEl) {
 }
 
 function initCustomSelects() {
-  ['inp-level', 'student-new-stage', 'student-new-grade-select', 'notif-new-type', 'sd-attendance-status', 'sd-edit-stage', 'sd-edit-grade-select', 'exam-reg-grade', 'examresults-filter', 'exam-new-grade'].forEach((id) => {
+  ['inp-level', 'student-new-stage', 'student-new-grade-select', 'notif-new-type', 'sd-attendance-status', 'sd-edit-stage', 'sd-edit-grade-select', 'exam-reg-grade', 'examresults-filter', 'examresults-sort-field', 'exam-new-grade'].forEach((id) => {
     enhanceCustomSelect(document.getElementById(id));
   });
 }
@@ -12507,6 +12521,15 @@ if (document.readyState === 'loading') {
     if (sel._cselRefresh) sel._cselRefresh();
   };
 
+  let examResultsSortDir = 'desc'; // 'asc' أو 'desc'
+
+  window.toggleExamResultsSortDir = function() {
+    examResultsSortDir = examResultsSortDir === 'desc' ? 'asc' : 'desc';
+    const btn = document.getElementById('examresults-sort-dir');
+    if (btn) btn.innerHTML = examResultsSortDir === 'desc' ? '⬇️ تنازلي' : '⬆️ تصاعدي';
+    renderAdminExamResults();
+  };
+
   window.renderAdminExamResults = function() {
     const listEl = document.getElementById('admin-examresults-list');
     const countEl = document.getElementById('examresults-count');
@@ -12514,9 +12537,25 @@ if (document.readyState === 'loading') {
     refreshExamResultsFilterOptions();
     const filterSel = document.getElementById('examresults-filter');
     const filterId = filterSel ? filterSel.value : '';
+    const sortFieldSel = document.getElementById('examresults-sort-field');
+    const sortField = sortFieldSel ? sortFieldSel.value : 'time';
     let entries = Object.entries(examResultsCache || {});
     if (filterId) entries = entries.filter(([id, r]) => r.examId === filterId);
-    entries.sort((a, b) => (b[1].timestamp || 0) - (a[1].timestamp || 0));
+
+    const dirMul = examResultsSortDir === 'asc' ? 1 : -1;
+    entries.sort((a, b) => {
+      const ra = a[1], rb = b[1];
+      let cmp = 0;
+      if (sortField === 'name') {
+        cmp = String(ra.name || '').localeCompare(String(rb.name || ''), 'ar');
+      } else if (sortField === 'score') {
+        cmp = (ra.percentage ?? ra.score ?? 0) - (rb.percentage ?? rb.score ?? 0);
+      } else {
+        cmp = (ra.timestamp || 0) - (rb.timestamp || 0);
+      }
+      return cmp * dirMul;
+    });
+
     if (countEl) countEl.textContent = entries.length + ' نتيجة';
     if (!entries.length) {
       listEl.innerHTML = '<p class="sd-empty">لا توجد نتائج بعد.</p>';
