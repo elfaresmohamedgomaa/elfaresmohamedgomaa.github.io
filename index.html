@@ -11602,37 +11602,41 @@ function initPushSystem() {
 
 <!-- ===== SCHEDULE FEATURE LOGIC (بيانات وهمية مؤقتة — استبدلها ببيانات السناتر الحقيقية) ===== -->
 <script>
-  // 🔧 بيانات وهمية مؤقتة — عدّل الأسماء والأيام والمواعيد هنا لما تبعتلي البيانات الحقيقية
+  // ✅ بيانات حقيقية (اتبعتلي من الأستاذ) — كل سنتر ممكن يكون ليه أكتر من ميعاد (سيشن)
   const SCHEDULE_DATA = {
     'الأول الإعدادي': [
-      { name: 'سنتر النور', day: 'السبت', time: 'من 4 إلى 6' },
-      { name: 'سنتر الأمل', day: 'الإثنين', time: 'من 3 إلى 5' },
-      { name: 'سنتر المستقبل', day: 'الأربعاء', time: 'من 5 إلى 7' }
+      { name: 'سنتر رسالة السيوف', sessions: [{ day: 'السبت', time: 'من الساعة 3 ونص إلى 5' }] },
+      { name: 'سنتر القمة', sessions: [{ day: 'الأحد', time: 'من الساعة 6 ونص إلى 8' }] },
+      { name: 'سنتر جاردينيا', sessions: [{ day: 'الاثنين', time: 'من الساعة 5 إلى 6 ونص' }] },
+      { name: 'سنتر رسالة الساعة', sessions: [{ day: 'الثلاثاء', time: 'من الساعة 6 ونص إلى 8' }] },
+      { name: 'سنتر المصري', sessions: [
+        { day: 'الأربعاء', time: 'من الساعة 6 ونص إلى 7 ونص' },
+        { day: 'الخميس', time: 'من الساعة 4 إلى 5 ونص' }
+      ] }
     ],
     'الثاني الإعدادي': [
-      { name: 'سنتر النور', day: 'الأحد', time: 'من 4 إلى 6' },
-      { name: 'سنتر الأمل', day: 'الثلاثاء', time: 'من 3 إلى 5' },
-      { name: 'سنتر المستقبل', day: 'الخميس', time: 'من 5 إلى 7' }
+      { name: 'سنتر رسالة السيوف', sessions: [{ day: 'السبت', time: 'من الساعة 12 إلى 2' }] },
+      { name: 'سنتر القمة', sessions: [{ day: 'الأحد', time: 'من الساعة 5 إلى 6 ونص' }] },
+      { name: 'سنتر جاردينيا', sessions: [{ day: 'الاثنين', time: 'من الساعة 6 ونص إلى 8' }] },
+      { name: 'سنتر رسالة الساعة', sessions: [{ day: 'الثلاثاء', time: 'من الساعة 5 إلى 6 ونص' }] },
+      { name: 'سنتر المصري', sessions: [{ day: 'الأربعاء', time: 'من الساعة 5 ونص إلى 6 ونص' }] }
     ],
     'الثالث الإعدادي': [
-      { name: 'سنتر رسالة الساعة', day: 'الثلاثاء', time: 'من 3 إلى 5' },
-      { name: 'سنتر رسالة السيوف', day: 'الأربعاء', time: 'من 4 إلى 6' },
-      { name: 'سنتر القمة', day: 'الخميس', time: 'من 2 إلى 4' },
-      { name: 'سنتر جاردينيا', day: 'الجمعة', time: 'من 5 إلى 7' },
-      { name: 'سنتر المصري', day: 'السبت', time: 'من 3 إلى 5' }
+      { name: 'سنتر رسالة السيوف', sessions: [{ day: 'السبت', time: 'من الساعة 12 إلى 2' }] },
+      { name: 'سنتر جاردينيا', sessions: [{ day: 'السبت', time: 'من الساعة 6 إلى 8' }] },
+      { name: 'سنتر القمة', sessions: [{ day: 'الأحد', time: 'من الساعة 3 إلى 5' }] },
+      { name: 'سنتر رسالة الساعة', sessions: [{ day: 'الثلاثاء', time: 'من الساعة 3 إلى 5' }] },
+      { name: 'سنتر المصري', sessions: [{ day: 'الأربعاء', time: 'من الساعة 4 إلى 5 ونص' }] }
     ],
     'الأول الثانوي': [
-      { name: 'سنتر رسالة الساعة', day: 'السبت', time: 'من 6 إلى 8' },
-      { name: 'سنتر القمة', day: 'الإثنين', time: 'من 4 إلى 6' }
+      { name: 'سنتر القمة', sessions: [{ day: 'الاثنين', time: 'من الساعة 3 إلى 5' }] },
+      { name: 'سنتر رسالة الساعة', sessions: [{ day: 'الثلاثاء', time: 'من الساعة 8 إلى 9 ونص' }] },
+      { name: 'سنتر المصري', sessions: [{ day: 'الأربعاء', time: 'من الساعة 7 ونص إلى 9' }] }
     ],
     'الثاني الثانوي': [
-      { name: 'سنتر رسالة الساعة', day: 'الأحد', time: 'من 6 إلى 8' },
-      { name: 'سنتر القمة', day: 'الثلاثاء', time: 'من 4 إلى 6' }
+      { name: 'سنتر القمة', sessions: [{ day: 'الاثنين', time: 'من الساعة 5 إلى 7' }] }
     ],
-    'الثالث الثانوي': [
-      { name: 'سنتر رسالة الساعة', day: 'الإثنين', time: 'من 7 إلى 9' },
-      { name: 'سنتر القمة', day: 'الأربعاء', time: 'من 5 إلى 7' }
-    ]
+    'الثالث الثانوي': []
   };
 
   let currentScheduleGrade = null;
@@ -11709,6 +11713,13 @@ function initPushSystem() {
     if (subEl) subEl.textContent = center.name;
     const container = document.getElementById('schedule-detail-container');
     if (container) {
+      const sessions = center.sessions && center.sessions.length ? center.sessions : [{ day: '', time: '' }];
+      const sessionsHtml = sessions.map(s => `
+        <div style="background:rgba(201,168,76,0.08); border:1px solid rgba(201,168,76,0.15); border-radius:14px; padding:16px; margin-bottom:12px;">
+          <div style="font-size:1rem; color:var(--gold-light); font-weight:700; margin-bottom:6px;">📅 يوم ${escHtml(s.day)}</div>
+          <div style="font-size:1rem; color:var(--white2);">🕒 ${escHtml(s.time)}</div>
+        </div>
+      `).join('');
       container.innerHTML = `
         <div style="background:var(--dark3); border:1px solid rgba(201,168,76,0.15); border-radius:20px; padding:36px 24px; text-align:center;">
           <div class="dash-stat-icon lg ic-gold" style="margin:0 auto 18px;">
@@ -11716,9 +11727,8 @@ function initPushSystem() {
               <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>
             </svg>
           </div>
-          <strong style="display:block; font-size:1.15rem; color:var(--white); margin-bottom:14px;">${escHtml(center.name)}</strong>
-          <div style="font-size:1rem; color:var(--gold-light); font-weight:700; margin-bottom:8px;">📅 يوم ${escHtml(center.day)}</div>
-          <div style="font-size:1rem; color:var(--white2);">🕒 ${escHtml(center.time)}</div>
+          <strong style="display:block; font-size:1.15rem; color:var(--white); margin-bottom:18px;">${escHtml(center.name)}</strong>
+          ${sessionsHtml}
         </div>
       `;
     }
