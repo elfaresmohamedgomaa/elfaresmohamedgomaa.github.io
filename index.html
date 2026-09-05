@@ -4108,6 +4108,20 @@
 }
 .exam-result-percent { font-size: 1rem; color: var(--white2); opacity: 0.75; margin-bottom: 20px; }
 .exam-result-msg { color: var(--white2); opacity: 0.85; line-height: 1.9; margin-bottom: 24px; font-size: 0.95rem; }
+.exam-result-btn {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 14px;
+  text-align: center;
+}
+.exam-result-btn:last-child { margin-bottom: 0; }
+.exam-result-btn.outline {
+  background: transparent;
+  border: 1.5px solid rgba(201,168,76,0.4);
+  color: var(--gold-light);
+}
+.exam-result-btn.outline:hover { box-shadow: 0 6px 20px rgba(201,168,76,0.15); }
 
 .admin-exam-meta-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
 .admin-question-item {
@@ -12021,8 +12035,8 @@ function initPushSystem() {
       <div class="exam-result-score" id="exam-result-score">0/0</div>
       <div class="exam-result-percent" id="exam-result-percent">0%</div>
       <div class="exam-result-msg" id="exam-result-msg"></div>
-      <button class="exam-start-btn" id="exam-review-wrong-btn" style="display:none; background:transparent; border:1px solid rgba(201,168,76,0.35); color:var(--gold-light); margin-bottom:12px;" onclick="openExamWrongReviewPage()">📋 شوف الأسئلة اللي غلطت فيها</button>
-      <button class="exam-start-btn" onclick="examCloseResult()">تمام، رجوع للصفحة الرئيسية</button>
+      <button class="exam-start-btn exam-result-btn outline" id="exam-review-wrong-btn" style="display:none;" onclick="openExamWrongReviewPage()">📋 شوف الأسئلة اللي غلطت فيها</button>
+      <button class="exam-start-btn exam-result-btn" onclick="examCloseResult()">تمام، رجوع للصفحة الرئيسية</button>
     </div>
   </div>
 </div>
