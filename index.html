@@ -3706,6 +3706,28 @@
 }
 .legal-header-sub { font-size: 0.8rem; color: var(--white2); opacity: 0.55; margin-top: 2px; }
 
+/* ===== Unified student avatar (profile header) ===== */
+.dash-avatar-icon {
+  width: 54px; height: 54px;
+  border-radius: 50%;
+  padding: 2px;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 1px rgba(201,168,76,0.25), 0 4px 14px rgba(201,168,76,0.18);
+}
+.dash-avatar-img {
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--dark2);
+  display: block;
+}
+.dash-student-meta {
+  font-size: 0.72rem; color: var(--gold); opacity: 0.85;
+  margin-top: 4px; font-weight: 700;
+}
+
 .legal-body { max-width: 900px; margin: 0 auto; padding: 36px 24px 80px; }
 .legal-update-badge {
   display: inline-flex; align-items: center; gap: 8px;
@@ -5390,14 +5412,22 @@
 /* ===== STUDENT DASHBOARD ===== */
 .dash-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 30px; }
 .dash-stat-card {
+  position: relative;
   background: var(--dark3);
   border: 1px solid rgba(201,168,76,0.15);
   border-radius: 14px;
-  padding: 20px 10px 16px;
+  padding: 22px 10px 16px;
   text-align: center;
-  transition: transform 0.25s, border-color 0.25s;
+  overflow: hidden;
+  transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
 }
-.dash-stat-card:hover { transform: translateY(-3px); border-color: rgba(201,168,76,0.35); }
+.dash-stat-card::before {
+  content: '';
+  position: absolute; top: 0; right: 0; left: 0; height: 3px;
+  background: linear-gradient(90deg, var(--gold-light), var(--gold));
+  opacity: 0.7;
+}
+.dash-stat-card:hover { transform: translateY(-3px); border-color: rgba(201,168,76,0.35); box-shadow: 0 8px 22px rgba(0,0,0,0.28); }
 .dash-stat-icon {
   width: 46px; height: 46px;
   margin: 0 auto 12px;
@@ -6890,12 +6920,22 @@
     },
     {
       questions: [
-        "إيه مميزات الموقع؟",
-        "هستفيد إيه من الموقع؟"
+        "فين الامتحانات والدرجات؟",
+        "إزاي أدخل امتحان؟"
       ],
       answers: [
-        "الموقع فيه كل حاجة محتاجها: فيديوهات شرح، مذكرات PDF للتحميل، وتواصل مباشر مع الأستاذ محمد — كل ده في مكان واحد وبسهولة تامة 🎯",
-        "تقدر تشوف الفيديوهات جوّا الموقع مباشرةً، تحمّل المذكرات، وتتواصل مع الأستاذ في ثانية. مش محتاج تدور في حتت تانية — كل حاجة هنا 🏇"
+        "تقدر تدخل من قسم 'متابعة الطلاب' في الصفحة الرئيسية، دوس على 'الامتحانات والدرجات'، اختار مرحلتك الدراسية، وبعدها هتلاقي كل الامتحانات المتاحة ليك وتقدر تبدأ فورًا 📝",
+        "من قسم 'متابعة الطلاب' دوس على 'الامتحانات والدرجات'، اختار مرحلتك، واختار الامتحان اللي عايز تأديه — وهتعرف درجتك أول ما تخلّص ✅"
+      ]
+    },
+    {
+      questions: [
+        "فين مواعيد الحصص؟",
+        "إمتى حصتي؟"
+      ],
+      answers: [
+        "من قسم 'متابعة الطلاب' دوس على 'مواعيد الحصص'، اختار مرحلتك الدراسية، وبعدها اختار السنتر بتاعك عشان تشوف يوم وميعاد حصتك بالظبط ⏰",
+        "تقدر تعرف ميعاد حصتك بسهولة: ادخل 'مواعيد الحصص'، اختار المرحلة والسنتر، وهيظهرلك اليوم والساعة فورًا 📅"
       ]
     }
   ];
@@ -10875,6 +10915,8 @@ window.openStudentDashboard = function() {
   document.getElementById('dash-student-name').textContent = 'أهلاً ' + currentStudent.name;
   document.body.style.overflow = 'hidden';
   document.getElementById('dash-stats').innerHTML = '<p class="sd-empty">جاري تحميل بياناتك...</p>';
+  const metaElInit = document.getElementById('dash-student-meta');
+  if (metaElInit) metaElInit.textContent = '';
 
   waitForDb(function(ready) {
     if (!ready || !db) {
@@ -10895,6 +10937,11 @@ window.closeStudentDashboard = function() {
 };
 
 function renderStudentDashboard(data) {
+  const metaEl = document.getElementById('dash-student-meta');
+  if (metaEl) {
+    const metaParts = [data.stage, data.grade].filter(Boolean);
+    metaEl.textContent = metaParts.length ? metaParts.join(' - ') : '';
+  }
   const grades = data.grades ? Object.values(data.grades) : [];
   const attendance = data.attendance ? Object.entries(data.attendance) : [];
 
@@ -11428,8 +11475,11 @@ function initPushSystem() {
       <div>
         <div class="legal-header-title" id="dash-student-name">لوحة الطالب</div>
         <div class="legal-header-sub">الفارس في الرياضيات</div>
+        <div class="dash-student-meta" id="dash-student-meta"></div>
       </div>
-      <div class="legal-header-icon">🎓</div>
+      <div class="legal-header-icon dash-avatar-icon">
+        <img class="dash-avatar-img" src="https://i.ibb.co/ZR8F1zqN/profile.jpg" alt="صورة الطالب" loading="lazy">
+      </div>
     </div>
   </div>
 
