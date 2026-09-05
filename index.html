@@ -4026,6 +4026,46 @@
   font-weight: 800; color: var(--gold); flex-shrink: 0; font-size: 0.85rem;
 }
 .exam-option.selected .exam-option-letter { background: var(--gold); color: var(--dark); }
+
+/* ===== Exam wrong-answer review ===== */
+.exam-review-card {
+  background: var(--dark3);
+  border: 1.5px solid rgba(201,168,76,0.15);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 18px;
+}
+.exam-review-num { font-size: 0.8rem; color: var(--gold); font-weight: 800; margin-bottom: 10px; opacity: 0.85; }
+.exam-review-qtext {
+  font-family: 'Noto Sans Arabic', 'Noto Sans Math', 'Tajawal', sans-serif;
+  font-weight: 700;
+  font-size: 1.02rem;
+  color: var(--white);
+  line-height: 1.8;
+  margin-bottom: 14px;
+}
+.exam-review-option {
+  position: relative;
+  background: rgba(255,255,255,0.03);
+  border: 1.5px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  font-size: 0.92rem;
+  color: var(--white2);
+  font-family: 'Noto Sans Arabic', 'Noto Sans Math', 'Tajawal', sans-serif;
+}
+.exam-review-option.correct { border-color: rgba(58,168,118,0.5); background: rgba(58,168,118,0.1); color: var(--white); }
+.exam-review-option.wrong { border-color: rgba(255,107,107,0.5); background: rgba(255,107,107,0.08); color: var(--white); }
+.exam-review-tag {
+  margin-right: auto;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #3aa876;
+}
+.exam-review-tag.wrong { color: #ff6b6b; }
+
 .exam-nav-row { display:flex; gap: 12px; margin-top: 28px; }
 .exam-nav-btn {
   flex: 1;
@@ -11981,10 +12021,30 @@ function initPushSystem() {
       <div class="exam-result-score" id="exam-result-score">0/0</div>
       <div class="exam-result-percent" id="exam-result-percent">0%</div>
       <div class="exam-result-msg" id="exam-result-msg"></div>
+      <button class="exam-start-btn" id="exam-review-wrong-btn" style="display:none; background:transparent; border:1px solid rgba(201,168,76,0.35); color:var(--gold-light); margin-bottom:12px;" onclick="openExamWrongReviewPage()">📋 شوف الأسئلة اللي غلطت فيها</button>
       <button class="exam-start-btn" onclick="examCloseResult()">تمام، رجوع للصفحة الرئيسية</button>
     </div>
   </div>
 </div>
+
+<!-- ===== EXAM: WRONG ANSWERS REVIEW PAGE ===== -->
+<div class="legal-overlay" id="exam-wrong-review-page">
+  <div class="legal-topbar"></div>
+  <div class="legal-header">
+    <button class="legal-close-btn" onclick="closeExamWrongReviewPage()" aria-label="إغلاق">✕</button>
+    <div class="legal-header-title-wrap">
+      <div>
+        <div class="legal-header-title">مراجعة الأخطاء</div>
+        <div class="legal-header-sub">شوف إجابتك الصح لكل سؤال غلطت فيه</div>
+      </div>
+      <div class="legal-header-icon">📋</div>
+    </div>
+  </div>
+  <div class="legal-body">
+    <div id="exam-wrong-review-container"></div>
+  </div>
+</div>
+
 
 <script>
   window.openLegalPage = function(type) {
@@ -12110,6 +12170,7 @@ if (document.readyState === 'loading') {
   let examTimerInterval = null;
   let examTimeLeftSeconds = 0;
   let examCurrentQIndex = 0;
+  let examWrongReviewList = [];
 
   function escHtmlLocal(str) {
     if (typeof escHtml === 'function') return escHtml(str);
@@ -12524,9 +12585,21 @@ if (document.readyState === 'loading') {
   function examFinishNow(auto) {
     if (examTimerInterval) clearInterval(examTimerInterval);
     let score = 0;
+    examWrongReviewList = [];
     currentExamQuestionsArr.forEach((entry, i) => {
       const q = entry[1];
-      if (currentExamAnswers[i] === q.correctIndex) score++;
+      const selected = currentExamAnswers[i];
+      if (selected === q.correctIndex) {
+        score++;
+      } else {
+        examWrongReviewList.push({
+          text: q.text || '',
+          imageUrl: q.imageUrl || '',
+          options: q.options || [],
+          selectedIndex: (typeof selected === 'number') ? selected : null,
+          correctIndex: q.correctIndex
+        });
+      }
     });
     const total = currentExamQuestionsArr.length;
     const percentage = total ? Math.round((score / total) * 100) : 0;
@@ -12581,8 +12654,51 @@ if (document.readyState === 'loading') {
     if (auto) msg = '⏰ انتهى وقت الاختبار تلقائياً. ' + msg;
     if (isFirstAttempt === false) msg += ' (ملحوظة: دي محاولتك التانية، والدرجة المسجلة عند الأستاذ هي درجة محاولتك الأولى)';
     document.getElementById('exam-result-msg').textContent = msg;
+    const reviewBtn = document.getElementById('exam-review-wrong-btn');
+    if (reviewBtn) reviewBtn.style.display = examWrongReviewList.length ? 'block' : 'none';
     document.getElementById('exam-result-page').classList.add('open');
   }
+
+  window.openExamWrongReviewPage = function() {
+    const container = document.getElementById('exam-wrong-review-container');
+    if (container) {
+      container.innerHTML = examWrongReviewList.length ? examWrongReviewList.map((item, idx) => {
+        const letters = ['أ', 'ب', 'ج', 'د'];
+        const imgHtml = item.imageUrl ? `<img src="${escHtmlLocal(item.imageUrl)}" alt="صورة السؤال" style="max-width:100%; max-height:180px; border-radius:8px; margin-bottom:10px; display:block;">` : '';
+        const textHtml = item.text && item.text.trim() ? `<div class="exam-review-qtext">${renderMathHtml(item.text)}</div>` : '';
+        const optsHtml = (item.options || []).map((opt, i) => {
+          let cls = 'exam-review-option';
+          if (i === item.correctIndex) cls += ' correct';
+          else if (i === item.selectedIndex) cls += ' wrong';
+          return `
+            <div class="${cls}">
+              <span class="exam-option-letter">${letters[i] || (i + 1)}</span>
+              <span>${renderMathHtml(opt)}</span>
+              ${i === item.correctIndex ? '<span class="exam-review-tag">✅ الإجابة الصحيحة</span>' : ''}
+              ${i === item.selectedIndex && i !== item.correctIndex ? '<span class="exam-review-tag wrong">❌ إجابتك</span>' : ''}
+            </div>
+          `;
+        }).join('');
+        const noAnswerNote = item.selectedIndex === null ? '<div class="exam-review-tag wrong" style="display:inline-block; margin-bottom:8px;">❌ متجاوبتش على السؤال ده</div>' : '';
+        return `
+          <div class="exam-review-card">
+            <div class="exam-review-num">سؤال ${idx + 1}</div>
+            ${imgHtml}
+            ${textHtml}
+            ${noAnswerNote}
+            ${optsHtml}
+          </div>
+        `;
+      }).join('') : '<p class="sd-empty">مفيش أسئلة غلط، تمام كله! 🎉</p>';
+    }
+    document.getElementById('exam-wrong-review-page').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  };
+
+  window.closeExamWrongReviewPage = function() {
+    document.getElementById('exam-wrong-review-page').classList.remove('open');
+    document.body.style.overflow = '';
+  };
 
   window.examCloseResult = function() {
     document.getElementById('exam-result-page').classList.remove('open');
@@ -12592,6 +12708,7 @@ if (document.readyState === 'loading') {
     currentExamRegistrant = null;
     currentExamQuestionsArr = [];
     currentExamAnswers = {};
+    examWrongReviewList = [];
   };
 
   document.addEventListener('keydown', function(e) {
