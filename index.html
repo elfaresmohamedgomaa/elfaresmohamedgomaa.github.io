@@ -4089,6 +4089,15 @@
 }
 .results-sort-dir-btn:hover { background: rgba(201,168,76,0.2); }
 .results-sort-dir-btn:active { transform: scale(0.96); }
+.results-copy-btn {
+  background: linear-gradient(135deg, #7c3aed, #9333ea);
+  border: none; color: #fff; padding: 7px 16px; border-radius: 50px;
+  font-size: 0.8rem; cursor: pointer; display:inline-flex; align-items:center; gap:6px;
+  font-weight:700; font-family: inherit; transition: transform 0.15s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 10px rgba(124,58,237,0.35);
+}
+.results-copy-btn:hover { box-shadow: 0 4px 16px rgba(124,58,237,0.5); }
+.results-copy-btn:active { transform: scale(0.96); }
 
 @media (max-width: 640px) {
   .exam-info-meta { flex-direction: column; align-items: stretch; }
@@ -7992,6 +8001,7 @@ STU-26-0003	معاذ خالد" style="resize:vertical; font-family:'IBM Plex San
             <option value="score">🏅 ترتيب حسب الدرجة</option>
           </select>
           <button type="button" class="results-sort-dir-btn" id="examresults-sort-dir" onclick="toggleExamResultsSortDir()">⬇️ تنازلي</button>
+          <button type="button" class="results-copy-btn" onclick="copyExamResultsToClipboard()">📋 نسخ الدرجات</button>
           <span class="results-summary-badge" id="examresults-count">0 نتيجة</span>
         </div>
 
@@ -12579,6 +12589,26 @@ if (document.readyState === 'loading') {
     const countEl = document.getElementById('examresults-count');
     if (!listEl) return;
     refreshExamResultsFilterOptions();
+    const entries = getSortedFilteredExamResults();
+
+    if (countEl) countEl.textContent = entries.length + ' نتيجة';
+    if (!entries.length) {
+      listEl.innerHTML = '<p class="sd-empty">لا توجد نتائج بعد.</p>';
+      return;
+    }
+    listEl.innerHTML = entries.map(([rid, r]) => `
+      <div class="student-detail-entry">
+        <div class="sd-entry-info">
+          <b>${escHtmlLocal(r.name || '')}</b> — ${escHtmlLocal(r.examTitle || '')}<br>
+          <span style="opacity:0.75;">${escHtmlLocal(r.grade || '')} · 📱 ${escHtmlLocal(r.phone || '')} · ${r.score}/${r.total} (${r.percentage}%) · ${escHtmlLocal(r.date || '')}</span>
+        </div>
+        <button class="sd-entry-del" onclick="adminDeleteExamResult('${rid}')">🗑</button>
+      </div>
+    `).join('');
+  };
+
+  // يرجّع نتائج الطلاب مفلترة ومرتبة بنفس المعايير المعروضة حاليًا في الشاشة
+  function getSortedFilteredExamResults() {
     const filterSel = document.getElementById('examresults-filter');
     const filterId = filterSel ? filterSel.value : '';
     const sortFieldSel = document.getElementById('examresults-sort-field');
@@ -12599,21 +12629,21 @@ if (document.readyState === 'loading') {
       }
       return cmp * dirMul;
     });
+    return entries;
+  }
 
-    if (countEl) countEl.textContent = entries.length + ' نتيجة';
-    if (!entries.length) {
-      listEl.innerHTML = '<p class="sd-empty">لا توجد نتائج بعد.</p>';
-      return;
-    }
-    listEl.innerHTML = entries.map(([rid, r]) => `
-      <div class="student-detail-entry">
-        <div class="sd-entry-info">
-          <b>${escHtmlLocal(r.name || '')}</b> — ${escHtmlLocal(r.examTitle || '')}<br>
-          <span style="opacity:0.75;">${escHtmlLocal(r.grade || '')} · 📱 ${escHtmlLocal(r.phone || '')} · ${r.score}/${r.total} (${r.percentage}%) · ${escHtmlLocal(r.date || '')}</span>
-        </div>
-        <button class="sd-entry-del" onclick="adminDeleteExamResult('${rid}')">🗑</button>
-      </div>
-    `).join('');
+  window.copyExamResultsToClipboard = function() {
+    const entries = getSortedFilteredExamResults();
+    if (!entries.length) { alert('لا توجد نتائج لنسخها'); return; }
+    const text = entries.map(([rid, r]) => `${r.name || ''} ${r.score}/${r.total} (${r.percentage}%)`).join('\n');
+    navigator.clipboard && navigator.clipboard.writeText(text).then(function() {
+      showAdminToast && showAdminToast();
+    }).catch(function() {
+      const ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      showAdminToast && showAdminToast();
+    });
   };
 
   window.adminDeleteExamResult = function(rid) {
