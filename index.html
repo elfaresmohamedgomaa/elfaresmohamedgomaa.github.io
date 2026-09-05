@@ -3707,6 +3707,7 @@
 .legal-header-sub { font-size: 0.8rem; color: var(--white2); opacity: 0.55; margin-top: 2px; }
 
 /* ===== Unified student avatar (profile header) ===== */
+.dash-simple-header .legal-header-title-wrap { justify-content: flex-start; }
 .dash-avatar-icon {
   width: 54px; height: 54px;
   border-radius: 50%;
@@ -3724,8 +3725,21 @@
   display: block;
 }
 .dash-student-meta {
-  font-size: 0.72rem; color: var(--gold); opacity: 0.85;
-  margin-top: 4px; font-weight: 700;
+  font-size: 0.78rem; color: var(--gold); opacity: 0.85;
+  margin-top: 6px; font-weight: 700;
+}
+.dash-profile-banner {
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: 4px;
+  margin-bottom: 30px;
+}
+.dash-avatar-icon-lg {
+  width: 92px; height: 92px;
+  padding: 3px;
+  margin-bottom: 10px;
+}
+.dash-profile-banner .legal-header-title {
+  font-size: 1.3rem;
 }
 
 .legal-body { max-width: 900px; margin: 0 auto; padding: 36px 24px 80px; }
@@ -5410,7 +5424,7 @@
 .sd-empty { font-size: 0.8rem; color: var(--white2); opacity: 0.45; padding: 4px 0; }
 
 /* ===== STUDENT DASHBOARD ===== */
-.dash-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 30px; }
+.dash-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 30px; max-width: 480px; margin-left: auto; margin-right: auto; }
 .dash-stat-card {
   position: relative;
   background: var(--dark3);
@@ -10972,16 +10986,6 @@ function renderStudentDashboard(data) {
       <div class="dash-stat-value">${attendancePercent !== null ? attendancePercent + '%' : '—'}</div>
       <div class="dash-stat-label">نسبة الحضور</div>
     </div>
-    <div class="dash-stat-card">
-      <div class="dash-stat-icon ic-purple">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="8.5" cy="8.5" r="3.3"/>
-          <path d="M10.8 10.8L19 19"/><path d="M15.3 15.3l2-2"/><path d="M17.6 17.6l2-2"/>
-        </svg>
-      </div>
-      <div class="dash-stat-value">${data.loginCount || 0}</div>
-      <div class="dash-stat-label">مرات الدخول</div>
-    </div>
   `;
 
   const sortedGrades = grades.slice().sort((a, b) => (b.date || '').localeCompare(a.date || ''));
@@ -11469,21 +11473,22 @@ function initPushSystem() {
 <!-- ===== STUDENT DASHBOARD PAGE ===== -->
 <div class="legal-overlay" id="student-dashboard-page">
   <div class="legal-topbar"></div>
-  <div class="legal-header">
+  <div class="legal-header dash-simple-header">
     <button class="legal-close-btn" onclick="closeStudentDashboard()" aria-label="إغلاق">✕</button>
     <div class="legal-header-title-wrap">
-      <div>
-        <div class="legal-header-title" id="dash-student-name">لوحة الطالب</div>
-        <div class="legal-header-sub">الفارس في الرياضيات</div>
-        <div class="dash-student-meta" id="dash-student-meta"></div>
-      </div>
-      <div class="legal-header-icon dash-avatar-icon">
-        <img class="dash-avatar-img" src="https://i.ibb.co/ZR8F1zqN/profile.jpg" alt="صورة الطالب" loading="lazy">
-      </div>
+      <div class="legal-header-sub">الفارس في الرياضيات</div>
     </div>
   </div>
 
   <div class="legal-body">
+    <div class="dash-profile-banner">
+      <div class="dash-avatar-icon dash-avatar-icon-lg">
+        <img class="dash-avatar-img" src="https://i.ibb.co/ZR8F1zqN/profile.jpg" alt="صورة الطالب" loading="lazy">
+      </div>
+      <div class="legal-header-title" id="dash-student-name">لوحة الطالب</div>
+      <div class="dash-student-meta" id="dash-student-meta"></div>
+    </div>
+
     <div class="dash-stats" id="dash-stats"></div>
 
     <div class="student-detail-section-title">
