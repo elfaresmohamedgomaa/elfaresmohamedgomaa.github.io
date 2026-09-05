@@ -10953,7 +10953,7 @@ window.adminDeleteAttendance = function(aid) {
 // ===== STUDENT DASHBOARD (student-facing view) =====
 // ================================================================
 
-window.openStudentDashboard = function() {
+window.openStudentDashboard = function(skipUrlUpdate) {
   if (!currentStudent) return;
   document.getElementById('student-dashboard-page').classList.add('open');
   document.getElementById('dash-student-name').textContent = 'أهلاً ' + currentStudent.name;
@@ -10961,6 +10961,11 @@ window.openStudentDashboard = function() {
   document.getElementById('dash-stats').innerHTML = '<p class="sd-empty">جاري تحميل بياناتك...</p>';
   const metaElInit = document.getElementById('dash-student-meta');
   if (metaElInit) metaElInit.textContent = '';
+
+  // حدّث رابط الصفحة لـ /profile/ عشان لو حصل مشاركة أو ريفرش يرجعنا للبروفايل تاني
+  if (!skipUrlUpdate) {
+    try { history.pushState({ studentProfile: true }, '', '/profile/'); } catch (e) {}
+  }
 
   waitForDb(function(ready) {
     if (!ready || !db) {
@@ -10975,10 +10980,40 @@ window.openStudentDashboard = function() {
   });
 };
 
-window.closeStudentDashboard = function() {
+window.closeStudentDashboard = function(skipUrlUpdate) {
   document.getElementById('student-dashboard-page').classList.remove('open');
   document.body.style.overflow = '';
+  // امسح /profile/ من الرابط لو المستخدم قافل اللوحة يدوي
+  if (!skipUrlUpdate && /\/profile\/?$/.test(location.pathname)) {
+    try { history.pushState({}, '', window.location.origin + '/'); } catch (e) {}
+  }
 };
+
+// لو المستخدم دوس زرار "رجوع" في المتصفح وهو في صفحة البروفايل، اقفلها بشكل طبيعي
+window.addEventListener('popstate', function() {
+  if (!/\/profile\/?$/.test(location.pathname)) {
+    const panel = document.getElementById('student-dashboard-page');
+    if (panel && panel.classList.contains('open')) {
+      closeStudentDashboard(true);
+    }
+  }
+});
+
+// ===== DEEP LINK: فتح بروفايل الطالب مباشرة لو الرابط /profile/ (بعد تسجيل الدخول) =====
+function handleStudentProfileDeepLink() {
+  try {
+    const rawPath = resolveDeepLinkPath();
+    if (!/\/profile\/?$/.test(rawPath)) return;
+    setTimeout(function() {
+      if (currentStudent) {
+        openStudentDashboard(true);
+      } else {
+        openStudentLogin();
+      }
+    }, 300);
+  } catch (e) { /* تجاهل أي خطأ في قراءة الرابط */ }
+}
+document.addEventListener('DOMContentLoaded', handleStudentProfileDeepLink);
 
 function renderStudentDashboard(data) {
   const metaEl = document.getElementById('dash-student-meta');
