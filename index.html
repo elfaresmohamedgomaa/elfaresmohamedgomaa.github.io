@@ -5777,7 +5777,7 @@
       <div class="tracking-coming">قريباً</div>
     </div>
 
-    <div class="reveal" style="background:var(--dark3); border:1px solid rgba(201,168,76,0.15); border-radius:20px; padding:32px 24px; text-align:center; position:relative; overflow:hidden;">
+    <div class="reveal tracking-card-clickable" onclick="openTrackingOverlay(3)" style="background:var(--dark3); border:1px solid rgba(201,168,76,0.15); border-radius:20px; padding:32px 24px; text-align:center; position:relative; overflow:hidden;">
       <div class="dash-stat-icon lg ic-green" style="margin:0 auto 14px;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4l3 2"/><path d="M8.5 3.5L5.5 5.5"/><path d="M15.5 3.5l3 2"/>
@@ -5785,7 +5785,6 @@
       </div>
       <strong style="display:block; font-size:1rem; color:var(--white); margin-bottom:8px;">مواعيد الحصص</strong>
       <span style="font-size:0.8rem; color:var(--white2); opacity:0.6;">جدول مواعيد الأسبوع</span>
-      <div class="tracking-coming">قريباً</div>
     </div>
 
   </div>
@@ -7119,7 +7118,7 @@ const defaultTracking = [
   { emoji: '📊', title: 'الامتحانات والدرجات', desc: 'متابعة نتائج كل امتحان', coming: false, action: 'exams' },
   { emoji: '🏆', title: 'مكافآت ومسابقات', desc: 'جوائز وتحديات للطلبة المتفوقين', coming: true },
   { emoji: '📅', title: 'الحضور والغياب', desc: 'سجل حضور الحصص', coming: true },
-  { emoji: '⏰', title: 'مواعيد الحصص', desc: 'جدول مواعيد الأسبوع', coming: true }
+  { emoji: '⏰', title: 'مواعيد الحصص', desc: 'جدول مواعيد الأسبوع', coming: false, action: 'schedule' }
 ];
 let adminTracking = [...defaultTracking];
 
@@ -8211,6 +8210,7 @@ function openTrackingOverlay(index) {
   var card = cards[index];
   if (!card) return;
   if (card.action === 'exams') { openExamGradeSelectPage(); return; }
+  if (card.action === 'schedule') { openScheduleGradeSelectPage(); return; }
   var emojiEl = document.getElementById("overlay-emoji");
   var m = (typeof trackingIconMap !== "undefined") ? trackingIconMap[card.emoji] : null;
   if (m) {
@@ -11545,6 +11545,205 @@ function initPushSystem() {
     </div>
   </div>
 </div>
+
+<!-- ===== SCHEDULE: GRADE SELECT PAGE ===== -->
+<div class="legal-overlay" id="schedule-grade-select-page">
+  <div class="legal-topbar"></div>
+  <div class="legal-header">
+    <button class="legal-close-btn" onclick="closeSchedulePage('schedule-grade-select-page')" aria-label="إغلاق">✕</button>
+    <div class="legal-header-title-wrap">
+      <div>
+        <div class="legal-header-title">مواعيد الحصص</div>
+        <div class="legal-header-sub">اختار مرحلتك الدراسية الأول</div>
+      </div>
+      <div class="legal-header-icon">⏰</div>
+    </div>
+  </div>
+  <div class="legal-body">
+    <div id="schedule-grade-select-container" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:16px; margin-top:8px;"></div>
+  </div>
+</div>
+
+<!-- ===== SCHEDULE: CENTER SELECT PAGE ===== -->
+<div class="legal-overlay" id="schedule-center-select-page">
+  <div class="legal-topbar"></div>
+  <div class="legal-header">
+    <button class="legal-close-btn" onclick="closeSchedulePage('schedule-center-select-page')" aria-label="إغلاق">✕</button>
+    <div class="legal-header-title-wrap">
+      <div>
+        <div class="legal-header-title">مواعيد الحصص</div>
+        <div class="legal-header-sub" id="schedule-center-select-sub">اختار السنتر</div>
+      </div>
+      <div class="legal-header-icon">📍</div>
+    </div>
+  </div>
+  <div class="legal-body">
+    <div id="schedule-center-select-container" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:16px; margin-top:8px;"></div>
+  </div>
+</div>
+
+<!-- ===== SCHEDULE: DETAIL PAGE ===== -->
+<div class="legal-overlay" id="schedule-detail-page">
+  <div class="legal-topbar"></div>
+  <div class="legal-header">
+    <button class="legal-close-btn" onclick="closeSchedulePage('schedule-detail-page')" aria-label="إغلاق">✕</button>
+    <div class="legal-header-title-wrap">
+      <div>
+        <div class="legal-header-title">ميعاد الحصة</div>
+        <div class="legal-header-sub" id="schedule-detail-sub">تفاصيل الميعاد</div>
+      </div>
+      <div class="legal-header-icon">🕒</div>
+    </div>
+  </div>
+  <div class="legal-body">
+    <div id="schedule-detail-container" style="max-width:420px; margin:8px auto 0;"></div>
+  </div>
+</div>
+
+<!-- ===== SCHEDULE FEATURE LOGIC (بيانات وهمية مؤقتة — استبدلها ببيانات السناتر الحقيقية) ===== -->
+<script>
+  // 🔧 بيانات وهمية مؤقتة — عدّل الأسماء والأيام والمواعيد هنا لما تبعتلي البيانات الحقيقية
+  const SCHEDULE_DATA = {
+    'الأول الإعدادي': [
+      { name: 'سنتر النور', day: 'السبت', time: 'من 4 إلى 6' },
+      { name: 'سنتر الأمل', day: 'الإثنين', time: 'من 3 إلى 5' },
+      { name: 'سنتر المستقبل', day: 'الأربعاء', time: 'من 5 إلى 7' }
+    ],
+    'الثاني الإعدادي': [
+      { name: 'سنتر النور', day: 'الأحد', time: 'من 4 إلى 6' },
+      { name: 'سنتر الأمل', day: 'الثلاثاء', time: 'من 3 إلى 5' },
+      { name: 'سنتر المستقبل', day: 'الخميس', time: 'من 5 إلى 7' }
+    ],
+    'الثالث الإعدادي': [
+      { name: 'سنتر رسالة الساعة', day: 'الثلاثاء', time: 'من 3 إلى 5' },
+      { name: 'سنتر رسالة السيوف', day: 'الأربعاء', time: 'من 4 إلى 6' },
+      { name: 'سنتر القمة', day: 'الخميس', time: 'من 2 إلى 4' },
+      { name: 'سنتر جاردينيا', day: 'الجمعة', time: 'من 5 إلى 7' },
+      { name: 'سنتر المصري', day: 'السبت', time: 'من 3 إلى 5' }
+    ],
+    'الأول الثانوي': [
+      { name: 'سنتر رسالة الساعة', day: 'السبت', time: 'من 6 إلى 8' },
+      { name: 'سنتر القمة', day: 'الإثنين', time: 'من 4 إلى 6' }
+    ],
+    'الثاني الثانوي': [
+      { name: 'سنتر رسالة الساعة', day: 'الأحد', time: 'من 6 إلى 8' },
+      { name: 'سنتر القمة', day: 'الثلاثاء', time: 'من 4 إلى 6' }
+    ],
+    'الثالث الثانوي': [
+      { name: 'سنتر رسالة الساعة', day: 'الإثنين', time: 'من 7 إلى 9' },
+      { name: 'سنتر القمة', day: 'الأربعاء', time: 'من 5 إلى 7' }
+    ]
+  };
+
+  let currentScheduleGrade = null;
+  const SCHEDULE_ICON_COLORS = ['ic-gold', 'ic-blue', 'ic-purple', 'ic-green'];
+
+  function renderScheduleGradeSelectPage() {
+    const container = document.getElementById('schedule-grade-select-container');
+    if (!container) return;
+    const grades = window.EXAM_STAGE_GRADES || [];
+    container.innerHTML = grades.map((grade, i) => `
+      <div class="reveal tracking-card-clickable" onclick="selectScheduleGrade('${grade}')" style="background:var(--dark3); border:1px solid rgba(201,168,76,0.15); border-radius:20px; padding:30px 18px; text-align:center; cursor:pointer;">
+        <div class="dash-stat-icon lg ${SCHEDULE_ICON_COLORS[i % SCHEDULE_ICON_COLORS.length]}" style="margin:0 auto 14px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/>
+          </svg>
+        </div>
+        <strong style="display:block; font-size:1rem; color:var(--white);">${grade}</strong>
+      </div>
+    `).join('');
+    container.querySelectorAll('.reveal').forEach(el => { if (typeof revealObserver !== 'undefined') revealObserver.observe(el); });
+  }
+
+  window.openScheduleGradeSelectPage = function() {
+    renderScheduleGradeSelectPage();
+    document.getElementById('schedule-grade-select-page').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  };
+
+  window.selectScheduleGrade = function(grade) {
+    document.getElementById('schedule-grade-select-page').classList.remove('open');
+    openScheduleCenterPage(grade);
+  };
+
+  function renderScheduleCenterSelectPage(grade) {
+    const container = document.getElementById('schedule-center-select-container');
+    if (!container) return;
+    const centers = SCHEDULE_DATA[grade] || [];
+    if (!centers.length) {
+      container.innerHTML = '<p class="sd-empty">لسه مفيش سناتر مضافة للمرحلة دي.</p>';
+      return;
+    }
+    container.innerHTML = centers.map((c, i) => `
+      <div class="reveal tracking-card-clickable" onclick="selectScheduleCenter(${i})" style="background:var(--dark3); border:1px solid rgba(201,168,76,0.15); border-radius:20px; padding:30px 18px; text-align:center; cursor:pointer;">
+        <div class="dash-stat-icon lg ${SCHEDULE_ICON_COLORS[i % SCHEDULE_ICON_COLORS.length]}" style="margin:0 auto 14px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 21s-7-6.5-7-11.5A7 7 0 0 1 19 9.5C19 14.5 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>
+          </svg>
+        </div>
+        <strong style="display:block; font-size:0.95rem; color:var(--white);">${escHtml(c.name)}</strong>
+      </div>
+    `).join('');
+    container.querySelectorAll('.reveal').forEach(el => { if (typeof revealObserver !== 'undefined') revealObserver.observe(el); });
+  }
+
+  function openScheduleCenterPage(grade) {
+    currentScheduleGrade = grade;
+    const subEl = document.getElementById('schedule-center-select-sub');
+    if (subEl) subEl.textContent = 'اختار السنتر — ' + grade;
+    renderScheduleCenterSelectPage(grade);
+    document.getElementById('schedule-center-select-page').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  window.selectScheduleCenter = function(idx) {
+    const centers = SCHEDULE_DATA[currentScheduleGrade] || [];
+    const c = centers[idx];
+    if (!c) return;
+    document.getElementById('schedule-center-select-page').classList.remove('open');
+    openScheduleDetailPage(c);
+  };
+
+  function openScheduleDetailPage(center) {
+    const subEl = document.getElementById('schedule-detail-sub');
+    if (subEl) subEl.textContent = center.name;
+    const container = document.getElementById('schedule-detail-container');
+    if (container) {
+      container.innerHTML = `
+        <div style="background:var(--dark3); border:1px solid rgba(201,168,76,0.15); border-radius:20px; padding:36px 24px; text-align:center;">
+          <div class="dash-stat-icon lg ic-gold" style="margin:0 auto 18px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>
+            </svg>
+          </div>
+          <strong style="display:block; font-size:1.15rem; color:var(--white); margin-bottom:14px;">${escHtml(center.name)}</strong>
+          <div style="font-size:1rem; color:var(--gold-light); font-weight:700; margin-bottom:8px;">📅 يوم ${escHtml(center.day)}</div>
+          <div style="font-size:1rem; color:var(--white2);">🕒 ${escHtml(center.time)}</div>
+        </div>
+      `;
+    }
+    document.getElementById('schedule-detail-page').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  window.closeSchedulePage = function(id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('open');
+    const anyOpen = ['schedule-grade-select-page', 'schedule-center-select-page', 'schedule-detail-page'].some(pid => {
+      const e = document.getElementById(pid);
+      return e && e.classList.contains('open');
+    });
+    if (!anyOpen) document.body.style.overflow = '';
+  };
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key !== 'Escape') return;
+    ['schedule-grade-select-page', 'schedule-center-select-page', 'schedule-detail-page'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el && el.classList.contains('open')) closeSchedulePage(id);
+    });
+  });
+</script>
 
 <!-- ===== EXAM: TAKING PAGE ===== -->
 <div class="legal-overlay" id="exam-take-page">
