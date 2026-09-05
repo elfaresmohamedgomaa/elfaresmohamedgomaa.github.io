@@ -9909,17 +9909,28 @@ window.exportAllStudentsQR = async function() {
   }
 };
 
+// ===== DEEP LINK: قراءة المسار الأصلي (من الرابط مباشرة أو من صفحة 404) مرة واحدة فقط =====
+let __deepLinkPathCache = null;
+let __deepLinkPathResolved = false;
+function resolveDeepLinkPath() {
+  if (__deepLinkPathResolved) return __deepLinkPathCache;
+  __deepLinkPathResolved = true;
+  let rawPath = window.location.pathname;
+  try {
+    const redirectPath = sessionStorage.getItem('af_redirect_path');
+    if (redirectPath) {
+      sessionStorage.removeItem('af_redirect_path');
+      rawPath = redirectPath;
+    }
+  } catch (e) {}
+  __deepLinkPathCache = rawPath;
+  return rawPath;
+}
+
 // ===== DEEP LINK: OPEN EXAM PAGES FROM /exams/ OR /exams/001 OR /exams/1/ (مرحلة) =====
 function handleExamDeepLink() {
   try {
-    let rawPath = window.location.pathname;
-    // لو جاي من صفحة 404 (GitHub Pages) هيبقى المسار الأصلي محفوظ في sessionStorage
-    let redirectPath = null;
-    try { redirectPath = sessionStorage.getItem('af_redirect_path'); } catch (e2) {}
-    if (redirectPath) {
-      try { sessionStorage.removeItem('af_redirect_path'); } catch (e3) {}
-      rawPath = redirectPath;
-    }
+    const rawPath = resolveDeepLinkPath();
 
     // ===== /exams/<رقم المرحلة>/ (بسلاش في الآخر) => صفحة قائمة اختبارات المرحلة دي =====
     const gradeMatch = rawPath.match(/\/exams\/(\d+)\/$/);
@@ -11642,6 +11653,13 @@ function initPushSystem() {
   let currentScheduleGrade = null;
   const SCHEDULE_ICON_COLORS = ['ic-gold', 'ic-blue', 'ic-purple', 'ic-green'];
 
+  // نفس ترقيم المراحل المستخدم في نظام الامتحانات (1 = الأول الإعدادي ... 6 = الثالث الثانوي)
+  function getScheduleGradeNumber(grade) {
+    const grades = window.EXAM_STAGE_GRADES || [];
+    const idx = grades.indexOf(grade);
+    return idx === -1 ? null : (idx + 1);
+  }
+
   function renderScheduleGradeSelectPage() {
     const container = document.getElementById('schedule-grade-select-container');
     if (!container) return;
@@ -11659,15 +11677,18 @@ function initPushSystem() {
     container.querySelectorAll('.reveal').forEach(el => { if (typeof revealObserver !== 'undefined') revealObserver.observe(el); });
   }
 
-  window.openScheduleGradeSelectPage = function() {
+  window.openScheduleGradeSelectPage = function(skipUrlUpdate) {
     renderScheduleGradeSelectPage();
     document.getElementById('schedule-grade-select-page').classList.add('open');
     document.body.style.overflow = 'hidden';
+    if (!skipUrlUpdate) {
+      try { history.pushState({ scheduleGradeSelect: true }, '', '/classtime/'); } catch (e) {}
+    }
   };
 
   window.selectScheduleGrade = function(grade) {
     document.getElementById('schedule-grade-select-page').classList.remove('open');
-    openScheduleCenterPage(grade);
+    openScheduleCenterPage(grade, false);
   };
 
   function renderScheduleCenterSelectPage(grade) {
@@ -11691,13 +11712,18 @@ function initPushSystem() {
     container.querySelectorAll('.reveal').forEach(el => { if (typeof revealObserver !== 'undefined') revealObserver.observe(el); });
   }
 
-  function openScheduleCenterPage(grade) {
+  function openScheduleCenterPage(grade, skipUrlUpdate) {
     currentScheduleGrade = grade;
     const subEl = document.getElementById('schedule-center-select-sub');
     if (subEl) subEl.textContent = 'اختار السنتر — ' + grade;
     renderScheduleCenterSelectPage(grade);
     document.getElementById('schedule-center-select-page').classList.add('open');
     document.body.style.overflow = 'hidden';
+    if (!skipUrlUpdate) {
+      const gradeNum = getScheduleGradeNumber(grade);
+      const url = gradeNum ? ('/classtime/' + gradeNum + '/') : '/classtime/';
+      try { history.pushState({ scheduleCenterSelect: true, grade: grade }, '', url); } catch (e) {}
+    }
   }
 
   window.selectScheduleCenter = function(idx) {
@@ -11705,10 +11731,10 @@ function initPushSystem() {
     const c = centers[idx];
     if (!c) return;
     document.getElementById('schedule-center-select-page').classList.remove('open');
-    openScheduleDetailPage(c);
+    openScheduleDetailPage(c, idx, false);
   };
 
-  function openScheduleDetailPage(center) {
+  function openScheduleDetailPage(center, centerIdx, skipUrlUpdate) {
     const subEl = document.getElementById('schedule-detail-sub');
     if (subEl) subEl.textContent = center.name;
     const container = document.getElementById('schedule-detail-container');
@@ -11734,6 +11760,12 @@ function initPushSystem() {
     }
     document.getElementById('schedule-detail-page').classList.add('open');
     document.body.style.overflow = 'hidden';
+    if (!skipUrlUpdate) {
+      const gradeNum = getScheduleGradeNumber(currentScheduleGrade);
+      if (gradeNum && typeof centerIdx === 'number') {
+        try { history.pushState({ scheduleDetail: true }, '', '/classtime/' + gradeNum + '/' + (centerIdx + 1) + '/'); } catch (e) {}
+      }
+    }
   }
 
   window.closeSchedulePage = function(id) {
@@ -11743,8 +11775,43 @@ function initPushSystem() {
       const e = document.getElementById(pid);
       return e && e.classList.contains('open');
     });
-    if (!anyOpen) document.body.style.overflow = '';
+    if (!anyOpen) {
+      document.body.style.overflow = '';
+      try { history.pushState({}, '', window.location.origin + '/'); } catch (e) {}
+    }
   };
+
+  // ===== DEEP LINK: OPEN SCHEDULE PAGES FROM /classtime/ أو /classtime/<n>/ أو /classtime/<n>/<c>/ =====
+  function handleScheduleDeepLink() {
+    try {
+      const rawPath = resolveDeepLinkPath();
+      const path = rawPath.replace(/\/+$/, '');
+      const m = path.match(/\/classtime(?:\/(\d+)(?:\/(\d+))?)?$/);
+      if (!m) return;
+      const gradeNum = m[1] ? parseInt(m[1], 10) : null;
+      const centerNum = m[2] ? parseInt(m[2], 10) : null;
+      const grades = window.EXAM_STAGE_GRADES || [];
+      const grade = gradeNum ? grades[gradeNum - 1] : null;
+      setTimeout(function() {
+        if (grade && centerNum) {
+          const centers = SCHEDULE_DATA[grade] || [];
+          const center = centers[centerNum - 1];
+          if (center) {
+            currentScheduleGrade = grade;
+            openScheduleCenterPage(grade, true);
+            openScheduleDetailPage(center, centerNum - 1, true);
+          } else {
+            openScheduleCenterPage(grade, true);
+          }
+        } else if (grade) {
+          openScheduleCenterPage(grade, true);
+        } else {
+          openScheduleGradeSelectPage(true);
+        }
+      }, 100);
+    } catch (e) { /* تجاهل أي خطأ في قراءة الرابط */ }
+  }
+  document.addEventListener('DOMContentLoaded', handleScheduleDeepLink);
 
   document.addEventListener('keydown', function(e) {
     if (e.key !== 'Escape') return;
