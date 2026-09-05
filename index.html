@@ -3741,6 +3741,23 @@
 .dash-profile-banner .legal-header-title {
   font-size: 1.3rem;
 }
+.dash-student-badge-wrap { margin-top: 10px; }
+.dash-student-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 18px;
+  border-radius: 50px;
+  font-size: 0.82rem; font-weight: 800;
+  border: 1px solid transparent;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.12);
+}
+.dash-badge-purple { background: linear-gradient(135deg, rgba(123,79,160,0.35), rgba(123,79,160,0.12)); border-color: rgba(123,79,160,0.5); color: #d8b8f0; }
+.dash-badge-orange { background: linear-gradient(135deg, rgba(224,138,60,0.35), rgba(224,138,60,0.12)); border-color: rgba(224,138,60,0.5); color: #f5c28a; }
+.dash-badge-red    { background: linear-gradient(135deg, rgba(217,83,79,0.35), rgba(217,83,79,0.12)); border-color: rgba(217,83,79,0.5); color: #ffb3b0; }
+.dash-badge-blue   { background: linear-gradient(135deg, rgba(74,144,217,0.35), rgba(74,144,217,0.12)); border-color: rgba(74,144,217,0.5); color: #a9d2fb; }
+.dash-badge-green  { background: linear-gradient(135deg, rgba(58,168,118,0.35), rgba(58,168,118,0.12)); border-color: rgba(58,168,118,0.5); color: #9be6c4; }
+.dash-badge-gold   { background: linear-gradient(135deg, rgba(201,168,76,0.4), rgba(240,208,128,0.14)); border-color: rgba(201,168,76,0.55); color: var(--gold-light); }
 
 .legal-body { max-width: 900px; margin: 0 auto; padding: 36px 24px 80px; }
 #student-dashboard-page .legal-body {
@@ -8291,6 +8308,9 @@ STU-26-0003	معاذ خالد" style="resize:vertical; font-family:'IBM Plex San
         <option value="">اختر الصف الدراسي</option>
       </select>
       <input class="admin-input" id="sd-edit-center" placeholder="السنتر *" dir="rtl">
+      <select class="notif-type-select" id="sd-edit-badge" dir="rtl">
+        <option value="">بدون شارة</option>
+      </select>
       <div style="display:flex; gap:10px;">
         <button class="admin-add-btn" style="flex:1;" onclick="adminSaveStudentEdits()">💾 حفظ التعديلات</button>
         <button class="admin-reset-btn" style="flex:1;" onclick="adminToggleEditStudent()">إلغاء</button>
@@ -8525,6 +8545,31 @@ function playNotifSound() {
 let adminNotifications = [];
 let currentNotifFilter = 'all';
 let notifDropOpen = false;
+
+// ===== STUDENT BADGES (يختارها الأستاذ من تاب الطلاب وتظهر في بروفايل الطالب) =====
+const STUDENT_BADGES = [
+  { id: 'novice',     label: 'المحارب المبتدئ',  emoji: '⚔️',   color: 'green'  },
+  { id: 'persistent', label: 'المحارب المثابر',   emoji: '🛡️',  color: 'blue'   },
+  { id: 'smart',      label: 'المقاتل الذكي',     emoji: '⚡',   color: 'purple' },
+  { id: 'numbers',    label: 'فارس الأرقام',      emoji: '🔢',  color: 'blue'   },
+  { id: 'equations',  label: 'فارس المعادلات',    emoji: '📐',  color: 'purple' },
+  { id: 'skilled',    label: 'الفارس المتمكن',    emoji: '🗡️',  color: 'orange' },
+  { id: 'advanced',   label: 'الفارس المتقدم',    emoji: '🔥',  color: 'red'    },
+  { id: 'elite',      label: 'فارس النخبة',       emoji: '👑',  color: 'gold'   },
+  { id: 'eliteTop',   label: 'نخبة الفارس',       emoji: '🏅',  color: 'gold'   },
+  { id: 'top',        label: 'أوائل الفارس',      emoji: '🏆👑', color: 'gold'   }
+];
+function getStudentBadgeById(id) {
+  return STUDENT_BADGES.find(b => b.id === id) || null;
+}
+window.STUDENT_BADGES = STUDENT_BADGES;
+window.getStudentBadgeById = getStudentBadgeById;
+(function populateBadgeSelect() {
+  const sel = document.getElementById('sd-edit-badge');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">بدون شارة</option>' +
+    STUDENT_BADGES.map(b => `<option value="${b.id}">${b.emoji} ${b.label}</option>`).join('');
+})();
 
 // ===== FIREBASE INITIALIZATION =====
 let db = null;
@@ -10746,10 +10791,12 @@ function renderAdminStudentsList() {
       ? new Date(s.lastLogin).toLocaleString('ar-EG')
       : 'لسه ما سجّلش دخول';
     const loginCountText = s.loginCount ? (s.loginCount + ' مرة دخول') : 'صفر دخول';
+    const studentBadge = s.badge ? getStudentBadgeById(s.badge) : null;
+    const badgeEmojiHtml = studentBadge ? `<span title="${escapeHtml(studentBadge.label)}" style="margin-left:6px;">${studentBadge.emoji}</span>` : '';
     return `
       <div class="admin-student-item ${s.active === false ? 'inactive' : ''}" onclick="openAdminStudentDetail('${code}')">
         <div class="admin-student-main">
-          <div class="admin-student-name"><span class="code-tag">#${code}</span>${escapeHtml(s.name || '—')}</div>
+          <div class="admin-student-name"><span class="code-tag">#${code}</span>${escapeHtml(s.name || '—')}${badgeEmojiHtml}</div>
           <div class="admin-student-sub">${s.grade ? escapeHtml(s.grade) + ' · ' : ''}${s.center ? escapeHtml(s.center) + ' · ' : ''}آخر دخول: ${lastLoginText} · ${loginCountText}</div>
         </div>
         <div class="admin-student-badge">${s.active === false ? 'متوقف' : 'نشط'}</div>
@@ -10834,6 +10881,12 @@ window.adminToggleEditStudent = function() {
 
   document.getElementById('sd-edit-center').value = s.center || '';
 
+  const badgeEl = document.getElementById('sd-edit-badge');
+  if (badgeEl) {
+    badgeEl.value = s.badge || '';
+    if (badgeEl._cselRefresh) badgeEl._cselRefresh();
+  }
+
   form.style.display = 'flex';
   form.style.flexDirection = 'column';
   form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -10857,6 +10910,7 @@ window.adminSaveStudentEdits = function() {
   const stageEl = document.getElementById('sd-edit-stage');
   const gradeSelectEl = document.getElementById('sd-edit-grade-select');
   const centerEl = document.getElementById('sd-edit-center');
+  const badgeEl = document.getElementById('sd-edit-badge');
 
   const name = nameEl.value.trim();
   const phone = phoneEl.value.trim();
@@ -10882,7 +10936,8 @@ window.adminSaveStudentEdits = function() {
     parentPhone: parentPhone,
     stage: stageEl.value || '',
     grade: gradeSelectEl.value || '',
-    center: center
+    center: center,
+    badge: (badgeEl && badgeEl.value) || ''
   };
 
   waitForDb(function(ready) {
@@ -11015,6 +11070,8 @@ window.openStudentDashboard = function(skipUrlUpdate) {
   document.getElementById('dash-stats').innerHTML = '<p class="sd-empty">جاري تحميل بياناتك...</p>';
   const metaElInit = document.getElementById('dash-student-meta');
   if (metaElInit) metaElInit.textContent = '';
+  const badgeWrapInit = document.getElementById('dash-student-badge-wrap');
+  if (badgeWrapInit) badgeWrapInit.style.display = 'none';
 
   // حدّث رابط الصفحة لـ /profile/ عشان لو حصل مشاركة أو ريفرش يرجعنا للبروفايل تاني
   if (!skipUrlUpdate) {
@@ -11074,6 +11131,17 @@ function renderStudentDashboard(data) {
   if (metaEl) {
     const metaParts = [data.stage, data.grade].filter(Boolean);
     metaEl.textContent = metaParts.length ? metaParts.join(' - ') : '';
+  }
+  const badgeWrap = document.getElementById('dash-student-badge-wrap');
+  if (badgeWrap) {
+    const badge = data.badge ? getStudentBadgeById(data.badge) : null;
+    if (badge) {
+      badgeWrap.innerHTML = `<span class="dash-student-badge dash-badge-${badge.color}">${badge.emoji} ${escapeHtml(badge.label)}</span>`;
+      badgeWrap.style.display = 'block';
+    } else {
+      badgeWrap.innerHTML = '';
+      badgeWrap.style.display = 'none';
+    }
   }
   const grades = data.grades ? Object.values(data.grades) : [];
   const attendance = data.attendance ? Object.entries(data.attendance) : [];
@@ -11606,6 +11674,7 @@ function initPushSystem() {
       </div>
       <div class="legal-header-title" id="dash-student-name">لوحة الطالب</div>
       <div class="dash-student-meta" id="dash-student-meta"></div>
+      <div class="dash-student-badge-wrap" id="dash-student-badge-wrap" style="display:none;"></div>
     </div>
 
     <div class="dash-stats" id="dash-stats"></div>
@@ -12158,7 +12227,7 @@ function enhanceCustomSelect(selectEl) {
 }
 
 function initCustomSelects() {
-  ['inp-level', 'student-new-stage', 'student-new-grade-select', 'notif-new-type', 'sd-attendance-status', 'sd-edit-stage', 'sd-edit-grade-select', 'exam-reg-grade', 'examresults-filter', 'examresults-sort-field', 'exam-new-grade'].forEach((id) => {
+  ['inp-level', 'student-new-stage', 'student-new-grade-select', 'notif-new-type', 'sd-attendance-status', 'sd-edit-stage', 'sd-edit-grade-select', 'sd-edit-badge', 'exam-reg-grade', 'examresults-filter', 'examresults-sort-field', 'exam-new-grade'].forEach((id) => {
     enhanceCustomSelect(document.getElementById(id));
   });
 }
