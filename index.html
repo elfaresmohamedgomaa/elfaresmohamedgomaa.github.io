@@ -5465,6 +5465,44 @@
 .admin-student-item.inactive .admin-student-badge {
   background: rgba(255,107,107,0.12); color: #ff6b6b; border-color: rgba(255,107,107,0.3);
 }
+.admin-delete-mode-btn {
+  background: rgba(255,107,107,0.1); border: 1px solid rgba(255,107,107,0.4); color: #ff6b6b;
+  padding: 0 18px; border-radius: 50px; white-space: nowrap;
+  font-family: 'IBM Plex Sans Arabic', sans-serif; font-size: 0.82rem; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+}
+.admin-delete-mode-btn:hover { background: rgba(255,107,107,0.2); }
+.admin-delete-mode-btn.active { background: #ff6b6b; color: #fff; border-color: #ff6b6b; }
+.admin-delete-toolbar {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  background: rgba(255,107,107,0.08);
+  border: 1px solid rgba(255,107,107,0.3);
+  border-radius: 14px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+}
+.admin-delete-toolbar-count { font-size: 0.85rem; font-weight: 800; color: #ff6b6b; }
+.admin-delete-toolbar-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.admin-delete-action-btn {
+  background: var(--dark3); border: 1px solid rgba(201,168,76,0.25); color: var(--white2);
+  padding: 7px 14px; border-radius: 50px; white-space: nowrap;
+  font-family: 'IBM Plex Sans Arabic', sans-serif; font-size: 0.78rem; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+}
+.admin-delete-action-btn:hover { border-color: rgba(201,168,76,0.5); }
+.admin-delete-action-btn.danger { background: rgba(255,107,107,0.15); border-color: rgba(255,107,107,0.4); color: #ff6b6b; }
+.admin-delete-action-btn.danger:hover { background: rgba(255,107,107,0.28); }
+.admin-delete-action-btn.danger-strong { background: #ff6b6b; border-color: #ff6b6b; color: #fff; }
+.admin-delete-action-btn.danger-strong:hover { background: #e85555; }
+.admin-student-item.delete-mode-active { cursor: pointer; }
+.admin-student-item.selected-for-delete { border-color: #ff6b6b; background: rgba(255,107,107,0.1); }
+.admin-student-checkbox {
+  width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0;
+  border: 2px solid rgba(255,107,107,0.5);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; color: #fff; transition: all 0.2s;
+}
+.admin-student-item.selected-for-delete .admin-student-checkbox { background: #ff6b6b; border-color: #ff6b6b; }
 
 /* ===== ADMIN: STUDENT DETAIL MODAL ===== */
 #admin-student-detail-modal {
@@ -8099,6 +8137,18 @@ STU-26-0003	معاذ خالد" style="resize:vertical; font-family:'IBM Plex San
           <input class="admin-input" id="student-search-input" placeholder="🔍 دوّر بالاسم أو الكود..." dir="rtl" oninput="renderAdminStudentsList()">
           <button class="admin-qr-export-btn" id="qrExportBtn" onclick="exportAllStudentsQR()">📦 تصدير كل أكواد QR (ZIP)</button>
           <button class="admin-qr-export-btn" id="goldCardExportBtn" onclick="exportAllGoldCards()">🎴 تصدير كل الكروت الذهبية (ZIP)</button>
+          <button class="admin-delete-mode-btn" id="studentDeleteModeBtn" onclick="toggleStudentDeleteMode()">🗑️ حذف الطلاب</button>
+        </div>
+
+        <div class="admin-delete-toolbar" id="admin-delete-toolbar" style="display:none;">
+          <div class="admin-delete-toolbar-count" id="admin-delete-count">0 طالب متحدد</div>
+          <div class="admin-delete-toolbar-actions">
+            <button class="admin-delete-action-btn" onclick="selectAllStudentsForDelete()">تحديد الكل</button>
+            <button class="admin-delete-action-btn" onclick="deselectAllStudentsForDelete()">إلغاء التحديد</button>
+            <button class="admin-delete-action-btn danger" onclick="deleteSelectedStudents()">حذف المحدد</button>
+            <button class="admin-delete-action-btn danger-strong" onclick="deleteAllStudents()">حذف كل الطلاب</button>
+            <button class="admin-delete-action-btn" onclick="toggleStudentDeleteMode()">إلغاء ✕</button>
+          </div>
         </div>
 
         <div class="admin-students-list" id="admin-students-list"></div>
@@ -10400,6 +10450,8 @@ if (typeof _origOpenAdmin === 'function') {
 // ================================================================
 
 let adminStudentsCache = {}; // { code: {...data} }
+let studentDeleteMode = false;
+let selectedStudentCodesForDelete = new Set();
 let adminStudentsListenerAttached = false;
 let currentAdminStudentCode = null; // student open in the detail modal
 
@@ -10783,6 +10835,7 @@ function renderAdminStudentsList() {
 
   if (!entries.length) {
     container.innerHTML = '<p class="sd-empty">لا يوجد طلاب حتى الآن. أضف طالب جديد من الفورم فوق.</p>';
+    updateDeleteToolbarCount();
     return;
   }
 
@@ -10793,17 +10846,109 @@ function renderAdminStudentsList() {
     const loginCountText = s.loginCount ? (s.loginCount + ' مرة دخول') : 'صفر دخول';
     const studentBadge = s.badge ? getStudentBadgeById(s.badge) : null;
     const badgeEmojiHtml = studentBadge ? `<span title="${escapeHtml(studentBadge.label)}" style="margin-left:6px;">${studentBadge.emoji}</span>` : '';
+    const isSelected = selectedStudentCodesForDelete.has(code);
+    const clickAction = studentDeleteMode ? `toggleStudentSelectForDelete('${code}', event)` : `openAdminStudentDetail('${code}')`;
+    const checkboxHtml = studentDeleteMode
+      ? `<div class="admin-student-checkbox">${isSelected ? '✓' : ''}</div>`
+      : '';
     return `
-      <div class="admin-student-item ${s.active === false ? 'inactive' : ''}" onclick="openAdminStudentDetail('${code}')">
+      <div class="admin-student-item ${s.active === false ? 'inactive' : ''} ${studentDeleteMode ? 'delete-mode-active' : ''} ${isSelected ? 'selected-for-delete' : ''}" onclick="${clickAction}">
+        ${checkboxHtml}
         <div class="admin-student-main">
           <div class="admin-student-name"><span class="code-tag">#${code}</span>${escapeHtml(s.name || '—')}${badgeEmojiHtml}</div>
           <div class="admin-student-sub">${s.grade ? escapeHtml(s.grade) + ' · ' : ''}${s.center ? escapeHtml(s.center) + ' · ' : ''}آخر دخول: ${lastLoginText} · ${loginCountText}</div>
         </div>
-        <div class="admin-student-badge">${s.active === false ? 'متوقف' : 'نشط'}</div>
+        ${studentDeleteMode ? '' : `<div class="admin-student-badge">${s.active === false ? 'متوقف' : 'نشط'}</div>`}
       </div>
     `;
   }).join('');
+  updateDeleteToolbarCount();
 }
+
+window.toggleStudentDeleteMode = function() {
+  studentDeleteMode = !studentDeleteMode;
+  selectedStudentCodesForDelete.clear();
+  const toolbar = document.getElementById('admin-delete-toolbar');
+  const btn = document.getElementById('studentDeleteModeBtn');
+  if (toolbar) toolbar.style.display = studentDeleteMode ? 'flex' : 'none';
+  if (btn) {
+    btn.classList.toggle('active', studentDeleteMode);
+    btn.textContent = studentDeleteMode ? '✕ إلغاء وضع الحذف' : '🗑️ حذف الطلاب';
+  }
+  renderAdminStudentsList();
+};
+
+window.toggleStudentSelectForDelete = function(code, event) {
+  if (event) event.stopPropagation();
+  if (selectedStudentCodesForDelete.has(code)) {
+    selectedStudentCodesForDelete.delete(code);
+  } else {
+    selectedStudentCodesForDelete.add(code);
+  }
+  renderAdminStudentsList();
+};
+
+window.selectAllStudentsForDelete = function() {
+  const searchEl = document.getElementById('student-search-input');
+  const query = (searchEl ? searchEl.value.trim() : '').toLowerCase();
+  let entries = Object.entries(adminStudentsCache);
+  if (query) {
+    entries = entries.filter(([code, s]) =>
+      code.includes(query) || (s.name || '').toLowerCase().includes(query)
+    );
+  }
+  entries.forEach(([code]) => selectedStudentCodesForDelete.add(code));
+  renderAdminStudentsList();
+};
+
+window.deselectAllStudentsForDelete = function() {
+  selectedStudentCodesForDelete.clear();
+  renderAdminStudentsList();
+};
+
+function updateDeleteToolbarCount() {
+  const countEl = document.getElementById('admin-delete-count');
+  if (countEl) countEl.textContent = selectedStudentCodesForDelete.size + ' طالب متحدد';
+}
+
+window.deleteSelectedStudents = function() {
+  const codes = Array.from(selectedStudentCodesForDelete);
+  if (!codes.length) { alert('اختار طالب واحد على الأقل الأول'); return; }
+  const namesPreview = codes.slice(0, 5).map(c => (adminStudentsCache[c] && adminStudentsCache[c].name) || c).join('، ');
+  const confirmMsg = `متأكد إنك عايز تحذف ${codes.length} طالب؟\n(${namesPreview}${codes.length > 5 ? ' ...' : ''})\n\nالحذف نهائي ومش هترجع البيانات تاني!`;
+  if (!confirm(confirmMsg)) return;
+
+  waitForDb(function(ready) {
+    if (!ready || !db) { alert('⚠️ تعذر الاتصال، حاول تاني'); return; }
+    Promise.all(codes.map(code => db.ref('students/' + code).remove()))
+      .then(() => {
+        selectedStudentCodesForDelete.clear();
+        showAdminToast();
+        toggleStudentDeleteMode();
+      })
+      .catch(() => alert('⚠️ حصل خطأ أثناء الحذف، حاول تاني'));
+  });
+};
+
+window.deleteAllStudents = function() {
+  const allCodes = Object.keys(adminStudentsCache);
+  if (!allCodes.length) { alert('مفيش طلاب أصلاً'); return; }
+  const firstConfirm = confirm(`تحذير ⚠️ هتحذف كل الطلاب (${allCodes.length} طالب) نهائيًا من غير رجعة!\n\nمتأكد إنك عايز تكمل؟`);
+  if (!firstConfirm) return;
+  const typed = prompt('عشان تأكيد الحذف الكامل، اكتب كلمة "حذف" بالظبط:');
+  if (typed !== 'حذف') { alert('اتلغى الحذف — الكلمة اللي كتبتها مش مطابقة.'); return; }
+
+  waitForDb(function(ready) {
+    if (!ready || !db) { alert('⚠️ تعذر الاتصال، حاول تاني'); return; }
+    Promise.all(allCodes.map(code => db.ref('students/' + code).remove()))
+      .then(() => {
+        selectedStudentCodesForDelete.clear();
+        showAdminToast();
+        toggleStudentDeleteMode();
+      })
+      .catch(() => alert('⚠️ حصل خطأ أثناء الحذف، حاول تاني'));
+  });
+};
 
 window.openAdminStudentDetail = function(code) {
   currentAdminStudentCode = code;
