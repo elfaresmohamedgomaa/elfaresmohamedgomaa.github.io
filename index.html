@@ -8140,6 +8140,15 @@ STU-26-0003	معاذ خالد" style="resize:vertical; font-family:'IBM Plex San
           <button class="admin-delete-mode-btn" id="studentDeleteModeBtn" onclick="toggleStudentDeleteMode()">🗑️ حذف الطلاب</button>
         </div>
 
+        <div class="results-filter-row">
+          <select class="notif-type-select" id="student-sort-field" onchange="renderAdminStudentsList()" style="max-width:190px;">
+            <option value="createdAt">🕒 ترتيب حسب تاريخ الإضافة</option>
+            <option value="name">🔤 ترتيب حسب الاسم</option>
+            <option value="code">🔢 ترتيب حسب الكود</option>
+          </select>
+          <button type="button" class="results-sort-dir-btn" id="student-sort-dir" onclick="toggleStudentSortDir()">⬇️ تنازلي</button>
+        </div>
+
         <div class="admin-delete-toolbar" id="admin-delete-toolbar" style="display:none;">
           <div class="admin-delete-toolbar-count" id="admin-delete-count">0 طالب متحدد</div>
           <div class="admin-delete-toolbar-actions">
@@ -10816,6 +10825,15 @@ window.adminAddStudent = function() {
   });
 };
 
+let studentSortDir = 'desc'; // 'asc' أو 'desc'
+
+window.toggleStudentSortDir = function() {
+  studentSortDir = studentSortDir === 'desc' ? 'asc' : 'desc';
+  const btn = document.getElementById('student-sort-dir');
+  if (btn) btn.innerHTML = studentSortDir === 'desc' ? '⬇️ تنازلي' : '⬆️ تصاعدي';
+  renderAdminStudentsList();
+};
+
 function renderAdminStudentsList() {
   const container = document.getElementById('admin-students-list');
   if (!container) return;
@@ -10830,8 +10848,21 @@ function renderAdminStudentsList() {
       code.includes(query) || (s.name || '').toLowerCase().includes(query)
     );
   }
-  // الأحدث إضافة الأول
-  entries.sort((a, b) => (b[1].createdAt || 0) - (a[1].createdAt || 0));
+
+  const sortFieldEl = document.getElementById('student-sort-field');
+  const sortField = sortFieldEl ? sortFieldEl.value : 'createdAt';
+  const dir = studentSortDir === 'asc' ? 1 : -1;
+
+  entries.sort((a, b) => {
+    if (sortField === 'name') {
+      return (a[1].name || '').localeCompare((b[1].name || ''), 'ar') * dir;
+    }
+    if (sortField === 'code') {
+      return (a[0] || '').localeCompare((b[0] || ''), undefined, { numeric: true }) * dir;
+    }
+    // الافتراضي: تاريخ الإضافة
+    return ((a[1].createdAt || 0) - (b[1].createdAt || 0)) * dir;
+  });
 
   if (!entries.length) {
     container.innerHTML = '<p class="sd-empty">لا يوجد طلاب حتى الآن. أضف طالب جديد من الفورم فوق.</p>';
@@ -12372,7 +12403,7 @@ function enhanceCustomSelect(selectEl) {
 }
 
 function initCustomSelects() {
-  ['inp-level', 'student-new-stage', 'student-new-grade-select', 'notif-new-type', 'sd-attendance-status', 'sd-edit-stage', 'sd-edit-grade-select', 'sd-edit-badge', 'exam-reg-grade', 'examresults-filter', 'examresults-sort-field', 'exam-new-grade'].forEach((id) => {
+  ['inp-level', 'student-new-stage', 'student-new-grade-select', 'notif-new-type', 'sd-attendance-status', 'sd-edit-stage', 'sd-edit-grade-select', 'sd-edit-badge', 'exam-reg-grade', 'examresults-filter', 'examresults-sort-field', 'exam-new-grade', 'student-sort-field'].forEach((id) => {
     enhanceCustomSelect(document.getElementById(id));
   });
 }
