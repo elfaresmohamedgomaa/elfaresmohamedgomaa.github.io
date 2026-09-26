@@ -8163,6 +8163,7 @@ STU-26-0003	معاذ خالد" style="resize:vertical; font-family:'IBM Plex San
           <input class="admin-input" id="student-search-input" placeholder="🔍 دوّر بالاسم أو الكود..." dir="rtl" oninput="renderAdminStudentsList()">
           <button class="admin-qr-export-btn" id="qrExportBtn" onclick="exportAllStudentsQR()">📦 تصدير كل أكواد QR (ZIP)</button>
           <button class="admin-qr-export-btn" id="goldCardExportBtn" onclick="exportAllGoldCards()">🎴 تصدير كل الكروت الذهبية (ZIP)</button>
+          <button class="admin-qr-export-btn" id="barcodeExportBtn" onclick="exportAllStudentsBarcode()">📊 تصدير الباركود فقط (ZIP)</button>
           <button class="admin-delete-mode-btn" id="studentDeleteModeBtn" onclick="toggleStudentDeleteMode()">🗑️ حذف الطلاب</button>
           <div class="gold-card-mode-toggle" id="goldCardModeToggle">
             <span class="gc-mode-label">🎴 كود الكارت الذهبي:</span>
@@ -10236,6 +10237,124 @@ window.exportAllStudentsQR = async function() {
     alert('⚠️ حصل خطأ أثناء تجهيز ملف الـ ZIP، حاول تاني');
   } finally {
     document.body.removeChild(hiddenWrap);
+    btn.disabled = false;
+    btn.textContent = originalText;
+  }
+};
+
+// ===== تصدير الباركود فقط (بدون تصميم الكارت الذهبي) لكل الطلاب في ملف ZIP =====
+// بيرسم صورة بيضاء بسيطة فيها اسم الطالب فوق وباركود Code128 بيشفّر كود الطالب تحته، ويرجع Blob بصيغة PNG
+async function renderStudentBarcodeOnly(code, name) {
+  const barcodeCanvas = document.createElement('canvas');
+  try {
+    JsBarcode(barcodeCanvas, code, {
+      format: 'CODE128',
+      width: 3,
+      height: 130,
+      margin: 10,
+      displayValue: true,
+      fontSize: 20,
+      background: '#ffffff',
+      lineColor: '#0a0a0f'
+    });
+  } catch (e) { /* لو الكود فيه حروف مش مدعومة، الباركود هيفضل فاضي بدل ما يقع */ }
+
+  const padding = 30;
+  const nameAreaHeight = 50;
+  const barcodeW = barcodeCanvas.width || 300;
+  const barcodeH = barcodeCanvas.height || 160;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.max(barcodeW + padding * 2, 320);
+  canvas.height = barcodeH + nameAreaHeight + padding * 2;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // اسم الطالب فوق الباركود، بيصغّر حجم الخط تلقائي لو الاسم طويل
+  const displayName = name || '';
+  let fontSize = 26;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'alphabetic';
+  ctx.direction = 'rtl';
+  const maxNameWidth = canvas.width - padding * 2;
+  do {
+    ctx.font = '700 ' + fontSize + 'px "Tahoma", "Segoe UI", sans-serif';
+    if (ctx.measureText(displayName).width <= maxNameWidth || fontSize <= 14) break;
+    fontSize -= 1;
+  } while (true);
+  ctx.fillStyle = '#0a0a0f';
+  ctx.fillText(displayName, canvas.width / 2, padding + fontSize);
+
+  // الباركود في النص أفقيًا تحت الاسم
+  const barcodeX = (canvas.width - barcodeW) / 2;
+  const barcodeY = padding + nameAreaHeight;
+  ctx.drawImage(barcodeCanvas, barcodeX, barcodeY);
+
+  return new Promise(function(resolve) {
+    canvas.toBlob(resolve, 'image/png');
+  });
+}
+
+window.exportAllStudentsBarcode = async function() {
+  const btn = document.getElementById('barcodeExportBtn');
+  if (!btn || btn.disabled) return;
+
+  const searchEl = document.getElementById('student-search-input');
+  const query = (searchEl ? searchEl.value.trim() : '').toLowerCase();
+  let entries = Object.entries(adminStudentsCache);
+  if (query) {
+    entries = entries.filter(([code, s]) =>
+      code.toLowerCase().includes(query) || (s.name || '').toLowerCase().includes(query)
+    );
+  }
+
+  if (!entries.length) { alert('⚠️ لا يوجد طلاب لتصدير الباركود بتاعهم'); return; }
+  if (!window.JsBarcode) { alert('⚠️ تعذر تحميل مكتبة الباركود، تأكد من الاتصال بالإنترنت وحاول تاني'); return; }
+  if (!window.JSZip) { alert('⚠️ تعذر تحميل مكتبة ضغط الملفات (JSZip)، تأكد من الاتصال بالإنترنت وحاول تاني'); return; }
+
+  const confirmMsg = query
+    ? 'هيتم تجهيز ملف ZIP فيه باركود ' + entries.length + ' طالب (حسب نتيجة البحث الحالية). تكمل؟'
+    : 'هيتم تجهيز ملف ZIP فيه باركود كل الطلاب (' + entries.length + ' طالب). العملية ممكن تاخد شوية وقت حسب عدد الطلاب، تكمل؟';
+  if (!confirm(confirmMsg)) return;
+
+  const originalText = btn.textContent;
+  btn.disabled = true;
+
+  try {
+    const zip = new JSZip();
+    const usedNames = {};
+
+    for (let i = 0; i < entries.length; i++) {
+      const code = entries[i][0];
+      const s = entries[i][1];
+      btn.textContent = '⏳ جاري التجهيز (' + (i + 1) + '/' + entries.length + ')';
+
+      const blob = await renderStudentBarcodeOnly(code, s.name);
+      let fileName = code + ' - ' + sanitizeZipFileName(s.name) + '.png';
+      if (usedNames[fileName]) {
+        usedNames[fileName]++;
+        fileName = code + ' - ' + sanitizeZipFileName(s.name) + ' (' + usedNames[fileName] + ').png';
+      } else {
+        usedNames[fileName] = 1;
+      }
+      zip.file(fileName, blob);
+    }
+
+    btn.textContent = '📦 جاري ضغط الملف...';
+    const blob = await zip.generateAsync({ type: 'blob' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'باركود-الطلاب-' + Date.now() + '.zip';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showAdminToast && showAdminToast();
+  } catch (e) {
+    alert('⚠️ حصل خطأ أثناء تجهيز ملف الـ ZIP، حاول تاني');
+  } finally {
     btn.disabled = false;
     btn.textContent = originalText;
   }
