@@ -8163,7 +8163,7 @@ STU-26-0003	معاذ خالد" style="resize:vertical; font-family:'IBM Plex San
           <input class="admin-input" id="student-search-input" placeholder="🔍 دوّر بالاسم أو الكود..." dir="rtl" oninput="renderAdminStudentsList()">
           <button class="admin-qr-export-btn" id="qrExportBtn" onclick="exportAllStudentsQR()">📦 تصدير كل أكواد QR (ZIP)</button>
           <button class="admin-qr-export-btn" id="goldCardExportBtn" onclick="exportAllGoldCards()">🎴 تصدير كل الكروت الذهبية (ZIP)</button>
-          <button class="admin-qr-export-btn" id="barcodeExportBtn" onclick="exportAllStudentsBarcode()">📊 تصدير الباركود فقط (ZIP)</button>
+          <button class="admin-qr-export-btn" id="barcodeExportBtn" onclick="exportAllStudentsBarcode()">📊 تصدير باركود الدخول (ZIP)</button>
           <button class="admin-delete-mode-btn" id="studentDeleteModeBtn" onclick="toggleStudentDeleteMode()">🗑️ حذف الطلاب</button>
           <div class="gold-card-mode-toggle" id="goldCardModeToggle">
             <span class="gc-mode-label">🎴 كود الكارت الذهبي:</span>
@@ -10243,30 +10243,33 @@ window.exportAllStudentsQR = async function() {
 };
 
 // ===== تصدير الباركود فقط (بدون تصميم الكارت الذهبي) لكل الطلاب في ملف ZIP =====
-// بيرسم صورة بيضاء بسيطة فيها اسم الطالب فوق وباركود Code128 بيشفّر كود الطالب تحته، ويرجع Blob بصيغة PNG
-async function renderStudentBarcodeOnly(code, name) {
+// بيرسم صورة بيضاء بسيطة فيها اسم الطالب فوق، وباركود Code128 بيشفّر رابط تسجيل الدخول بتاعه
+// (نفس رابط الـ QR، فيه الكود وكلمة المرور) عشان أي سكان عادي بكاميرا الموبايل يفتح الرابط ويسجّله دخول تلقائي،
+// وتحت الباركود بنكتب كود الطالب نفسه كنص مقروء (لأن الباركود بقى بيشفّر رابط طويل مش الكود لوحده)
+async function renderStudentBarcodeOnly(code, password, name) {
+  const loginLink = getStudentLoginLink(code, password);
   const barcodeCanvas = document.createElement('canvas');
   try {
-    JsBarcode(barcodeCanvas, code, {
+    JsBarcode(barcodeCanvas, loginLink, {
       format: 'CODE128',
-      width: 3,
+      width: 2,
       height: 130,
       margin: 10,
-      displayValue: true,
-      fontSize: 20,
+      displayValue: false,
       background: '#ffffff',
       lineColor: '#0a0a0f'
     });
-  } catch (e) { /* لو الكود فيه حروف مش مدعومة، الباركود هيفضل فاضي بدل ما يقع */ }
+  } catch (e) { /* لو حصل خطأ غير متوقع، الباركود هيفضل فاضي بدل ما يقع */ }
 
   const padding = 30;
   const nameAreaHeight = 50;
+  const codeAreaHeight = 34;
   const barcodeW = barcodeCanvas.width || 300;
   const barcodeH = barcodeCanvas.height || 160;
 
   const canvas = document.createElement('canvas');
   canvas.width = Math.max(barcodeW + padding * 2, 320);
-  canvas.height = barcodeH + nameAreaHeight + padding * 2;
+  canvas.height = barcodeH + nameAreaHeight + codeAreaHeight + padding * 2;
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -10290,6 +10293,12 @@ async function renderStudentBarcodeOnly(code, name) {
   const barcodeX = (canvas.width - barcodeW) / 2;
   const barcodeY = padding + nameAreaHeight;
   ctx.drawImage(barcodeCanvas, barcodeX, barcodeY);
+
+  // كود الطالب مكتوب كنص مقروء تحت الباركود (عشان تقدر تتابع الكارت لو اتفقد بصريًا)
+  ctx.direction = 'ltr';
+  ctx.font = '600 18px "Tahoma", "Segoe UI", sans-serif';
+  ctx.fillStyle = '#444';
+  ctx.fillText(code, canvas.width / 2, barcodeY + barcodeH + 24);
 
   return new Promise(function(resolve) {
     canvas.toBlob(resolve, 'image/png');
@@ -10330,7 +10339,7 @@ window.exportAllStudentsBarcode = async function() {
       const s = entries[i][1];
       btn.textContent = '⏳ جاري التجهيز (' + (i + 1) + '/' + entries.length + ')';
 
-      const blob = await renderStudentBarcodeOnly(code, s.name);
+      const blob = await renderStudentBarcodeOnly(code, s.password, s.name);
       let fileName = code + ' - ' + sanitizeZipFileName(s.name) + '.png';
       if (usedNames[fileName]) {
         usedNames[fileName]++;
