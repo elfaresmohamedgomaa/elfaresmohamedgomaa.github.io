@@ -70,6 +70,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.11.5/JsBarcode.all.min.js"></script>
 <style>
   :root {
     --gold: #c9a84c;
@@ -5442,6 +5443,31 @@
 }
 .admin-qr-export-btn:hover { background: rgba(201,168,76,0.1); }
 .admin-qr-export-btn:disabled { opacity: 0.6; cursor: default; }
+
+/* ===== GOLD CARD CODE MODE TOGGLE (QR / Barcode) ===== */
+.gold-card-mode-toggle {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  background: rgba(201,168,76,0.06);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 12px;
+  padding: 8px 14px;
+  width: 100%;
+  order: 99;
+}
+.gold-card-mode-toggle .gc-mode-label {
+  font-size: 0.82rem; color: var(--white2); opacity: 0.75; font-weight: 600; white-space: nowrap;
+}
+.gc-mode-btn {
+  background: none; border: 1px solid rgba(201,168,76,0.3); color: var(--white2);
+  padding: 6px 16px; border-radius: 50px; white-space: nowrap;
+  font-family: 'IBM Plex Sans Arabic', sans-serif; font-size: 0.8rem; font-weight: 700;
+  cursor: pointer; transition: all 0.2s; opacity: 0.75;
+}
+.gc-mode-btn:hover { background: rgba(201,168,76,0.1); opacity: 1; }
+.gc-mode-btn.active {
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+  color: var(--dark); opacity: 1; border-color: transparent;
+}
 .admin-students-list { display: flex; flex-direction: column; gap: 10px; }
 .admin-student-item {
   background: var(--dark3);
@@ -8138,6 +8164,11 @@ STU-26-0003	معاذ خالد" style="resize:vertical; font-family:'IBM Plex San
           <button class="admin-qr-export-btn" id="qrExportBtn" onclick="exportAllStudentsQR()">📦 تصدير كل أكواد QR (ZIP)</button>
           <button class="admin-qr-export-btn" id="goldCardExportBtn" onclick="exportAllGoldCards()">🎴 تصدير كل الكروت الذهبية (ZIP)</button>
           <button class="admin-delete-mode-btn" id="studentDeleteModeBtn" onclick="toggleStudentDeleteMode()">🗑️ حذف الطلاب</button>
+          <div class="gold-card-mode-toggle" id="goldCardModeToggle">
+            <span class="gc-mode-label">🎴 كود الكارت الذهبي:</span>
+            <button type="button" class="gc-mode-btn" data-mode="qr" onclick="setGoldCardMode('qr')">▦ QR كود</button>
+            <button type="button" class="gc-mode-btn" data-mode="barcode" onclick="setGoldCardMode('barcode')">|||| باركود</button>
+          </div>
         </div>
 
         <div class="results-filter-row">
@@ -9879,6 +9910,29 @@ const GOLD_CARD_QR_BOX = { x: 270, y: 122, w: 165, h: 165, imgW: 708, imgH: 394 
 // مساحة اسم الطالب فوق الـ QR مباشرة (نفس منتصف مربع الـ QR أفقيًا)
 const GOLD_CARD_NAME_BOX = { centerX: 352, y: 111, maxWidth: 200 };
 
+// ===== وضع كود الكارت الذهبي: QR أو باركود (بديل عنه، وممكن ترجع تاني للـ QR وقت ما تحب) =====
+function getGoldCardMode() {
+  try {
+    return localStorage.getItem('goldCardCodeMode') === 'barcode' ? 'barcode' : 'qr';
+  } catch (e) { return 'qr'; }
+}
+
+function refreshGoldCardModeUI() {
+  const mode = getGoldCardMode();
+  document.querySelectorAll('.gc-mode-btn').forEach(function(btn) {
+    btn.classList.toggle('active', btn.getAttribute('data-mode') === mode);
+  });
+}
+
+window.setGoldCardMode = function(mode) {
+  if (mode !== 'qr' && mode !== 'barcode') return;
+  try { localStorage.setItem('goldCardCodeMode', mode); } catch (e) {}
+  refreshGoldCardModeUI();
+};
+
+// نشغّل الحالة الابتدائية للزرار أول ما الصفحة تحمّل
+refreshGoldCardModeUI();
+
 function loadImageEl(src) {
   return new Promise(function(resolve, reject) {
     const img = new Image();
@@ -9923,28 +9977,60 @@ async function renderGoldCardBack(code, password, name) {
   // اسم الطالب فوق مكان الـ QR للتمييز بين كل كارت والتاني
   drawGoldCardName(ctx, name);
 
-  // نولّد الـ QR في عنصر مخفي بحجم أكبر عشان جودته تبقى عالية، وبعدين نرسمه بمقاس المربع (المُصغّر)
-  const hiddenWrap = document.createElement('div');
-  hiddenWrap.style.cssText = 'position:fixed; left:-9999px; top:-9999px;';
-  document.body.appendChild(hiddenWrap);
-  const link = getStudentLoginLink(code, password);
-  const qrSize = 500;
-  await new Promise(function(resolve) {
-    new QRCode(hiddenWrap, {
-      text: link,
-      width: qrSize,
-      height: qrSize,
-      colorDark: '#0a0a0f',
-      colorLight: '#ffffff',
-      correctLevel: QRCode.CorrectLevel.M
+  const mode = getGoldCardMode();
+  const box = GOLD_CARD_QR_BOX;
+
+  if (mode === 'barcode' && window.JsBarcode) {
+    // باركود (Code128) بدل الـ QR، بيشفّر كود الطالب نفسه، ومتوافق مع نفس ماسح الحضور
+    const barcodeCanvas = document.createElement('canvas');
+    try {
+      JsBarcode(barcodeCanvas, code, {
+        format: 'CODE128',
+        width: 3,
+        height: 130,
+        margin: 6,
+        displayValue: true,
+        fontSize: 20,
+        background: '#ffffff',
+        lineColor: '#0a0a0f'
+      });
+    } catch (e) { /* لو الكود فيه حروف مش مدعومة، هيفضل المربع فاضي بدل ما يقع */ }
+
+    if (barcodeCanvas.width && barcodeCanvas.height) {
+      // نحافظ على أبعاد الباركود الأصلية (contain) بدل ما نمططه جوه مربع الـ QR
+      const scale = Math.min(box.w / barcodeCanvas.width, box.h / barcodeCanvas.height);
+      const drawW = barcodeCanvas.width * scale;
+      const drawH = barcodeCanvas.height * scale;
+      const drawX = box.x + (box.w - drawW) / 2;
+      const drawY = box.y + (box.h - drawH) / 2;
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(box.x, box.y, box.w, box.h);
+      ctx.drawImage(barcodeCanvas, drawX, drawY, drawW, drawH);
+    }
+  } else {
+    // نولّد الـ QR في عنصر مخفي بحجم أكبر عشان جودته تبقى عالية، وبعدين نرسمه بمقاس المربع (المُصغّر)
+    const hiddenWrap = document.createElement('div');
+    hiddenWrap.style.cssText = 'position:fixed; left:-9999px; top:-9999px;';
+    document.body.appendChild(hiddenWrap);
+    const link = getStudentLoginLink(code, password);
+    const qrSize = 500;
+    await new Promise(function(resolve) {
+      new QRCode(hiddenWrap, {
+        text: link,
+        width: qrSize,
+        height: qrSize,
+        colorDark: '#0a0a0f',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+      });
+      setTimeout(resolve, 30);
     });
-    setTimeout(resolve, 30);
-  });
-  const qrCanvas = hiddenWrap.querySelector('canvas');
-  if (qrCanvas) {
-    ctx.drawImage(qrCanvas, GOLD_CARD_QR_BOX.x, GOLD_CARD_QR_BOX.y, GOLD_CARD_QR_BOX.w, GOLD_CARD_QR_BOX.h);
+    const qrCanvas = hiddenWrap.querySelector('canvas');
+    if (qrCanvas) {
+      ctx.drawImage(qrCanvas, box.x, box.y, box.w, box.h);
+    }
+    document.body.removeChild(hiddenWrap);
   }
-  document.body.removeChild(hiddenWrap);
 
   return new Promise(function(resolve) {
     canvas.toBlob(resolve, 'image/png');
@@ -9965,7 +10051,9 @@ window.adminDownloadGoldCard = async function() {
   const originalText = btn ? btn.textContent : '';
   if (btn) { btn.disabled = true; btn.textContent = '⏳ جاري التجهيز...'; }
   try {
-    if (!window.QRCode) { alert('⚠️ تعذر تحميل مكتبة QR، تأكد من الاتصال بالإنترنت'); return; }
+    const gcMode = getGoldCardMode();
+    if (gcMode === 'barcode' && !window.JsBarcode) { alert('⚠️ تعذر تحميل مكتبة الباركود، تأكد من الاتصال بالإنترنت'); return; }
+    if (gcMode !== 'barcode' && !window.QRCode) { alert('⚠️ تعذر تحميل مكتبة QR، تأكد من الاتصال بالإنترنت'); return; }
     if (!window.JSZip) { alert('⚠️ تعذر تحميل مكتبة ضغط الملفات (JSZip)، تأكد من الاتصال بالإنترنت'); return; }
     const zip = new JSZip();
     const [front, back] = await Promise.all([
@@ -10006,7 +10094,9 @@ window.exportAllGoldCards = async function() {
   }
 
   if (!entries.length) { alert('⚠️ لا يوجد طلاب لتصدير كروتهم'); return; }
-  if (!window.QRCode) { alert('⚠️ تعذر تحميل مكتبة QR، تأكد من الاتصال بالإنترنت وحاول تاني'); return; }
+  const gcModeAll = getGoldCardMode();
+  if (gcModeAll === 'barcode' && !window.JsBarcode) { alert('⚠️ تعذر تحميل مكتبة الباركود، تأكد من الاتصال بالإنترنت وحاول تاني'); return; }
+  if (gcModeAll !== 'barcode' && !window.QRCode) { alert('⚠️ تعذر تحميل مكتبة QR، تأكد من الاتصال بالإنترنت وحاول تاني'); return; }
   if (!window.JSZip) { alert('⚠️ تعذر تحميل مكتبة ضغط الملفات (JSZip)، تأكد من الاتصال بالإنترنت وحاول تاني'); return; }
 
   const confirmMsg = query
