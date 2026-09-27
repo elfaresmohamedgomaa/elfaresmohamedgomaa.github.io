@@ -10264,7 +10264,6 @@ async function renderStudentBarcodeOnly(code, password, name) {
   const barcodeW = barcodeCanvas.width || 300;
   const barcodeH = barcodeCanvas.height || 160;
 
-  // الهوامش بقت أوسع شوية (مساحة بيضاء زي المثال) وحجم اسم الطالب وكود الطالب اتكبّروا
   const sidePadding = 99;
   const topPadding = 150;
   const bottomPadding = 150;
@@ -10273,29 +10272,37 @@ async function renderStudentBarcodeOnly(code, password, name) {
   const codeFontSize = 32;
   const gapCodeBottom = 0;
 
-  const canvas = document.createElement('canvas');
-  canvas.width = Math.max(barcodeW + sidePadding * 2, 320);
+  const canvasWidth = Math.max(barcodeW + sidePadding * 2, 320);
 
-  const ctx = canvas.getContext('2d');
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'alphabetic';
-
-  // اسم الطالب: بيبدأ بحجم كبير متناسب مع عرض الباركود، وبيصغّر تلقائي بس لو الاسم طويل جدًا
+  // بنستخدم كانفاس منفصل بس لقياس عرض الاسم، عشان تغيير مقاس (width/height) الكانفاس
+  // الأساسي بعد ما نظبط عليه textAlign/direction بيصفّر الإعدادات دي تلقائي (سلوك معروف في الـ Canvas API)
+  // وده اللي كان بيخلي النص يترسم من غير توسيط
+  const measureCanvas = document.createElement('canvas');
+  const mctx = measureCanvas.getContext('2d');
+  mctx.direction = 'rtl';
   const displayName = name || '';
-  let fontSize = Math.round(Math.min(Math.max(canvas.width * 0.07, 56), 120));
-  ctx.direction = 'rtl';
-  const maxNameWidth = canvas.width - sidePadding * 2;
+  let fontSize = Math.round(Math.min(Math.max(canvasWidth * 0.07, 56), 120));
+  const maxNameWidth = canvasWidth - sidePadding * 2;
   do {
-    ctx.font = '700 ' + fontSize + 'px "Tahoma", "Segoe UI", sans-serif';
-    if (ctx.measureText(displayName).width <= maxNameWidth || fontSize <= 20) break;
+    mctx.font = '700 ' + fontSize + 'px "Tahoma", "Segoe UI", sans-serif';
+    if (mctx.measureText(displayName).width <= maxNameWidth || fontSize <= 20) break;
     fontSize -= 1;
   } while (true);
   const nameAreaHeight = fontSize + gapNameToBarcode;
 
-  canvas.height = topPadding + nameAreaHeight + barcodeH + gapBarcodeToCode + codeFontSize + gapCodeBottom + bottomPadding;
+  const canvasHeight = topPadding + nameAreaHeight + barcodeH + gapBarcodeToCode + codeFontSize + gapCodeBottom + bottomPadding;
+
+  // دلوقتي بنظبط مقاس الكانفاس النهائي مرة واحدة بالكامل قبل أي إعداد رسم عليه
+  const canvas = document.createElement('canvas');
+  canvas.width = canvasWidth;
+  canvas.height = canvasHeight;
+  const ctx = canvas.getContext('2d');
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'alphabetic';
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+  ctx.direction = 'rtl';
   ctx.fillStyle = '#0a0a0f';
   ctx.font = '700 ' + fontSize + 'px "Tahoma", "Segoe UI", sans-serif';
   ctx.fillText(displayName, canvas.width / 2, topPadding + fontSize);
