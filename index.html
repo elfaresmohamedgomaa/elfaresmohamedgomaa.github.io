@@ -10265,13 +10265,13 @@ async function renderStudentBarcodeOnly(code, password, name) {
   const barcodeH = barcodeCanvas.height || 160;
 
   // الهوامش بقت أوسع شوية (مساحة بيضاء زي المثال) وحجم اسم الطالب وكود الطالب اتكبّروا
-  const sidePadding = 24;
-  const topPadding = 46;
-  const bottomPadding = 50;
-  const gapNameToBarcode = 26;
-  const gapBarcodeToCode = 16;
+  const sidePadding = 99;
+  const topPadding = 150;
+  const bottomPadding = 150;
+  const gapNameToBarcode = 60;
+  const gapBarcodeToCode = 60;
   const codeFontSize = 32;
-  const gapCodeBottom = 20;
+  const gapCodeBottom = 0;
 
   const canvas = document.createElement('canvas');
   canvas.width = Math.max(barcodeW + sidePadding * 2, 320);
@@ -10282,7 +10282,7 @@ async function renderStudentBarcodeOnly(code, password, name) {
 
   // اسم الطالب: بيبدأ بحجم كبير متناسب مع عرض الباركود، وبيصغّر تلقائي بس لو الاسم طويل جدًا
   const displayName = name || '';
-  let fontSize = Math.round(Math.min(Math.max(canvas.width * 0.055, 44), 96));
+  let fontSize = Math.round(Math.min(Math.max(canvas.width * 0.07, 56), 120));
   ctx.direction = 'rtl';
   const maxNameWidth = canvas.width - sidePadding * 2;
   do {
