@@ -10261,44 +10261,55 @@ async function renderStudentBarcodeOnly(code, password, name) {
     });
   } catch (e) { /* لو حصل خطأ غير متوقع، الباركود هيفضل فاضي بدل ما يقع */ }
 
-  const padding = 30;
-  const nameAreaHeight = 50;
-  const codeAreaHeight = 34;
   const barcodeW = barcodeCanvas.width || 300;
   const barcodeH = barcodeCanvas.height || 160;
 
+  // الهوامش بقت أوسع شوية (مساحة بيضاء زي المثال) وحجم اسم الطالب وكود الطالب اتكبّروا
+  const sidePadding = 24;
+  const topPadding = 46;
+  const bottomPadding = 50;
+  const gapNameToBarcode = 26;
+  const gapBarcodeToCode = 16;
+  const codeFontSize = 32;
+  const gapCodeBottom = 20;
+
   const canvas = document.createElement('canvas');
-  canvas.width = Math.max(barcodeW + padding * 2, 320);
-  canvas.height = barcodeH + nameAreaHeight + codeAreaHeight + padding * 2;
+  canvas.width = Math.max(barcodeW + sidePadding * 2, 320);
+
   const ctx = canvas.getContext('2d');
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'alphabetic';
+
+  // اسم الطالب: بيبدأ بحجم كبير متناسب مع عرض الباركود، وبيصغّر تلقائي بس لو الاسم طويل جدًا
+  const displayName = name || '';
+  let fontSize = Math.round(Math.min(Math.max(canvas.width * 0.055, 44), 96));
+  ctx.direction = 'rtl';
+  const maxNameWidth = canvas.width - sidePadding * 2;
+  do {
+    ctx.font = '700 ' + fontSize + 'px "Tahoma", "Segoe UI", sans-serif';
+    if (ctx.measureText(displayName).width <= maxNameWidth || fontSize <= 20) break;
+    fontSize -= 1;
+  } while (true);
+  const nameAreaHeight = fontSize + gapNameToBarcode;
+
+  canvas.height = topPadding + nameAreaHeight + barcodeH + gapBarcodeToCode + codeFontSize + gapCodeBottom + bottomPadding;
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // اسم الطالب فوق الباركود، بيصغّر حجم الخط تلقائي لو الاسم طويل
-  const displayName = name || '';
-  let fontSize = 26;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'alphabetic';
-  ctx.direction = 'rtl';
-  const maxNameWidth = canvas.width - padding * 2;
-  do {
-    ctx.font = '700 ' + fontSize + 'px "Tahoma", "Segoe UI", sans-serif';
-    if (ctx.measureText(displayName).width <= maxNameWidth || fontSize <= 14) break;
-    fontSize -= 1;
-  } while (true);
   ctx.fillStyle = '#0a0a0f';
-  ctx.fillText(displayName, canvas.width / 2, padding + fontSize);
+  ctx.font = '700 ' + fontSize + 'px "Tahoma", "Segoe UI", sans-serif';
+  ctx.fillText(displayName, canvas.width / 2, topPadding + fontSize);
 
   // الباركود في النص أفقيًا تحت الاسم
   const barcodeX = (canvas.width - barcodeW) / 2;
-  const barcodeY = padding + nameAreaHeight;
+  const barcodeY = topPadding + nameAreaHeight;
   ctx.drawImage(barcodeCanvas, barcodeX, barcodeY);
 
   // كود الطالب مكتوب كنص مقروء تحت الباركود (عشان تقدر تتابع الكارت لو اتفقد بصريًا)
   ctx.direction = 'ltr';
-  ctx.font = '600 18px "Tahoma", "Segoe UI", sans-serif';
+  ctx.font = '600 ' + codeFontSize + 'px "Tahoma", "Segoe UI", sans-serif';
   ctx.fillStyle = '#444';
-  ctx.fillText(code, canvas.width / 2, barcodeY + barcodeH + 24);
+  ctx.fillText(code, canvas.width / 2, barcodeY + barcodeH + gapBarcodeToCode + codeFontSize);
 
   return new Promise(function(resolve) {
     canvas.toBlob(resolve, 'image/png');
