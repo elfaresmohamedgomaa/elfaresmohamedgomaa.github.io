@@ -1,0 +1,116 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "students": {
+      ".read": true,
+      "$code": {
+        ".write": "auth != null",
+        "name": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 200"
+        },
+        "phone": {
+          ".validate": "newData.isString() && newData.val().length < 30"
+        },
+        "parentPhone": {
+          ".validate": "newData.isString() && newData.val().length < 30"
+        },
+        "stage": {
+          ".validate": "newData.isString() && newData.val().length < 60"
+        },
+        "grade": {
+          ".validate": "newData.isString() && newData.val().length < 60"
+        },
+        "center": {
+          ".validate": "newData.isString() && newData.val().length < 100"
+        },
+        "password": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 60"
+        },
+        "active": {
+          ".validate": "newData.isBoolean()"
+        },
+        "createdAt": {
+          ".validate": "newData.isNumber()"
+        },
+        "loginCount": {
+          ".validate": "newData.isNumber()"
+        },
+        "lastLogin": {
+          ".validate": "newData.isNumber()"
+        },
+        "badge": {
+          ".validate": "newData.isString() && newData.val().matches(/^(novice|persistent|smart|numbers|equations|skilled|advanced|elite|eliteTop|top)?$/)"
+        },
+        "grades": {
+          "$gradeId": {
+            ".validate": "newData.hasChildren()"
+          }
+        },
+        "attendance": {
+          "$attId": {
+            ".validate": "newData.hasChildren()"
+          }
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "notifications": {
+      ".read": true,
+      ".write": "auth != null"
+    },
+    "exams": {
+      ".read": true,
+      ".write": "auth != null"
+    },
+    "wheelPrizes": {
+      ".read": true,
+      ".write": "auth != null"
+    },
+    "examResults": {
+      ".read": "auth != null",
+      ".write": true
+    },
+    "challengeResults": {
+      ".read": true,
+      "$cid": {
+        "$code": {
+          ".write": "auth != null || (!data.exists() && newData.child('status').val() == 'started' && !newData.child('score').exists()) || (data.child('status').val() == 'started' && newData.child('status').val() == 'done' && newData.child('startedAt').val() == data.child('startedAt').val())",
+          ".validate": "newData.hasChildren(['name','startedAt','status'])",
+          "name": {
+            ".validate": "newData.isString() && newData.val().length < 200"
+          },
+          "grade": {
+            ".validate": "newData.isString() && newData.val().length < 60"
+          },
+          "startedAt": {
+            ".validate": "newData.isNumber()"
+          },
+          "finishedAt": {
+            ".validate": "newData.isNumber()"
+          },
+          "score": {
+            ".validate": "newData.isNumber() && newData.val() >= 0"
+          },
+          "total": {
+            ".validate": "newData.isNumber() && newData.val() >= 0"
+          },
+          "percentage": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100"
+          },
+          "timeMs": {
+            ".validate": "newData.isNumber() && newData.val() >= 0"
+          },
+          "status": {
+            ".validate": "newData.val() == 'started' || newData.val() == 'done'"
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      }
+    }
+  }
+}
