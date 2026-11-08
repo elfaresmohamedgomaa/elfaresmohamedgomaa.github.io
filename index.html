@@ -1407,6 +1407,60 @@
     box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 30px rgba(201,168,76,0.1) !important;
   }
 
+  /* ===== CHALLENGES PAGE ===== */
+  .ch-hero { text-align: center; padding: 4px 0 2px; }
+  .ch-hero h2 { font-size: clamp(1.7rem, 4.5vw, 2.5rem); font-weight: 900; color: var(--gold-light); }
+  .ch-hero p { color: var(--white2); opacity: 0.75; margin-top: 8px; font-size: 0.95rem; }
+  .ch-user { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; background: var(--dark3); border: 1px solid rgba(201,168,76,0.18); border-radius: 16px; padding: 14px 18px; margin: 20px 0 18px; font-size: 0.9rem; color: var(--white2); }
+  .ch-user b { color: var(--gold-light); }
+  .ch-user-stats { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; }
+  .ch-mini-btn { font-family: inherit; font-weight: 700; font-size: 0.82rem; padding: 8px 18px; border-radius: 50px; cursor: pointer; border: 1px solid rgba(201,168,76,0.4); background: rgba(201,168,76,0.12); color: var(--gold-light); }
+  .ch-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .ch-tab { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 8px 16px; border-radius: 50px; cursor: pointer; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); color: var(--white2); }
+  .ch-tab.active { border-color: rgba(201,168,76,0.6); background: rgba(201,168,76,0.15); color: var(--gold-light); }
+  .ch-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; align-items: start; margin-bottom: 18px; }
+  .ch-panel { background: linear-gradient(160deg, var(--dark3), var(--dark2)); border: 1px solid rgba(201,168,76,0.18); border-radius: 22px; padding: 24px 22px; position: relative; overflow: hidden; }
+  .ch-panel-title { display: flex; align-items: center; gap: 8px; font-size: 1.1rem; font-weight: 800; color: var(--white); margin-bottom: 4px; }
+  .ch-panel-sub { font-size: 0.8rem; color: var(--white2); opacity: 0.65; margin-bottom: 16px; }
+  .ch-chip { display: inline-block; font-size: 0.78rem; font-weight: 800; padding: 5px 14px; border-radius: 50px; margin-bottom: 14px; border: 1px solid rgba(201,168,76,0.4); background: rgba(201,168,76,0.12); color: var(--gold-light); }
+  .ch-chip.live { border-color: rgba(60,180,120,0.45); background: rgba(60,180,120,0.12); color: #5fd49b; }
+  .ch-chip.ended { border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); color: var(--white2); }
+  .ch-title { font-size: 1.5rem; font-weight: 900; color: var(--white); line-height: 1.5; }
+  .ch-desc { font-size: 0.9rem; color: var(--white2); opacity: 0.75; line-height: 1.9; margin-top: 6px; }
+  .ch-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 18px 0 14px; }
+  .ch-tile { background: rgba(255,255,255,0.04); border: 1px solid rgba(201,168,76,0.15); border-radius: 14px; padding: 12px 6px; text-align: center; }
+  .ch-tile .ic { font-size: 1.4rem; }
+  .ch-tile b { display: block; font-size: 0.82rem; color: var(--white); margin-top: 4px; }
+  .ch-tile span { font-size: 0.72rem; color: var(--white2); opacity: 0.7; }
+  .ch-meta { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 0.82rem; color: var(--white2); opacity: 0.85; margin-bottom: 8px; }
+  .ch-ladder { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.8rem; color: var(--gold-light); margin-bottom: 18px; }
+  .ch-cta { width: 100%; padding: 15px; border: none; border-radius: 50px; font-family: inherit; font-weight: 900; font-size: 1.05rem; cursor: pointer; background: linear-gradient(135deg, var(--gold-light), var(--gold)); color: #1a1206; box-shadow: 0 8px 28px rgba(201,168,76,0.28); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .ch-cta:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 12px 34px rgba(201,168,76,0.4); }
+  .ch-cta:disabled { opacity: 0.55; cursor: not-allowed; filter: grayscale(0.35); box-shadow: none; }
+  .ch-empty { text-align: center; padding: 30px 12px; color: var(--white2); opacity: 0.7; line-height: 2; font-size: 0.9rem; }
+  .ch-board-row { display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 14px; margin-bottom: 8px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); }
+  .ch-board-row.top1 { background: linear-gradient(90deg, rgba(201,168,76,0.22), rgba(201,168,76,0.06)); border-color: rgba(201,168,76,0.55); }
+  .ch-board-row.me { box-shadow: 0 0 0 1.5px rgba(123,79,160,0.9) inset; }
+  .ch-rank { width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.95rem; background: rgba(123,79,160,0.2); border: 1px solid rgba(123,79,160,0.5); color: var(--white); }
+  .ch-board-name { flex: 1; min-width: 0; font-weight: 700; font-size: 0.92rem; color: var(--white); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ch-board-stat { font-size: 0.78rem; color: var(--white2); opacity: 0.85; white-space: nowrap; }
+  .ch-board-pts { font-weight: 900; font-size: 0.85rem; color: var(--gold-light); white-space: nowrap; min-width: 54px; text-align: left; }
+  .ch-badges { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px; }
+  .ch-badge { text-align: center; padding: 14px 6px 12px; border-radius: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); }
+  .ch-badge.earned { border-color: rgba(201,168,76,0.45); background: rgba(201,168,76,0.07); }
+  .ch-shield { width: 62px; height: 72px; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; clip-path: polygon(50% 0, 100% 14%, 100% 62%, 50% 100%, 0 62%, 0 14%); }
+  .ch-badge.locked .ch-shield { filter: grayscale(1) brightness(0.55); }
+  .ch-badge-name { font-size: 0.82rem; font-weight: 800; color: var(--white); margin-bottom: 8px; }
+  .ch-badge-pts { display: inline-block; font-size: 0.74rem; font-weight: 700; padding: 3px 12px; border-radius: 50px; border: 1px solid rgba(201,168,76,0.3); color: var(--gold-light); background: rgba(201,168,76,0.08); }
+  .ch-soon-card { text-align: center; padding: 16px 12px; border-radius: 16px; background: rgba(255,255,255,0.03); border: 1px dashed rgba(123,79,160,0.5); margin-bottom: 12px; }
+  .ch-soon-card:last-child { margin-bottom: 0; }
+  .ch-soon-card .ic { font-size: 2rem; }
+  .ch-soon-card b { display: block; font-size: 1rem; color: var(--white); margin: 6px 0 4px; }
+  .ch-soon-card p { font-size: 0.8rem; color: var(--white2); opacity: 0.7; line-height: 1.8; margin-bottom: 10px; }
+  .ch-soon-tag { display: inline-block; font-size: 0.78rem; font-weight: 800; padding: 6px 20px; border-radius: 50px; background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.3); color: var(--gold-light); }
+  .ch-res-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 18px 0; }
+  @media (max-width: 520px) { .ch-tiles, .ch-res-grid { gap: 8px; } .ch-title { font-size: 1.25rem; } .ch-board-stat { display: none; } }
+
   /* ===== TRACKING FULLPAGE OVERLAY ===== */
   #tracking-overlay {
     position: fixed;
@@ -6048,29 +6102,18 @@
       <span style="font-size:0.8rem; color:var(--white2); opacity:0.6;">متابعة نتائج كل امتحان</span>
     </div>
 
-    <div class="reveal" style="background:var(--dark3); border:1px solid rgba(201,168,76,0.15); border-radius:20px; padding:32px 24px; text-align:center; position:relative; overflow:hidden;">
+    <div class="reveal tracking-card-clickable" onclick="openTrackingOverlay(1)" style="background:var(--dark3); border:1px solid rgba(201,168,76,0.15); border-radius:20px; padding:32px 24px; text-align:center; position:relative; overflow:hidden;">
       <div class="dash-stat-icon lg ic-blue" style="margin:0 auto 14px;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M8 5H5a1 1 0 0 0-1 1v1.5a3.5 3.5 0 0 0 3.5 3.5"/><path d="M16 5h3a1 1 0 0 1 1 1v1.5A3.5 3.5 0 0 1 16.5 11"/><path d="M12 13v3"/><path d="M9 20h6"/><path d="M10 16.5h4l1 3.5H9l1-3.5z"/>
         </svg>
       </div>
-      <strong style="display:block; font-size:1rem; color:var(--white); margin-bottom:8px;">مكافآت ومسابقات</strong>
-      <span style="font-size:0.8rem; color:var(--white2); opacity:0.6;">جوائز وتحديات للطلبة المتفوقين</span>
-      <div class="tracking-coming">قريباً</div>
+      <strong style="display:block; font-size:1rem; color:var(--white); margin-bottom:8px;">مسابقات وتحديات</strong>
+      <span style="font-size:0.8rem; color:var(--white2); opacity:0.6;">تحديات سرعة ومنافسة بين الطلاب</span>
+      
     </div>
 
-    <div class="reveal" style="background:var(--dark3); border:1px solid rgba(201,168,76,0.15); border-radius:20px; padding:32px 24px; text-align:center; position:relative; overflow:hidden;">
-      <div class="dash-stat-icon lg ic-purple" style="margin:0 auto 14px;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 9.5h17"/><path d="M8 3v3"/><path d="M16 3v3"/><path d="M8.3 14l2 2 4-4"/>
-        </svg>
-      </div>
-      <strong style="display:block; font-size:1rem; color:var(--white); margin-bottom:8px;">الحضور والغياب</strong>
-      <span style="font-size:0.8rem; color:var(--white2); opacity:0.6;">سجل حضور الحصص</span>
-      <div class="tracking-coming">قريباً</div>
-    </div>
-
-    <div class="reveal tracking-card-clickable" onclick="openTrackingOverlay(3)" style="background:var(--dark3); border:1px solid rgba(201,168,76,0.15); border-radius:20px; padding:32px 24px; text-align:center; position:relative; overflow:hidden;">
+    <div class="reveal tracking-card-clickable" onclick="openTrackingOverlay(2)" style="background:var(--dark3); border:1px solid rgba(201,168,76,0.15); border-radius:20px; padding:32px 24px; text-align:center; position:relative; overflow:hidden;">
       <div class="dash-stat-icon lg ic-green" style="margin:0 auto 14px;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4l3 2"/><path d="M8.5 3.5L5.5 5.5"/><path d="M15.5 3.5l3 2"/>
@@ -7419,11 +7462,40 @@ let adminHeartMessages = [...defaultHeartMessages];
 // Default tracking cards
 const defaultTracking = [
   { emoji: '📊', title: 'الامتحانات والدرجات', desc: 'متابعة نتائج كل امتحان', coming: false, action: 'exams' },
-  { emoji: '🏆', title: 'مكافآت ومسابقات', desc: 'جوائز وتحديات للطلبة المتفوقين', coming: true },
-  { emoji: '📅', title: 'الحضور والغياب', desc: 'سجل حضور الحصص', coming: true },
+  { emoji: '🏆', title: 'مسابقات وتحديات', desc: 'تحديات سرعة ومنافسة بين الطلاب', coming: false, action: 'challenges' },
   { emoji: '⏰', title: 'مواعيد الحصص', desc: 'جدول مواعيد الأسبوع', coming: false, action: 'schedule' }
 ];
 let adminTracking = [...defaultTracking];
+
+// ترحيل بطاقات متابعة الطلاب المحفوظة قديماً في المتصفح (localStorage):
+// - حذف بطاقة الحضور والغياب
+// - تفعيل بطاقة المكافآت والمسابقات وربطها بالصفحة الجديدة
+// - استرجاع action للبطاقات اللي اتحفظت قبل كده من غير action
+function adminMigrateTracking() {
+  try {
+    const actionByTitle = {
+      'الامتحانات والدرجات': 'exams',
+      'مواعيد الحصص': 'schedule',
+      'مسابقات وتحديات': 'challenges'
+    };
+    adminTracking = adminTracking
+      .filter(c => c && c.title !== 'الحضور والغياب')
+      .map(c => {
+        // تغيير اسم القسم من «مكافآت ومسابقات» إلى «مسابقات وتحديات»
+        if (c.title === 'مكافآت ومسابقات') {
+          c.title = 'مسابقات وتحديات';
+          if (c.desc === 'جوائز وتحديات للطلبة المتفوقين') c.desc = 'تحديات سرعة ومنافسة بين الطلاب';
+          c.action = 'challenges';
+        }
+        if (c.action === 'rewards') c.action = 'challenges';
+        const a = actionByTitle[c.title];
+        if (a && !c.action) c.action = a;
+        if (c.action === 'challenges') c.coming = false;
+        return c;
+      });
+    localStorage.setItem('af_tracking', JSON.stringify(adminTracking));
+  } catch(e) {}
+}
 
 // Load from localStorage
 function adminLoadFromStorage() {
@@ -7437,6 +7509,7 @@ function adminLoadFromStorage() {
     const st = localStorage.getItem('af_tracking');
     if (st) adminTracking = JSON.parse(st);
   } catch(e) {}
+  adminMigrateTracking();
   // Apply to live data
   Object.assign(levelVideos, adminVideos);
   Object.assign(levelNotes,  adminNotes);
@@ -7831,8 +7904,10 @@ window.saveTrackingCard = function(i) {
     emoji: document.getElementById('track-emoji-' + i).value.trim() || '📊',
     title: document.getElementById('track-title-' + i).value.trim(),
     desc:  document.getElementById('track-desc-'  + i).value.trim(),
-    coming: document.getElementById('track-coming-' + i).checked
+    coming: document.getElementById('track-coming-' + i).checked,
+    action: adminTracking[i] && adminTracking[i].action
   };
+  if (!adminTracking[i].action) delete adminTracking[i].action;
   adminSave('af_tracking', adminTracking);
   renderTrackingSection();
 }
@@ -8046,6 +8121,9 @@ adminLoadFromStorage();
       <button class="admin-tab-btn" onclick="switchAdminTab('examresults', this); renderAdminExamResults()">
         <span class="admin-tab-icon">🏅</span><span>درجات الطلاب</span>
       </button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('challenges', this); ensureChallengeResultsListener(); renderAdminChallenges()">
+        <span class="admin-tab-icon">🏆</span><span>التحديات</span>
+      </button>
       <button class="admin-tab-btn" onclick="switchAdminTab('attendance-scan', this); initAttendanceScanSection()">
         <span class="admin-tab-icon">📷</span><span>سكان الحضور</span>
       </button>
@@ -8189,7 +8267,7 @@ adminLoadFromStorage();
       <!-- ===== TRACKING TAB ===== -->
       <div class="admin-section" id="admin-tracking">
         <div class="admin-section-title">📊 إدارة متابعة الطلاب</div>
-        <p style="font-size:0.85rem; color:var(--white2); opacity:0.6; margin-bottom:20px;">عدّل في البطاقات الأربعة اللي في قسم متابعة الطلاب. اختار "قريباً" لو المحتوى لسه مش جاهز.</p>
+        <p style="font-size:0.85rem; color:var(--white2); opacity:0.6; margin-bottom:20px;">عدّل في البطاقات اللي في قسم متابعة الطلاب. اختار "قريباً" لو المحتوى لسه مش جاهز.</p>
         <div class="admin-tracking-grid" id="admin-tracking-grid"></div>
         <button class="admin-add-btn" onclick="addTrackingCard()">+ إضافة بطاقة متابعة</button>
       </div>
@@ -8335,6 +8413,34 @@ STU-26-0003	معاذ خالد" style="resize:vertical; font-family:'IBM Plex San
         </div>
 
         <div class="admin-students-list" id="admin-examresults-list"></div>
+      </div>
+
+      <!-- ===== CHALLENGES TAB ===== -->
+      <div class="admin-section" id="admin-challenges">
+        <div class="admin-section-title">🏆 إدارة التحديات</div>
+        <p style="font-size:0.85rem; color:var(--white2); opacity:0.6; margin-bottom:20px;">أنشئ تحدي سرعة هيظهر للطلاب في «مسابقات وتحديات». بعد الإنشاء دوس «إدارة الأسئلة» وهيفتحلك الاختبار في تاب «الاختبارات» عشان تضيف الأسئلة (نفس نظام الاختبارات العادي). الترتيب بالدرجة ثم الوقت، والنقاط حسب المركز.</p>
+
+        <div id="admin-challenges-list"></div>
+
+        <div class="admin-add-form" style="margin-top:16px;">
+          <div class="admin-add-form-title">+ إنشاء تحدي جديد</div>
+          <input class="admin-input" id="ch-new-title" placeholder="اسم التحدي... مثال: تحدي سرعة ودقة الرياضيات" dir="rtl">
+          <input class="admin-input" id="ch-new-desc" placeholder="وصف قصير للتحدي..." dir="rtl">
+          <div class="admin-exam-meta-grid">
+            <input class="admin-input" id="ch-new-duration" placeholder="مدة التحدي بالدقايق (مثال: 15)" type="number" min="1" dir="ltr">
+          </div>
+          <input class="admin-input" id="ch-new-points" placeholder="نقاط المراكز مفصولة بفاصلة — الافتراضي: 500,400,300,200,100" dir="ltr">
+          <label class="admin-checkbox-row">
+            <input type="checkbox" id="ch-new-sched-enabled" onchange="document.getElementById('ch-new-sched-fields').style.display = this.checked ? 'grid' : 'none'">
+            <span>⏰ جدولة التحدي (يبقى متاح في يوم ووقت محددين بس)</span>
+          </label>
+          <div class="admin-exam-meta-grid" id="ch-new-sched-fields" style="display:none;">
+            <input class="admin-input" id="ch-new-sched-date" type="date" dir="ltr">
+            <input class="admin-input" id="ch-new-sched-start" type="time" dir="ltr">
+            <input class="admin-input" id="ch-new-sched-end" type="time" dir="ltr">
+          </div>
+          <button class="admin-add-btn" onclick="adminCreateChallenge()">➕ إنشاء التحدي</button>
+        </div>
       </div>
 
       <!-- ===== ATTENDANCE QR SCAN TAB ===== -->
@@ -8544,6 +8650,7 @@ function openTrackingOverlay(index) {
   if (!card) return;
   if (card.action === 'exams') { openExamGradeSelectPage(); return; }
   if (card.action === 'schedule') { openScheduleGradeSelectPage(); return; }
+  if (card.action === 'challenges' || card.action === 'rewards') { openChallengesPage(); return; }
   var emojiEl = document.getElementById("overlay-emoji");
   var m = (typeof trackingIconMap !== "undefined") ? trackingIconMap[card.emoji] : null;
   if (m) {
@@ -8831,7 +8938,9 @@ function initFirebase() {
       try {
         const data = snapshot.val();
         examsCache = data || {};
+        window.__examsLoaded = true;
         if (typeof renderAdminExamsSection === 'function') renderAdminExamsSection();
+        if (typeof refreshChallengesUI === 'function') refreshChallengesUI();
         if (typeof refreshExamResultsFilterOptions === 'function') refreshExamResultsFilterOptions();
       } catch(e) {
         console.error('Error listening to exams:', e);
@@ -8860,6 +8969,7 @@ function initFirebase() {
       }
     });
 
+    if (typeof ensureChallengeResultsListener === 'function') ensureChallengeResultsListener();
     console.log('✅ Firebase initialized successfully');
   } catch(e) {
     console.error('❌ Firebase error:', e);
@@ -9877,8 +9987,11 @@ function openStudentWelcome() {
 }
 
 window.closeStudentLogin = function() {
-  document.getElementById('student-login-modal').classList.remove('open');
+  const loginModal = document.getElementById('student-login-modal');
+  loginModal.classList.remove('open');
+  loginModal.style.zIndex = '';
   window.__examLoginPending = false;
+  window.__challengeLoginPending = false;
 };
 
 // ===== STUDENT QR LOGIN LINK / CODE =====
@@ -10723,6 +10836,12 @@ function loginStudentSuccess(code, name) {
     qrAutoLoginPending = false;
     closeStudentLogin();
     openStudentDashboard();
+  } else if (window.__challengeLoginPending) {
+    // كان الطالب بيحاول يبدأ تحدي قبل ما يسجل دخول - كمّل التحدي
+    const pendingCid = window.__challengeLoginPending;
+    window.__challengeLoginPending = false;
+    closeStudentLogin();
+    if (typeof window.onChallengeLoginDone === 'function') window.onChallengeLoginDone(pendingCid);
   } else if (window.__examLoginPending) {
     // كان الطالب بيحاول يبدأ امتحان قبل ما يسجل دخول - كمّله على طول لصفحة بيانات الاختبار
     window.__examLoginPending = false;
@@ -12375,6 +12494,556 @@ function initPushSystem() {
   </div>
 </div>
 
+<!-- ===== CHALLENGES PAGE (مسابقات وتحديات) ===== -->
+<div class="legal-overlay" id="challenges-page">
+  <div class="legal-topbar"></div>
+  <div class="legal-header">
+    <button class="legal-close-btn" onclick="closeChallengesPage()" aria-label="إغلاق">✕</button>
+    <div class="legal-header-title-wrap">
+      <div>
+        <div class="legal-header-title">مسابقات وتحديات</div>
+        <div class="legal-header-sub">اختبر سرعتك وحقق أعلى درجة ونافس الطلاب</div>
+      </div>
+      <div class="legal-header-icon">🏆</div>
+    </div>
+  </div>
+  <div class="legal-body">
+    <div id="challenges-content"></div>
+  </div>
+</div>
+
+<script>
+// ===== CHALLENGES (مسابقات وتحديات) =====
+// - التحدي = اختبار في عقدة exams عليه isChallenge:true (الأسئلة بتتدار من تاب «الاختبارات» في لوحة التحكم)
+// - نتايج الطلاب في عقدة challengeResults/{challengeId}/{studentCode}
+// - الترتيب: الدرجة الأعلى ثم الوقت الأقل. النقاط حسب المركز (challengePoints) وبتتحسب لحظياً من الترتيب.
+(function() {
+  const DEFAULT_POINTS = [500, 400, 300, 200, 100];
+
+  // الشارات حسب مجموع النقاط (مرتبة من الأعلى للأقل)
+  const CH_BADGES = [
+    { id: 'knight',   label: 'فارس الرياضيات', points: 450, icon: '♞',  bg: 'linear-gradient(160deg,#f0d080,#a8791c)' },
+    { id: 'first',    label: 'متحدي الأوائل',  points: 400, icon: '🏆', bg: 'linear-gradient(160deg,#d4dbec,#6b7690)' },
+    { id: 'expert',   label: 'خبير الاختبارات', points: 350, icon: '📖', bg: 'linear-gradient(160deg,#e3a94d,#7a4a12)' },
+    { id: 'fast',     label: 'سريع الحل',      points: 300, icon: '⚡', bg: 'linear-gradient(160deg,#5aa8ff,#1d4fa0)' },
+    { id: 'explorer', label: 'المستكشف الذكي', points: 200, icon: '🧭', bg: 'linear-gradient(160deg,#a78bfa,#4c2a8a)' }
+  ];
+  window.CHALLENGE_BADGES = CH_BADGES;
+  window.CHALLENGE_DEFAULT_POINTS = DEFAULT_POINTS;
+
+  window.challengeResultsCache = {};
+  let chLoaded = false;
+  let chError = false;
+  let chListenerOn = false;
+  let selectedCid = null;
+  let boardExpanded = false;
+  let resultCtx = null;
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+  function shortName(n) { return String(n || 'طالب').trim().split(/\s+/).slice(0, 2).join(' '); }
+  function fmtMs(ms) {
+    const s = Math.max(0, Math.round((ms || 0) / 1000));
+    return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+  }
+  function qCount(e) { return e && e.questions ? Object.keys(e.questions).length : 0; }
+
+  function getChallenges(includeHidden) {
+    return Object.entries(examsCache || {})
+      .filter(([id, e]) => e && e.isChallenge && (includeHidden || e.active !== false))
+      .sort((a, b) => (b[1].order || 0) - (a[1].order || 0));
+  }
+  // النتايج المكتملة مرتبة: الدرجة الأعلى، ثم الوقت الأقل، ثم اللي خلص الأول
+  function finishedList(cid) {
+    const r = (window.challengeResultsCache || {})[cid] || {};
+    return Object.entries(r)
+      .filter(([k, v]) => v && typeof v.score === 'number')
+      .map(([code, v]) => Object.assign({ code: code }, v))
+      .sort((a, b) => (b.score - a.score) || ((a.timeMs || 0) - (b.timeMs || 0)) || ((a.finishedAt || 0) - (b.finishedAt || 0)));
+  }
+  function pointsFor(e, rank) {
+    const arr = (e && Array.isArray(e.challengePoints) && e.challengePoints.length) ? e.challengePoints : DEFAULT_POINTS;
+    return Number(arr[rank - 1]) || 0;
+  }
+  function totalPointsFor(code) {
+    let sum = 0;
+    getChallenges(true).forEach(([cid, e]) => {
+      const i = finishedList(cid).findIndex(r => r.code === code);
+      if (i > -1) sum += pointsFor(e, i + 1);
+    });
+    return sum;
+  }
+  function badgeFor(points) { return CH_BADGES.find(b => points >= b.points) || null; }
+  window.challengeHelpers = { getChallenges, finishedList, pointsFor, totalPointsFor, fmtMs, qCount, esc, shortName };
+
+  // ===== Firebase listener =====
+  window.ensureChallengeResultsListener = function() {
+    if (chListenerOn || typeof db === 'undefined' || !db) return;
+    chListenerOn = true;
+    db.ref('challengeResults').on('value', function(snap) {
+      window.challengeResultsCache = snap.val() || {};
+      chLoaded = true; chError = false;
+      refreshAll();
+    }, function(err) {
+      console.error('challengeResults listener error:', err);
+      chLoaded = true; chError = true;
+      refreshAll();
+    });
+  };
+  window.getChallengeLoadError = function() { return chError; };
+
+  function refreshAll() {
+    const page = document.getElementById('challenges-page');
+    if (page && page.classList.contains('open')) renderChallengesPage();
+    if (typeof renderAdminChallenges === 'function') renderAdminChallenges();
+    updateResultPage();
+  }
+  window.refreshChallengesUI = refreshAll;
+
+  // ===== Render =====
+  function pickSelected(list) {
+    if (list.some(([id]) => id === selectedCid)) return selectedCid;
+    const live = list.find(([id, e]) => ['open', 'none', 'upcoming'].indexOf(getExamScheduleStatus(e).state) !== -1);
+    selectedCid = (live || list[0] || [null])[0];
+    return selectedCid;
+  }
+
+  function renderChallengesPage() {
+    const el = document.getElementById('challenges-content');
+    if (!el) return;
+    const code = (typeof currentStudent !== 'undefined' && currentStudent) ? currentStudent.code : null;
+    const myPoints = code ? totalPointsFor(code) : 0;
+    const myBadge = badgeFor(myPoints);
+
+    const userStrip = code
+      ? `<div class="ch-user"><div class="ch-user-stats"><span>👋 أهلاً <b>${esc(shortName(currentStudent.name))}</b></span><span>⭐ نقاطك: <b>${myPoints}</b></span><span>🛡️ شارتك: <b>${myBadge ? esc(myBadge.label) : 'لسه ماحصلتش على شارة'}</b></span></div></div>`
+      : `<div class="ch-user"><span>سجّل دخولك عشان نقاطك وشاراتك تتسجل باسمك.</span><button class="ch-mini-btn" onclick="chLoginOnly()">🎓 تسجيل الدخول</button></div>`;
+
+    const list = getChallenges(false);
+    const cid = pickSelected(list);
+    const e = cid ? examsCache[cid] : null;
+
+    const tabs = list.length > 1
+      ? `<div class="ch-tabs">${list.map(([id, x]) => `<button class="ch-tab ${id === cid ? 'active' : ''}" onclick="chSelect('${id}')">${esc(x.title || 'تحدي')}</button>`).join('')}</div>`
+      : '';
+
+    // ----- hero panel -----
+    let hero;
+    if (!window.__examsLoaded) {
+      hero = `<div class="ch-panel"><div class="ch-empty">⏳ جاري التحميل...</div></div>`;
+    } else if (!e) {
+      hero = `<div class="ch-panel"><div class="ch-empty"><div style="font-size:2.4rem;">🏁</div>مفيش تحدي شغال دلوقتي.<br>تابعنا، التحدي الجاي قريب إن شاء الله ✨</div></div>`;
+    } else {
+      const sched = getExamScheduleStatus(e);
+      const n = qCount(e);
+      const mine = code ? (((window.challengeResultsCache || {})[cid]) || {})[code] : null;
+      const ranked = finishedList(cid);
+      const myIdx = code ? ranked.findIndex(r => r.code === code) : -1;
+      const maxPts = pointsFor(e, 1);
+
+      let chipCls = 'live', chipTxt = '🔥 التحدي الحالي';
+      if (sched.state === 'upcoming') { chipCls = ''; chipTxt = '⏳ قريباً'; }
+      if (sched.state === 'ended') { chipCls = 'ended'; chipTxt = '🏁 انتهى التحدي'; }
+
+      let btnTxt = '▶ ابدأ التحدي الآن', btnDis = false;
+      if (!chLoaded) { btnTxt = 'جاري التحميل...'; btnDis = true; }
+      else if (n === 0) { btnTxt = 'الأسئلة قيد التجهيز'; btnDis = true; }
+      else if (sched.state === 'upcoming') { btnTxt = '⏳ يبدأ ' + formatDateArabic(e.scheduleDate) + ' الساعة ' + formatTimeArabic(e.scheduleStartTime); btnDis = true; }
+      else if (sched.state === 'ended') { btnTxt = 'انتهى وقت التحدي'; btnDis = true; }
+      else if (mine && typeof mine.score === 'number') { btnTxt = '✅ شاركت — ترتيبك #' + (myIdx + 1); btnDis = true; }
+      else if (mine) { btnTxt = '⚠️ بدأت التحدي ده قبل كده ومخلصتوش'; btnDis = true; }
+      else if (!code) { btnTxt = '🎓 سجّل دخولك وابدأ التحدي'; }
+
+      const ladder = (Array.isArray(e.challengePoints) && e.challengePoints.length ? e.challengePoints : DEFAULT_POINTS)
+        .slice(0, 5).map((p, i) => `<span>${['🥇','🥈','🥉'][i] || ('#' + (i + 1))} ${p}</span>`).join('');
+
+      let schedLine = '';
+      if (sched.state === 'open') schedLine = `<span>🟢 متاح حتى الساعة ${formatTimeArabic(e.scheduleEndTime)}</span>`;
+      else if (sched.state === 'upcoming') schedLine = `<span>🕒 ${formatDateArabic(e.scheduleDate)} — ${formatTimeArabic(e.scheduleStartTime)}</span>`;
+
+      hero = `
+        <div class="ch-panel">
+          <span class="ch-chip ${chipCls}">${chipTxt}</span>
+          <div class="ch-title">🎯 ${esc(e.title || 'تحدي')}</div>
+          <div class="ch-desc">${esc(e.description || 'اختبار تنافسي لقياس مستواك في أسرع وقت وأعلى درجة')}</div>
+          <div class="ch-tiles">
+            <div class="ch-tile"><div class="ic">⭐</div><b>نظام النقاط</b><span>حتى ${maxPts} نقطة</span></div>
+            <div class="ch-tile"><div class="ic">⏱️</div><b>التقييم</b><span>الدرجة + الزمن</span></div>
+            <div class="ch-tile"><div class="ic">❓</div><b>نوع الاختبار</b><span>اختيارات متعددة</span></div>
+          </div>
+          <div class="ch-meta"><span>📝 ${n} سؤال</span><span>⏳ ${e.durationMinutes || 20} دقيقة</span><span>☝️ محاولة واحدة فقط</span>${schedLine}</div>
+          <div class="ch-ladder">${ladder}</div>
+          <button class="ch-cta" ${btnDis ? 'disabled' : ''} onclick="chStart('${cid}')">${btnTxt}</button>
+        </div>`;
+    }
+
+    // ----- leaderboard panel -----
+    let board;
+    if (!e) {
+      board = `<div class="ch-panel"><div class="ch-panel-title">👑 ترتيب المسابقة الحالية</div><div class="ch-empty">الترتيب هيظهر أول ما يبدأ أول تحدي.</div></div>`;
+    } else if (chError) {
+      board = `<div class="ch-panel"><div class="ch-panel-title">👑 ترتيب المسابقة الحالية</div><div class="ch-empty">⚠️ تعذر تحميل الترتيب دلوقتي، حاول تاني بعد شوية.</div></div>`;
+    } else {
+      const ranked = finishedList(cid);
+      const shown = boardExpanded ? ranked.slice(0, 50) : ranked.slice(0, 5);
+      const rows = shown.map((r, i) => `
+        <div class="ch-board-row ${i === 0 ? 'top1' : ''} ${(code && r.code === code) ? 'me' : ''}">
+          <div class="ch-rank">${['🥇','🥈','🥉'][i] || (i + 1)}</div>
+          <div class="ch-board-name">${esc(shortName(r.name))}</div>
+          <div class="ch-board-stat">🎯 ${r.percentage != null ? r.percentage : 0}% · ⏱ ${fmtMs(r.timeMs)}</div>
+          <div class="ch-board-pts">${pointsFor(e, i + 1) ? '+' + pointsFor(e, i + 1) : '—'}</div>
+        </div>`).join('');
+      board = `
+        <div class="ch-panel">
+          <div class="ch-panel-title">👑 ترتيب المسابقة الحالية</div>
+          <div class="ch-panel-sub">الترتيب بالدرجة أولاً ثم الأسرع. النقاط بتتحدّث لحظياً حسب المركز.</div>
+          ${rows || '<div class="ch-empty">لسه محدش شارك.<br>كن أول المتصدرين! 🚀</div>'}
+          ${ranked.length > 5 ? `<button class="ch-mini-btn" style="width:100%;margin-top:6px;" onclick="chToggleBoard()">${boardExpanded ? 'عرض أقل' : 'عرض الترتيب الكامل (' + ranked.length + ')'}</button>` : ''}
+        </div>`;
+    }
+
+    // ----- badges -----
+    const badgesHtml = CH_BADGES.map(b => {
+      const earned = code && myPoints >= b.points;
+      return `
+        <div class="ch-badge ${earned ? 'earned' : 'locked'}">
+          <div class="ch-shield" style="background:${b.bg};">${b.icon}</div>
+          <div class="ch-badge-name">${esc(b.label)}</div>
+          <span class="ch-badge-pts">${b.points} نقطة</span>
+        </div>`;
+    }).join('');
+
+    el.innerHTML = `
+      <div class="ch-hero"><h2>المسابقات والتحديات</h2><p>اختبر سرعتك .. وحقق أعلى درجة .. ونافس الطلاب</p></div>
+      ${userStrip}
+      ${tabs}
+      <div class="ch-grid">${hero}${board}</div>
+      <div class="ch-grid">
+        <div class="ch-panel">
+          <div class="ch-panel-title">🎖️ شارات الإنجاز</div>
+          <div class="ch-panel-sub">احصل على الشارات من خلال جمع النقاط في المسابقات</div>
+          <div class="ch-badges">${badgesHtml}</div>
+        </div>
+        <div class="ch-panel">
+          <div class="ch-soon-card"><div class="ic">🎮</div><b>تحدي لاعب ضد لاعب</b><p>مواجهة مباشرة بين طالبين في نفس الاختبار</p><span class="ch-soon-tag">قريباً ...</span></div>
+          <div class="ch-soon-card"><div class="ic">🎁</div><b>نظام المكافآت</b><p>جوائز للمتفوقين في المسابقات</p><span class="ch-soon-tag">قريباً ...</span></div>
+        </div>
+      </div>`;
+  }
+  window.renderChallengesPage = renderChallengesPage;
+
+  window.chSelect = function(id) { selectedCid = id; boardExpanded = false; renderChallengesPage(); };
+  window.chToggleBoard = function() { boardExpanded = !boardExpanded; renderChallengesPage(); };
+
+  // ===== Open / close =====
+  window.openChallengesPage = function(skipUrlUpdate) {
+    ensureChallengeResultsListener();
+    renderChallengesPage();
+    const page = document.getElementById('challenges-page');
+    if (!page) return;
+    page.classList.add('open');
+    page.scrollTop = 0;
+    document.body.style.overflow = 'hidden';
+    if (!skipUrlUpdate) {
+      try { history.pushState({ challengesPage: true }, '', '/challenges/'); } catch (e) {}
+    }
+  };
+  window.closeChallengesPage = function(fromPopState) {
+    const page = document.getElementById('challenges-page');
+    if (page) page.classList.remove('open');
+    document.body.style.overflow = '';
+    if (fromPopState !== true) {
+      try { history.pushState({}, '', window.location.origin + '/'); } catch (e) {}
+    }
+  };
+  window.addEventListener('popstate', function() {
+    const page = document.getElementById('challenges-page');
+    if (page && page.classList.contains('open') && !/\/challenges\/?$/.test(location.pathname)) closeChallengesPage(true);
+  });
+  document.addEventListener('DOMContentLoaded', function() {
+    try {
+      const rawPath = (typeof resolveDeepLinkPath === 'function') ? resolveDeepLinkPath() : window.location.pathname;
+      if (!/\/challenges\/?$/.test(rawPath)) return;
+      setTimeout(function() { openChallengesPage(true); }, 100);
+    } catch (e) {}
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key !== 'Escape') return;
+    const busy = ['exam-take-page', 'challenge-result-page'].some(id => {
+      const x = document.getElementById(id); return x && x.classList.contains('open');
+    });
+    const page = document.getElementById('challenges-page');
+    if (!busy && page && page.classList.contains('open')) closeChallengesPage();
+  });
+
+  // ===== Login helpers (نافذة الدخول بتظهر فوق صفحة التحديات) =====
+  function showLoginOverRidingPage() {
+    const m = document.getElementById('student-login-modal');
+    if (m) m.style.zIndex = '1000001';
+    openStudentLogin();
+  }
+  window.chLoginOnly = function() { window.__challengeLoginPending = '__none__'; showLoginOverRidingPage(); };
+  window.onChallengeLoginDone = function(cid) {
+    renderChallengesPage();
+    if (cid && cid !== '__none__') continueStart(cid);
+  };
+
+  // ===== Start flow =====
+  window.chStart = function(cid) {
+    if (!examsCache[cid]) return;
+    if (typeof currentStudent === 'undefined' || !currentStudent) {
+      window.__challengeLoginPending = cid;
+      showLoginOverRidingPage();
+      return;
+    }
+    continueStart(cid);
+  };
+
+  function continueStart(cid) {
+    const e = examsCache[cid];
+    if (!e || !db) return;
+    const sched = getExamScheduleStatus(e);
+    if (sched.state === 'upcoming' || sched.state === 'ended') { alert('⏳ التحدي مش متاح دلوقتي، راجع موعده.'); renderChallengesPage(); return; }
+    if (!qCount(e)) { alert('الأسئلة لسه بتتجهز، تابعنا قريباً.'); return; }
+    const code = currentStudent.code;
+    const ref = db.ref('challengeResults/' + cid + '/' + code);
+    ref.once('value').then(function(snap) {
+      if (snap.exists()) {
+        alert(typeof (snap.val() || {}).score === 'number'
+          ? '✅ إنت شاركت في التحدي ده قبل كده، وليك محاولة واحدة بس.'
+          : '⚠️ إنت بدأت التحدي ده قبل كده ومخلصتوش، فمش هتقدر تعيده. لو حصلت مشكلة كلّم الأستاذ.');
+        return;
+      }
+      const msg = '🏁 «' + (e.title || 'التحدي') + '»\n\n• ' + qCount(e) + ' سؤال في ' + (e.durationMinutes || 20) + ' دقيقة\n• التقييم بالدرجة ثم الوقت، وليك محاولة واحدة فقط\n• الوقت بيبدأ يتحسب أول ما تدوس موافق\n\nجاهز تبدأ؟';
+      if (!confirm(msg)) return;
+      return db.ref('students/' + code).once('value').then(function(s) {
+        const sd = s.val() || {};
+        return ref.transaction(function(cur) {
+          return cur ? undefined : { name: currentStudent.name, grade: sd.grade || '', startedAt: Date.now(), status: 'started' };
+        }).then(function(res) {
+          if (!res.committed) { alert('إنت بدأت التحدي ده قبل كده.'); return; }
+          window.__beginChallengeExam(cid, e, { code: code, name: currentStudent.name, grade: sd.grade || '' });
+        });
+      });
+    }).catch(function(err) {
+      alert('⚠️ تعذر بدء التحدي: ' + (err && err.message ? err.message : 'مشكلة في الاتصال'));
+    });
+  }
+
+  // ===== Result page =====
+  window.showChallengeResultPage = function(info) {
+    resultCtx = info;
+    const sub = document.getElementById('chres-sub');
+    if (sub) sub.textContent = info.title || '';
+    document.getElementById('challenge-result-page').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    updateResultPage();
+  };
+  function updateResultPage() {
+    const page = document.getElementById('challenge-result-page');
+    if (!page || !page.classList.contains('open') || !resultCtx) return;
+    const c = resultCtx;
+    document.getElementById('chres-score').textContent = c.score + '/' + c.total;
+    document.getElementById('chres-percent').textContent = c.percentage + '%';
+    document.getElementById('chres-time').textContent = fmtMs(c.timeMs);
+    const rankEl = document.getElementById('chres-rank');
+    const ptsEl = document.getElementById('chres-points');
+    const msgEl = document.getElementById('chres-msg');
+    if (c.error) {
+      rankEl.textContent = '—'; ptsEl.textContent = '—';
+      msgEl.textContent = '⚠️ تعذر حفظ نتيجتك بسبب مشكلة في الاتصال. صوّر الشاشة دي وابعتها للأستاذ.';
+      return;
+    }
+    const ranked = finishedList(c.cid);
+    const i = ranked.findIndex(r => r.code === c.code);
+    if (i < 0) {
+      rankEl.textContent = '...'; ptsEl.textContent = '...';
+      msgEl.textContent = 'جاري تسجيل نتيجتك...';
+      return;
+    }
+    const e = examsCache[c.cid];
+    rankEl.textContent = '#' + (i + 1) + ' من ' + ranked.length;
+    ptsEl.textContent = pointsFor(e, i + 1) + ' نقطة';
+    msgEl.textContent = (c.auto ? '⏰ انتهى الوقت وتم تسليم إجاباتك تلقائياً. ' : '') + 'الترتيب والنقاط ممكن يتغيروا لحد ما باقي الطلاب يخلصوا التحدي.';
+  }
+  window.closeChallengeResult = function() {
+    document.getElementById('challenge-result-page').classList.remove('open');
+    resultCtx = null;
+    const page = document.getElementById('challenges-page');
+    if (page && page.classList.contains('open')) { renderChallengesPage(); document.body.style.overflow = 'hidden'; }
+    else document.body.style.overflow = '';
+  };
+  window.updateChallengeResultState = function(patch) {
+    if (resultCtx) { Object.assign(resultCtx, patch); updateResultPage(); }
+  };
+})();
+</script>
+
+<script>
+// ===== ADMIN: CHALLENGES =====
+(function() {
+  const H = () => window.challengeHelpers;
+  const DEFAULT_POINTS = [500, 400, 300, 200, 100];
+
+  function parsePoints(str) {
+    const arr = String(str || '').split(/[,،\s]+/).map(Number).filter(n => isFinite(n) && n > 0).map(Math.round).slice(0, 20);
+    return arr.length ? arr : DEFAULT_POINTS.slice();
+  }
+
+  window.renderAdminChallenges = function() {
+    const listEl = document.getElementById('admin-challenges-list');
+    if (!listEl || !H()) return;
+    const { getChallenges, finishedList, pointsFor, fmtMs, qCount, esc } = H();
+    const openIds = Array.from(listEl.querySelectorAll('.admin-level-body.open')).map(b => b.id);
+    const entries = getChallenges(true);
+    if (!entries.length) {
+      listEl.innerHTML = '<p class="sd-empty">لا توجد تحديات بعد. أنشئ أول تحدي من الفورم اللي تحت.</p>';
+      return;
+    }
+    const loadErr = typeof getChallengeLoadError === 'function' && getChallengeLoadError();
+    listEl.innerHTML = (loadErr ? '<div class="admin-bulk-result err" style="display:block;margin-bottom:12px;">⚠️ تعذر قراءة نتايج التحديات من Firebase. غالباً محتاج تضيف قواعد (Rules) لعقدة challengeResults.</div>' : '') +
+      entries.map(([id, e]) => {
+        const raw = ((window.challengeResultsCache || {})[id]) || {};
+        const ranked = finishedList(id);
+        const unfinished = Object.entries(raw).filter(([k, v]) => v && typeof v.score !== 'number');
+        const pts = (Array.isArray(e.challengePoints) && e.challengePoints.length ? e.challengePoints : DEFAULT_POINTS).join(',');
+        const rows = ranked.map((r, i) => `
+          <div class="admin-question-item" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <b style="min-width:30px;">#${i + 1}</b>
+            <span style="flex:1;min-width:120px;">${esc(r.name || '')}${r.grade ? ' <small style="opacity:.6">(' + esc(r.grade) + ')</small>' : ''}</span>
+            <span>🎯 ${r.score}/${r.total} (${r.percentage}%)</span>
+            <span>⏱ ${fmtMs(r.timeMs)}</span>
+            <span>⭐ ${pointsFor(e, i + 1)}</span>
+            <button class="admin-btn-del" title="إعادة تعيين مشاركة الطالب" onclick="adminResetChallengeEntry('${id}','${esc(r.code)}')">🗑</button>
+          </div>`).join('');
+        const unfRows = unfinished.map(([code, v]) => `
+          <div class="admin-question-item" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;opacity:.8;">
+            <span style="flex:1;">⏳ ${esc(v.name || code)} — بدأ ولم يُنهِ التحدي</span>
+            <button class="admin-btn-del" title="السماح له بالإعادة" onclick="adminResetChallengeEntry('${id}','${esc(code)}')">🗑</button>
+          </div>`).join('');
+        return `
+        <div class="admin-level-block">
+          <div class="admin-level-header" onclick="toggleLevel('chblock-${id}')">
+            <span class="admin-level-title">🏆 ${esc(e.title || 'بدون عنوان')} ${e.active === false ? '(مخفي)' : ''} — ${qCount(e)} سؤال — ${ranked.length} مشارك</span>
+            <span class="admin-level-toggle" id="chblock-${id}-toggle">▾</span>
+          </div>
+          <div class="admin-level-body" id="chblock-${id}-body">
+            <div class="admin-add-form" style="margin-bottom:14px;">
+              <div class="admin-add-form-title">⚙️ إعدادات التحدي</div>
+              <input class="admin-input" id="ch-edit-title-${id}" value="${esc(e.title || '')}" placeholder="اسم التحدي" dir="rtl">
+              <input class="admin-input" id="ch-edit-desc-${id}" value="${esc(e.description || '')}" placeholder="وصف التحدي" dir="rtl">
+              <div class="admin-exam-meta-grid">
+                <input class="admin-input" id="ch-edit-duration-${id}" value="${e.durationMinutes || 20}" type="number" min="1" dir="ltr">
+              </div>
+              <input class="admin-input" id="ch-edit-points-${id}" value="${esc(pts)}" placeholder="نقاط المراكز: 500,400,300,200,100" dir="ltr">
+              <label class="admin-checkbox-row">
+                <input type="checkbox" id="ch-edit-active-${id}" ${e.active === false ? '' : 'checked'}>
+                <span>التحدي ظاهر للطلاب</span>
+              </label>
+              <label class="admin-checkbox-row">
+                <input type="checkbox" id="ch-edit-sched-enabled-${id}" ${e.scheduleEnabled ? 'checked' : ''} onchange="document.getElementById('ch-edit-sched-fields-${id}').style.display = this.checked ? 'grid' : 'none'">
+                <span>⏰ جدولة التحدي</span>
+              </label>
+              <div class="admin-exam-meta-grid" id="ch-edit-sched-fields-${id}" style="display:${e.scheduleEnabled ? 'grid' : 'none'};">
+                <input class="admin-input" id="ch-edit-sched-date-${id}" type="date" value="${e.scheduleDate || ''}" dir="ltr">
+                <input class="admin-input" id="ch-edit-sched-start-${id}" type="time" value="${e.scheduleStartTime || ''}" dir="ltr">
+                <input class="admin-input" id="ch-edit-sched-end-${id}" type="time" value="${e.scheduleEndTime || ''}" dir="ltr">
+              </div>
+              <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
+                <button class="admin-save-tracking-btn" style="flex:1;min-width:120px;" onclick="adminSaveChallenge('${id}')">💾 حفظ</button>
+                <button class="admin-save-tracking-btn" style="flex:1;min-width:120px;" onclick="adminChallengeQuestions('${id}')">📝 إدارة الأسئلة</button>
+                <button class="admin-reset-btn" style="flex:1;min-width:120px;" onclick="adminDeleteChallenge('${id}')">🗑 حذف التحدي</button>
+              </div>
+            </div>
+            <div class="admin-add-form-title" style="margin:10px 0;">📊 المشاركون والترتيب</div>
+            <div class="admin-item-list">${rows || ''}${unfRows || ''}${(!rows && !unfRows) ? '<p class="sd-empty">لسه محدش شارك.</p>' : ''}</div>
+            ${(ranked.length || unfinished.length) ? `<button class="admin-reset-btn" style="width:100%;margin-top:10px;" onclick="adminClearChallengeResults('${id}')">🗑 مسح كل نتايج التحدي</button>` : ''}
+          </div>
+        </div>`;
+      }).join('');
+    openIds.forEach(bid => {
+      const b = document.getElementById(bid);
+      if (b) {
+        b.classList.add('open');
+        const tog = document.getElementById(bid.replace(/-body$/, '-toggle'));
+        if (tog) tog.classList.add('open');
+      }
+    });
+  };
+
+  function readSchedule(prefix, suffix) {
+    const on = document.getElementById(prefix + 'sched-enabled' + suffix).checked;
+    const date = document.getElementById(prefix + 'sched-date' + suffix).value;
+    const start = document.getElementById(prefix + 'sched-start' + suffix).value;
+    const end = document.getElementById(prefix + 'sched-end' + suffix).value;
+    if (on && (!date || !start || !end)) { alert('من فضلك حدد تاريخ التحدي ووقت البداية والنهاية'); return null; }
+    if (on && start >= end) { alert('وقت النهاية لازم يكون بعد وقت البداية'); return null; }
+    return { scheduleEnabled: on, scheduleDate: on ? date : '', scheduleStartTime: on ? start : '', scheduleEndTime: on ? end : '' };
+  }
+
+  window.adminCreateChallenge = function() {
+    const title = document.getElementById('ch-new-title').value.trim();
+    if (!title) { alert('من فضلك اكتب اسم التحدي'); return; }
+    const sched = readSchedule('ch-new-', '');
+    if (!sched) return;
+    if (!examsRef) { alert('لسه بيتصل بقاعدة البيانات، حاول تاني بعد شوية'); return; }
+    examsRef.push().set(Object.assign({
+      title,
+      description: document.getElementById('ch-new-desc').value.trim(),
+      durationMinutes: parseInt(document.getElementById('ch-new-duration').value, 10) || 15,
+      active: true, order: Date.now(), questions: {}, targetGrade: '',
+      isChallenge: true,
+      challengePoints: parsePoints(document.getElementById('ch-new-points').value)
+    }, sched)).then(() => {
+      ['ch-new-title', 'ch-new-desc', 'ch-new-duration', 'ch-new-points', 'ch-new-sched-date', 'ch-new-sched-start', 'ch-new-sched-end'].forEach(i => { document.getElementById(i).value = ''; });
+      document.getElementById('ch-new-sched-enabled').checked = false;
+      document.getElementById('ch-new-sched-fields').style.display = 'none';
+    }).catch(e => alert('حصل خطأ: ' + e.message));
+  };
+
+  window.adminSaveChallenge = function(id) {
+    if (!examsRef) return;
+    const sched = readSchedule('ch-edit-', '-' + id);
+    if (!sched) return;
+    examsRef.child(id).update(Object.assign({
+      title: document.getElementById('ch-edit-title-' + id).value.trim(),
+      description: document.getElementById('ch-edit-desc-' + id).value.trim(),
+      durationMinutes: parseInt(document.getElementById('ch-edit-duration-' + id).value, 10) || 15,
+      active: document.getElementById('ch-edit-active-' + id).checked,
+      challengePoints: parsePoints(document.getElementById('ch-edit-points-' + id).value)
+    }, sched)).then(() => { if (typeof showAdminToast === 'function') showAdminToast(); })
+      .catch(e => alert('حصل خطأ: ' + e.message));
+  };
+
+  window.adminDeleteChallenge = function(id) {
+    if (!confirm('متأكد عايز تحذف التحدي ده بكل أسئلته ونتايج الطلاب فيه؟ النقاط المكتسبة منه هتتشال من الطلاب.')) return;
+    if (examsRef) examsRef.child(id).remove();
+    if (db) db.ref('challengeResults/' + id).remove();
+  };
+
+  window.adminChallengeQuestions = function(id) {
+    const btn = document.querySelector('.admin-tab-btn[onclick*="switchAdminTab(\'exams\'"]');
+    if (btn && typeof switchAdminTab === 'function') switchAdminTab('exams', btn);
+    if (typeof renderAdminExamsSection === 'function') renderAdminExamsSection();
+    const body = document.getElementById('examblock-' + id + '-body');
+    if (body && !body.classList.contains('open')) toggleLevel('examblock-' + id);
+    const block = document.getElementById('examblock-' + id + '-body');
+    if (block) setTimeout(() => block.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+  };
+
+  window.adminResetChallengeEntry = function(cid, code) {
+    if (!confirm('إعادة تعيين مشاركة الطالب دي؟ هتتمسح نتيجته وهيقدر يدخل التحدي تاني.')) return;
+    if (db) db.ref('challengeResults/' + cid + '/' + code).remove();
+  };
+
+  window.adminClearChallengeResults = function(cid) {
+    if (!confirm('مسح كل نتايج التحدي ده؟ لا يمكن التراجع.')) return;
+    if (db) db.ref('challengeResults/' + cid).remove();
+  };
+})();
+</script>
+
 <!-- ===== SCHEDULE: GRADE SELECT PAGE ===== -->
 <div class="legal-overlay" id="schedule-grade-select-page">
   <div class="legal-topbar"></div>
@@ -12685,6 +13354,34 @@ function initPushSystem() {
   </div>
 </div>
 
+<!-- ===== CHALLENGE: RESULT PAGE ===== -->
+<div class="legal-overlay" id="challenge-result-page">
+  <div class="legal-topbar"></div>
+  <div class="legal-header">
+    <div class="legal-header-title-wrap">
+      <div>
+        <div class="legal-header-title">نتيجة التحدي</div>
+        <div class="legal-header-sub" id="chres-sub"></div>
+      </div>
+      <div class="legal-header-icon">🏆</div>
+    </div>
+  </div>
+  <div class="legal-body">
+    <div class="exam-result-card">
+      <div style="font-size:2.4rem;">🏁</div>
+      <div class="exam-result-score" id="chres-score">0/0</div>
+      <div class="exam-result-percent" id="chres-percent">0%</div>
+      <div class="ch-res-grid">
+        <div class="ch-tile"><div class="ic">⏱️</div><b>وقتك</b><span id="chres-time">00:00</span></div>
+        <div class="ch-tile"><div class="ic">👑</div><b>ترتيبك</b><span id="chres-rank">...</span></div>
+        <div class="ch-tile"><div class="ic">⭐</div><b>نقاطك</b><span id="chres-points">...</span></div>
+      </div>
+      <div class="exam-result-msg" id="chres-msg"></div>
+      <button class="exam-start-btn exam-result-btn" onclick="closeChallengeResult()">🏆 رجوع للمسابقات والتحديات</button>
+    </div>
+  </div>
+</div>
+
 <!-- ===== EXAM: WRONG ANSWERS REVIEW PAGE ===== -->
 <div class="legal-overlay" id="exam-wrong-review-page">
   <div class="legal-topbar"></div>
@@ -12829,6 +13526,7 @@ if (document.readyState === 'loading') {
   let examTimeLeftSeconds = 0;
   let examCurrentQIndex = 0;
   let examWrongReviewList = [];
+  let challengeCtx = null; // لو الطالب بيحل تحدي بدل اختبار عادي: { id, code, name, grade, startedAt }
 
   function escHtmlLocal(str) {
     if (typeof escHtml === 'function') return escHtml(str);
@@ -12951,7 +13649,7 @@ if (document.readyState === 'loading') {
   function renderExamListPage() {
     const container = document.getElementById('exam-list-container');
     if (!container) return;
-    const list = Object.entries(examsCache || {}).filter(([id, e]) => e && e.active !== false && (!currentExamGradeFilter || !e.targetGrade || e.targetGrade === currentExamGradeFilter));
+    const list = Object.entries(examsCache || {}).filter(([id, e]) => e && e.active !== false && !e.isChallenge && (!currentExamGradeFilter || !e.targetGrade || e.targetGrade === currentExamGradeFilter));
     list.sort((a, b) => (a[1].order || 0) - (b[1].order || 0));
     if (!list.length) {
       const emptyMsg = currentExamGradeFilter ? ('لا توجد اختبارات متاحة لـ' + currentExamGradeFilter + ' حالياً') : 'لا توجد اختبارات متاحة حالياً';
@@ -12985,7 +13683,7 @@ if (document.readyState === 'loading') {
 
   // ===== EXAM NUMBER (order-based, e.g. 001) HELPERS =====
   function getSortedExamEntries() {
-    const list = Object.entries(examsCache || {}).filter(([id, e]) => e && e.active !== false);
+    const list = Object.entries(examsCache || {}).filter(([id, e]) => e && e.active !== false && !e.isChallenge);
     list.sort((a, b) => (a[1].order || 0) - (b[1].order || 0));
     return list;
   }
@@ -13138,6 +13836,15 @@ if (document.readyState === 'loading') {
     startExamTaking();
   };
 
+  // ===== CHALLENGE BRIDGE: بيشغّل نفس محرك الاختبار لكن في وضع التحدي =====
+  window.__beginChallengeExam = function(cid, cdata, ctx) {
+    currentExamId = cid;
+    currentExamData = cdata;
+    currentExamRegistrant = { name: ctx.name, grade: ctx.grade || '', phone: '', studentCode: ctx.code };
+    challengeCtx = { id: cid, code: ctx.code, name: ctx.name, grade: ctx.grade || '', startedAt: Date.now() };
+    startExamTaking();
+  };
+
   // ===== PUBLIC: TAKING THE EXAM =====
   function startExamTaking() {
     const qObj = (currentExamData && currentExamData.questions) || {};
@@ -13262,6 +13969,9 @@ if (document.readyState === 'loading') {
     const total = currentExamQuestionsArr.length;
     const percentage = total ? Math.round((score / total) * 100) : 0;
 
+    // وضع التحدي: نسجّل (الدرجة + الوقت) في challengeResults ونعرض صفحة نتيجة التحدي
+    if (challengeCtx) { finishChallengeAttempt(score, total, percentage, auto); return; }
+
     // هل ده أول محاولة على الجهاز ده؟ (قبل ما نزود العداد)
     const isFirstAttempt = getExamAttemptCount(currentExamId) === 0;
 
@@ -13300,6 +14010,33 @@ if (document.readyState === 'loading') {
 
     document.getElementById('exam-take-page').classList.remove('open');
     showExamResultPage(score, total, percentage, auto, isFirstAttempt);
+  }
+
+  function finishChallengeAttempt(score, total, percentage, auto) {
+    const ctx = challengeCtx;
+    challengeCtx = null;
+    const durationMs = ((currentExamData && currentExamData.durationMinutes) || 20) * 60000;
+    const timeMs = Math.max(0, Math.min(Date.now() - ctx.startedAt, durationMs));
+    const title = (currentExamData && currentExamData.title) || '';
+    document.getElementById('exam-take-page').classList.remove('open');
+    currentExamId = null; currentExamData = null; currentExamRegistrant = null;
+    currentExamQuestionsArr = []; currentExamAnswers = {}; examWrongReviewList = [];
+
+    window.showChallengeResultPage({ cid: ctx.id, code: ctx.code, title, score, total, percentage, timeMs, auto: !!auto });
+    try {
+      db.ref('challengeResults/' + ctx.id + '/' + ctx.code).update({
+        name: ctx.name, grade: ctx.grade, score, total, percentage,
+        timeMs, startedAt: ctx.startedAt, finishedAt: Date.now(), status: 'done'
+      }).then(function() {
+        if (typeof window.ensureChallengeResultsListener === 'function') window.ensureChallengeResultsListener();
+        window.updateChallengeResultState({ saved: true });
+      }).catch(function(err) {
+        console.error('Error saving challenge result:', err);
+        window.updateChallengeResultState({ error: true });
+      });
+    } catch (e) {
+      window.updateChallengeResultState({ error: true });
+    }
   }
 
   function showExamResultPage(score, total, percentage, auto, isFirstAttempt) {
@@ -13414,7 +14151,7 @@ if (document.readyState === 'loading') {
         return `
         <div class="admin-level-block">
           <div class="admin-level-header" onclick="toggleLevel('examblock-${examId}')">
-            <span class="admin-level-title">📝 ${escHtmlLocal(e.title || 'بدون عنوان')} ${e.active === false ? '(معطّل)' : ''}${gradeBadgeText}${schedBadgeText} — ${questions.length} سؤال</span>
+            <span class="admin-level-title">${e.isChallenge ? '🏆 [تحدي] ' : '📝 '}${escHtmlLocal(e.title || 'بدون عنوان')} ${e.active === false ? '(معطّل)' : ''}${gradeBadgeText}${schedBadgeText} — ${questions.length} سؤال</span>
             <span class="admin-level-toggle" id="examblock-${examId}-toggle">▾</span>
           </div>
           <div class="admin-level-body" id="examblock-${examId}-body">
@@ -13629,8 +14366,10 @@ if (document.readyState === 'loading') {
   };
 
   window.adminDeleteExam = function(examId) {
-    if (!confirm('متأكد عايز تحذف الاختبار ده وكل أسئلته؟')) return;
+    const isCh = !!((examsCache || {})[examId] && examsCache[examId].isChallenge);
+    if (!confirm(isCh ? 'ده تحدي. متأكد عايز تحذفه بكل أسئلته ونتايج الطلاب فيه؟' : 'متأكد عايز تحذف الاختبار ده وكل أسئلته؟')) return;
     if (examsRef) examsRef.child(examId).remove();
+    if (isCh && typeof db !== 'undefined' && db) db.ref('challengeResults/' + examId).remove();
   };
 
   // ===== QUESTION IMAGE UPLOAD (device → compressed → stored in DB) =====
