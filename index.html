@@ -1460,6 +1460,82 @@
   .ch-soon-tag { display: inline-block; font-size: 0.78rem; font-weight: 800; padding: 6px 20px; border-radius: 50px; background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.3); color: var(--gold-light); }
   .ch-res-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 18px 0; }
   @media (max-width: 520px) { .ch-tiles, .ch-res-grid { gap: 8px; } .ch-title { font-size: 1.25rem; } .ch-board-stat { display: none; } }
+  .ch-lock-badge { position: absolute; top: 14px; left: 14px; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; background: rgba(0,0,0,0.45); border: 1px solid rgba(201,168,76,0.5); box-shadow: 0 6px 20px rgba(0,0,0,0.4); }
+  .ch-panel.ch-locked .ch-tiles, .ch-panel.ch-locked .ch-ladder { opacity: 0.6; }
+
+  /* ===== ADMIN: CHALLENGES ===== */
+  .cha-intro { font-size: 0.85rem; color: var(--white2); opacity: 0.65; margin-bottom: 18px; line-height: 1.9; }
+  .cha-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 18px; }
+  .cha-stat { background: var(--dark3); border: 1px solid rgba(201,168,76,0.15); border-radius: 14px; padding: 12px 8px; text-align: center; }
+  .cha-stat b { display: block; font-size: 1.5rem; font-weight: 900; color: var(--gold-light); line-height: 1.3; }
+  .cha-stat span { font-size: 0.74rem; color: var(--white2); opacity: 0.7; }
+  .cha-card { background: linear-gradient(160deg, var(--dark3), var(--dark2)); border: 1px solid rgba(201,168,76,0.16); border-right: 4px solid var(--cha-c, #c9a84c); border-radius: 18px; margin-bottom: 14px; overflow: hidden; }
+  .cha-card.st-open { --cha-c: #3fb97a; }
+  .cha-card.st-locked { --cha-c: #e0675a; }
+  .cha-card.st-upcoming { --cha-c: #c9a84c; }
+  .cha-card.st-ended { --cha-c: #7d8597; }
+  .cha-card.st-hidden { --cha-c: #5b6272; opacity: 0.8; }
+  .cha-head { display: flex; align-items: center; gap: 14px; padding: 16px 18px 10px; cursor: pointer; }
+  .cha-ico { width: 46px; height: 46px; border-radius: 14px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.3); }
+  .cha-head-main { flex: 1; min-width: 0; }
+  .cha-title { font-size: 1.05rem; font-weight: 800; color: var(--white); margin-bottom: 8px; word-break: break-word; }
+  .cha-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .cha-chip { font-size: 0.72rem; padding: 3px 10px; border-radius: 50px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09); color: var(--white2); white-space: nowrap; }
+  .cha-pill { font-size: 0.74rem; font-weight: 800; padding: 3px 12px; border-radius: 50px; white-space: nowrap; border: 1px solid; }
+  .cha-pill.st-open { color: #5fd49b; border-color: rgba(63,185,122,0.5); background: rgba(63,185,122,0.12); }
+  .cha-pill.st-locked { color: #ff8f84; border-color: rgba(224,103,90,0.5); background: rgba(224,103,90,0.12); }
+  .cha-pill.st-upcoming { color: var(--gold-light); border-color: rgba(201,168,76,0.5); background: rgba(201,168,76,0.12); }
+  .cha-pill.st-ended, .cha-pill.st-hidden { color: #aab1c0; border-color: rgba(170,177,192,0.3); background: rgba(170,177,192,0.08); }
+  .cha-caret { color: var(--gold-light); transition: transform 0.25s ease; font-size: 0.9rem; }
+  .cha-card.is-open .cha-caret { transform: rotate(180deg); }
+  .cha-warn { margin: 4px 18px 0; font-size: 0.78rem; color: #f0d080; background: rgba(201,168,76,0.08); border: 1px dashed rgba(201,168,76,0.35); border-radius: 10px; padding: 7px 12px; }
+  .cha-actions { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 18px 16px; }
+  .cha-btn { font-family: inherit; font-size: 0.8rem; font-weight: 700; padding: 8px 14px; border-radius: 10px; cursor: pointer; border: 1px solid rgba(201,168,76,0.3); background: rgba(201,168,76,0.08); color: var(--gold-light); transition: all 0.2s ease; }
+  .cha-btn:hover { background: rgba(201,168,76,0.18); transform: translateY(-1px); }
+  .cha-btn.primary { background: linear-gradient(135deg, var(--gold-light), var(--gold)); color: #1a1206; border-color: transparent; }
+  .cha-btn.lock { border-color: rgba(224,103,90,0.5); background: rgba(224,103,90,0.12); color: #ff8f84; }
+  .cha-btn.unlock { border-color: rgba(63,185,122,0.5); background: rgba(63,185,122,0.12); color: #5fd49b; }
+  .cha-btn.danger { border-color: rgba(224,103,90,0.4); background: rgba(224,103,90,0.08); color: #ff8f84; }
+  .cha-body { display: none; border-top: 1px solid rgba(201,168,76,0.14); background: rgba(0,0,0,0.18); padding: 16px 18px 20px; }
+  .cha-card.is-open .cha-body { display: block; }
+  .cha-tabs { display: flex; gap: 6px; margin-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .cha-tab { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 9px 16px; background: none; border: none; border-bottom: 2px solid transparent; color: var(--white2); opacity: 0.65; cursor: pointer; }
+  .cha-tab.active { color: var(--gold-light); border-bottom-color: var(--gold-light); opacity: 1; }
+  .cha-sec { margin-bottom: 18px; }
+  .cha-sec-title { font-size: 0.82rem; font-weight: 800; color: var(--gold-light); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .cha-sec-title i { font-style: normal; width: 22px; height: 22px; border-radius: 50%; background: rgba(201,168,76,0.18); display: inline-flex; align-items: center; justify-content: center; font-size: 0.72rem; }
+  .cha-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .cha-field-label { display: block; font-size: 0.74rem; color: var(--white2); opacity: 0.7; margin: 6px 2px 4px; }
+  .cha-switch { display: flex; align-items: center; gap: 12px; padding: 11px 14px; margin-bottom: 8px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; cursor: pointer; }
+  .cha-switch input { display: none; }
+  .cha-slider { width: 42px; height: 24px; border-radius: 50px; background: rgba(255,255,255,0.15); position: relative; flex-shrink: 0; transition: background 0.2s ease; }
+  .cha-slider::after { content: ''; position: absolute; top: 3px; right: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform 0.2s ease; }
+  .cha-switch input:checked + .cha-slider { background: var(--gold); }
+  .cha-switch input:checked + .cha-slider::after { transform: translateX(-18px); }
+  .cha-switch-text { font-size: 0.85rem; font-weight: 700; color: var(--white); }
+  .cha-switch-text small { display: block; font-size: 0.72rem; font-weight: 400; color: var(--white2); opacity: 0.65; margin-top: 2px; }
+  .cha-sched-fields { display: none; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 0 0 8px; }
+  .cha-sched-fields.show { display: grid; }
+  .cha-points-preview { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .cha-points-preview span { font-size: 0.75rem; padding: 3px 10px; border-radius: 50px; background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.25); color: var(--gold-light); }
+  .cha-presets { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .cha-presets button { font-family: inherit; font-size: 0.72rem; padding: 4px 10px; border-radius: 50px; cursor: pointer; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); color: var(--white2); }
+  .cha-type-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+  .cha-type { padding: 14px 10px; text-align: center; border-radius: 14px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); }
+  .cha-type.sel { border-color: var(--gold); background: rgba(201,168,76,0.12); box-shadow: 0 0 0 1px var(--gold) inset; }
+  .cha-type.soon { border-style: dashed; opacity: 0.55; }
+  .cha-type .ic { font-size: 1.6rem; }
+  .cha-type b { display: block; font-size: 0.85rem; color: var(--white); margin: 4px 0 2px; }
+  .cha-type span { font-size: 0.72rem; color: var(--white2); opacity: 0.7; }
+  .cha-form-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .cha-board-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 12px; margin-bottom: 6px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); font-size: 0.82rem; color: var(--white2); }
+  .cha-board-row .rk { min-width: 34px; font-weight: 900; color: var(--gold-light); }
+  .cha-board-row .nm { flex: 1; min-width: 130px; color: var(--white); font-weight: 700; }
+  .cha-board-row.unf { opacity: 0.75; border-style: dashed; }
+  .cha-new-toggle { width: 100%; font-family: inherit; font-weight: 800; font-size: 0.95rem; padding: 14px; border-radius: 14px; cursor: pointer; border: 1px dashed rgba(201,168,76,0.5); background: rgba(201,168,76,0.07); color: var(--gold-light); margin-top: 6px; }
+  .cha-new-panel { margin-top: 12px; padding: 18px; border-radius: 18px; border: 1px solid rgba(201,168,76,0.25); background: var(--dark3); }
+  .cha-toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 1000005; background: #1d2a22; color: #5fd49b; border: 1px solid rgba(63,185,122,0.5); padding: 10px 22px; border-radius: 50px; font-weight: 700; font-size: 0.88rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+  @media (max-width: 560px) { .cha-row2, .cha-sched-fields { grid-template-columns: 1fr; } .cha-head { padding: 14px 12px 8px; } .cha-actions { padding: 10px 12px 14px; } }
 
   /* ===== TRACKING FULLPAGE OVERLAY ===== */
   #tracking-overlay {
@@ -8418,28 +8494,52 @@ STU-26-0003	معاذ خالد" style="resize:vertical; font-family:'IBM Plex San
       <!-- ===== CHALLENGES TAB ===== -->
       <div class="admin-section" id="admin-challenges">
         <div class="admin-section-title">🏆 إدارة التحديات</div>
-        <p style="font-size:0.85rem; color:var(--white2); opacity:0.6; margin-bottom:20px;">أنشئ تحدي سرعة هيظهر للطلاب في «مسابقات وتحديات». بعد الإنشاء دوس «إدارة الأسئلة» وهيفتحلك الاختبار في تاب «الاختبارات» عشان تضيف الأسئلة (نفس نظام الاختبارات العادي). الترتيب بالدرجة ثم الوقت، والنقاط حسب المركز.</p>
+        <p class="cha-intro">أنشئ التحديات وتحكم في ظهورها وقفلها. بعد الإنشاء دوس «الأسئلة» لإضافة أسئلة الاختيارات (نفس نظام الاختبارات). الترتيب بالدرجة ثم الوقت، والنقاط حسب المركز.</p>
 
+        <div class="cha-stats" id="admin-ch-stats"></div>
         <div id="admin-challenges-list"></div>
 
-        <div class="admin-add-form" style="margin-top:16px;">
-          <div class="admin-add-form-title">+ إنشاء تحدي جديد</div>
-          <input class="admin-input" id="ch-new-title" placeholder="اسم التحدي... مثال: تحدي سرعة ودقة الرياضيات" dir="rtl">
-          <input class="admin-input" id="ch-new-desc" placeholder="وصف قصير للتحدي..." dir="rtl">
-          <div class="admin-exam-meta-grid">
-            <input class="admin-input" id="ch-new-duration" placeholder="مدة التحدي بالدقايق (مثال: 15)" type="number" min="1" dir="ltr">
+        <button class="cha-new-toggle" id="cha-new-toggle" onclick="adminChToggleNew()">➕ إنشاء تحدي جديد</button>
+        <div class="cha-new-panel" id="cha-new-panel" style="display:none;">
+          <div class="cha-sec">
+            <div class="cha-sec-title"><i>1</i> نوع التحدي</div>
+            <input type="hidden" id="ch-new-type" value="speed">
+            <div class="cha-type-grid">
+              <div class="cha-type sel"><div class="ic">⚡</div><b>تحدي السرعة</b><span>الدرجة ثم الزمن</span></div>
+              <div class="cha-type soon"><div class="ic">➕</div><b>أنواع تانية</b><span>قريباً</span></div>
+            </div>
           </div>
-          <input class="admin-input" id="ch-new-points" placeholder="نقاط المراكز مفصولة بفاصلة — الافتراضي: 500,400,300,200,100" dir="ltr">
-          <label class="admin-checkbox-row">
-            <input type="checkbox" id="ch-new-sched-enabled" onchange="document.getElementById('ch-new-sched-fields').style.display = this.checked ? 'grid' : 'none'">
-            <span>⏰ جدولة التحدي (يبقى متاح في يوم ووقت محددين بس)</span>
-          </label>
-          <div class="admin-exam-meta-grid" id="ch-new-sched-fields" style="display:none;">
-            <input class="admin-input" id="ch-new-sched-date" type="date" dir="ltr">
-            <input class="admin-input" id="ch-new-sched-start" type="time" dir="ltr">
-            <input class="admin-input" id="ch-new-sched-end" type="time" dir="ltr">
+          <div class="cha-sec">
+            <div class="cha-sec-title"><i>2</i> بيانات التحدي</div>
+            <input class="admin-input" id="ch-new-title" placeholder="اسم التحدي... مثال: تحدي سرعة ودقة الرياضيات" dir="rtl">
+            <input class="admin-input" id="ch-new-desc" placeholder="وصف قصير للتحدي..." dir="rtl">
+            <label class="cha-field-label">مدة التحدي بالدقايق</label>
+            <input class="admin-input" id="ch-new-duration" placeholder="مثال: 15" type="number" min="1" dir="ltr">
           </div>
-          <button class="admin-add-btn" onclick="adminCreateChallenge()">➕ إنشاء التحدي</button>
+          <div class="cha-sec">
+            <div class="cha-sec-title"><i>3</i> نقاط المراكز</div>
+            <input class="admin-input" id="ch-new-points" placeholder="500,400,300,200,100" dir="ltr" oninput="adminChPreviewPoints('ch-new-points','ch-new-points-preview')">
+            <div class="cha-presets">
+              <button type="button" onclick="adminChPreset('ch-new-points','ch-new-points-preview','500,400,300,200,100')">5 مراكز</button>
+              <button type="button" onclick="adminChPreset('ch-new-points','ch-new-points-preview','300,200,100')">3 مراكز</button>
+              <button type="button" onclick="adminChPreset('ch-new-points','ch-new-points-preview','500,400,300,250,200,150,100,75,50,25')">10 مراكز</button>
+            </div>
+            <div class="cha-points-preview" id="ch-new-points-preview"></div>
+          </div>
+          <div class="cha-sec">
+            <div class="cha-sec-title"><i>4</i> الإتاحة</div>
+            <label class="cha-switch"><input type="checkbox" id="ch-new-locked"><span class="cha-slider"></span><span class="cha-switch-text">ينزل مقفول 🔒<small>الطلاب هيشوفوه بشارة قفل وما يقدروش يبدأوه لحد ما تفتحه</small></span></label>
+            <label class="cha-switch"><input type="checkbox" id="ch-new-sched-enabled" onchange="document.getElementById('ch-new-sched-fields').classList.toggle('show', this.checked)"><span class="cha-slider"></span><span class="cha-switch-text">⏰ جدولة التحدي<small>يتفتح في يوم ووقت محددين، ويتقفل تلقائي بعد انتهاء الوقت</small></span></label>
+            <div class="cha-sched-fields" id="ch-new-sched-fields">
+              <div><label class="cha-field-label">اليوم</label><input class="admin-input" id="ch-new-sched-date" type="date" dir="ltr"></div>
+              <div><label class="cha-field-label">من</label><input class="admin-input" id="ch-new-sched-start" type="time" dir="ltr"></div>
+              <div><label class="cha-field-label">إلى</label><input class="admin-input" id="ch-new-sched-end" type="time" dir="ltr"></div>
+            </div>
+          </div>
+          <div class="cha-form-actions">
+            <button class="cha-btn primary" style="flex:1;padding:12px;" onclick="adminCreateChallenge()">✅ إنشاء التحدي</button>
+            <button class="cha-btn" onclick="adminChToggleNew()">إلغاء</button>
+          </div>
         </div>
       </div>
 
@@ -12549,6 +12649,24 @@ function initPushSystem() {
   }
   function qCount(e) { return e && e.questions ? Object.keys(e.questions).length : 0; }
 
+  // أنواع التحديات (حالياً تحدي السرعة فقط — ضيف أنواع جديدة هنا لما تجهز)
+  const CHALLENGE_TYPES = {
+    speed: { label: 'تحدي السرعة', icon: '⚡', desc: 'اختبار اختيارات متعددة، الترتيب بالدرجة ثم الزمن' }
+  };
+  window.CHALLENGE_TYPES = CHALLENGE_TYPES;
+  function getType(e) { return CHALLENGE_TYPES[e && e.challengeType] || CHALLENGE_TYPES.speed; }
+
+  // حالة التحدي: مخفي | مقفول (يدوي) | لسه مفتحش | انتهى | مفتوح
+  function challengeStatus(e) {
+    if (!e) return { key: 'none', label: '', icon: '', canStart: false };
+    if (e.active === false) return { key: 'hidden', label: 'مخفي عن الطلاب', icon: '👁️', canStart: false };
+    if (e.locked) return { key: 'locked', label: 'مقفول', icon: '🔒', canStart: false };
+    const s = getExamScheduleStatus(e);
+    if (s.state === 'upcoming') return { key: 'upcoming', label: 'لسه مفتحش', icon: '⏳', canStart: false, sched: s };
+    if (s.state === 'ended') return { key: 'ended', label: 'انتهى وقته', icon: '🏁', canStart: false, sched: s };
+    return { key: 'open', label: 'مفتوح', icon: '🟢', canStart: true, sched: s };
+  }
+
   function getChallenges(includeHidden) {
     return Object.entries(examsCache || {})
       .filter(([id, e]) => e && e.isChallenge && (includeHidden || e.active !== false))
@@ -12575,7 +12693,7 @@ function initPushSystem() {
     return sum;
   }
   function badgeFor(points) { return CH_BADGES.find(b => points >= b.points) || null; }
-  window.challengeHelpers = { getChallenges, finishedList, pointsFor, totalPointsFor, fmtMs, qCount, esc, shortName };
+  window.challengeHelpers = { getChallenges, finishedList, pointsFor, totalPointsFor, fmtMs, qCount, esc, shortName, getType, challengeStatus };
 
   // ===== Firebase listener =====
   window.ensureChallengeResultsListener = function() {
@@ -12604,7 +12722,8 @@ function initPushSystem() {
   // ===== Render =====
   function pickSelected(list) {
     if (list.some(([id]) => id === selectedCid)) return selectedCid;
-    const live = list.find(([id, e]) => ['open', 'none', 'upcoming'].indexOf(getExamScheduleStatus(e).state) !== -1);
+    const live = list.find(([id, e]) => challengeStatus(e).canStart) ||
+                 list.find(([id, e]) => ['upcoming', 'locked'].indexOf(challengeStatus(e).key) !== -1);
     selectedCid = (live || list[0] || [null])[0];
     return selectedCid;
   }
@@ -12625,7 +12744,7 @@ function initPushSystem() {
     const e = cid ? examsCache[cid] : null;
 
     const tabs = list.length > 1
-      ? `<div class="ch-tabs">${list.map(([id, x]) => `<button class="ch-tab ${id === cid ? 'active' : ''}" onclick="chSelect('${id}')">${esc(x.title || 'تحدي')}</button>`).join('')}</div>`
+      ? `<div class="ch-tabs">${list.map(([id, x]) => `<button class="ch-tab ${id === cid ? 'active' : ''}" onclick="chSelect('${id}')">${challengeStatus(x).canStart ? '' : '🔒 '}${esc(x.title || 'تحدي')}</button>`).join('')}</div>`
       : '';
 
     // ----- hero panel -----
@@ -12635,7 +12754,8 @@ function initPushSystem() {
     } else if (!e) {
       hero = `<div class="ch-panel"><div class="ch-empty"><div style="font-size:2.4rem;">🏁</div>مفيش تحدي شغال دلوقتي.<br>تابعنا، التحدي الجاي قريب إن شاء الله ✨</div></div>`;
     } else {
-      const sched = getExamScheduleStatus(e);
+      const st = challengeStatus(e);
+      const type = getType(e);
       const n = qCount(e);
       const mine = code ? (((window.challengeResultsCache || {})[cid]) || {})[code] : null;
       const ranked = finishedList(cid);
@@ -12643,17 +12763,20 @@ function initPushSystem() {
       const maxPts = pointsFor(e, 1);
 
       let chipCls = 'live', chipTxt = '🔥 التحدي الحالي';
-      if (sched.state === 'upcoming') { chipCls = ''; chipTxt = '⏳ قريباً'; }
-      if (sched.state === 'ended') { chipCls = 'ended'; chipTxt = '🏁 انتهى التحدي'; }
+      if (st.key === 'locked') { chipCls = 'ended'; chipTxt = '🔒 التحدي مقفول'; }
+      else if (st.key === 'upcoming') { chipCls = ''; chipTxt = '🔒 هيتفتح قريباً'; }
+      else if (st.key === 'ended') { chipCls = 'ended'; chipTxt = '🔒 انتهى التحدي'; }
 
       let btnTxt = '▶ ابدأ التحدي الآن', btnDis = false;
       if (!chLoaded) { btnTxt = 'جاري التحميل...'; btnDis = true; }
-      else if (n === 0) { btnTxt = 'الأسئلة قيد التجهيز'; btnDis = true; }
-      else if (sched.state === 'upcoming') { btnTxt = '⏳ يبدأ ' + formatDateArabic(e.scheduleDate) + ' الساعة ' + formatTimeArabic(e.scheduleStartTime); btnDis = true; }
-      else if (sched.state === 'ended') { btnTxt = 'انتهى وقت التحدي'; btnDis = true; }
       else if (mine && typeof mine.score === 'number') { btnTxt = '✅ شاركت — ترتيبك #' + (myIdx + 1); btnDis = true; }
       else if (mine) { btnTxt = '⚠️ بدأت التحدي ده قبل كده ومخلصتوش'; btnDis = true; }
+      else if (st.key === 'locked') { btnTxt = '🔒 التحدي مقفول حالياً'; btnDis = true; }
+      else if (st.key === 'upcoming') { btnTxt = '🔒 هيتفتح ' + formatDateArabic(e.scheduleDate) + ' الساعة ' + formatTimeArabic(e.scheduleStartTime); btnDis = true; }
+      else if (st.key === 'ended') { btnTxt = '🔒 انتهى وقت التحدي'; btnDis = true; }
+      else if (n === 0) { btnTxt = 'الأسئلة قيد التجهيز'; btnDis = true; }
       else if (!code) { btnTxt = '🎓 سجّل دخولك وابدأ التحدي'; }
+      const sched = st.sched || { state: 'none' };
 
       const ladder = (Array.isArray(e.challengePoints) && e.challengePoints.length ? e.challengePoints : DEFAULT_POINTS)
         .slice(0, 5).map((p, i) => `<span>${['🥇','🥈','🥉'][i] || ('#' + (i + 1))} ${p}</span>`).join('');
@@ -12663,16 +12786,17 @@ function initPushSystem() {
       else if (sched.state === 'upcoming') schedLine = `<span>🕒 ${formatDateArabic(e.scheduleDate)} — ${formatTimeArabic(e.scheduleStartTime)}</span>`;
 
       hero = `
-        <div class="ch-panel">
+        <div class="ch-panel ${st.canStart ? '' : 'ch-locked'}">
+          ${st.canStart ? '' : '<div class="ch-lock-badge" title="التحدي مقفول">🔒</div>'}
           <span class="ch-chip ${chipCls}">${chipTxt}</span>
           <div class="ch-title">🎯 ${esc(e.title || 'تحدي')}</div>
           <div class="ch-desc">${esc(e.description || 'اختبار تنافسي لقياس مستواك في أسرع وقت وأعلى درجة')}</div>
           <div class="ch-tiles">
             <div class="ch-tile"><div class="ic">⭐</div><b>نظام النقاط</b><span>حتى ${maxPts} نقطة</span></div>
             <div class="ch-tile"><div class="ic">⏱️</div><b>التقييم</b><span>الدرجة + الزمن</span></div>
-            <div class="ch-tile"><div class="ic">❓</div><b>نوع الاختبار</b><span>اختيارات متعددة</span></div>
+            <div class="ch-tile"><div class="ic">${type.icon}</div><b>نوع التحدي</b><span>${esc(type.label)}</span></div>
           </div>
-          <div class="ch-meta"><span>📝 ${n} سؤال</span><span>⏳ ${e.durationMinutes || 20} دقيقة</span><span>☝️ محاولة واحدة فقط</span>${schedLine}</div>
+          <div class="ch-meta"><span>📝 ${n} سؤال</span><span>⏳ ${e.durationMinutes || 20} دقيقة</span><span>✅ اختيارات متعددة</span><span>☝️ محاولة واحدة فقط</span>${schedLine}</div>
           <div class="ch-ladder">${ladder}</div>
           <button class="ch-cta" ${btnDis ? 'disabled' : ''} onclick="chStart('${cid}')">${btnTxt}</button>
         </div>`;
@@ -12803,8 +12927,12 @@ function initPushSystem() {
   function continueStart(cid) {
     const e = examsCache[cid];
     if (!e || !db) return;
-    const sched = getExamScheduleStatus(e);
-    if (sched.state === 'upcoming' || sched.state === 'ended') { alert('⏳ التحدي مش متاح دلوقتي، راجع موعده.'); renderChallengesPage(); return; }
+    const st = challengeStatus(e);
+    if (!st.canStart) {
+      alert(st.key === 'locked' ? '🔒 التحدي مقفول حالياً.' : '⏳ التحدي مش متاح دلوقتي، راجع موعده.');
+      renderChallengesPage();
+      return;
+    }
     if (!qCount(e)) { alert('الأسئلة لسه بتتجهز، تابعنا قريباً.'); return; }
     const code = currentStudent.code;
     const ref = db.ref('challengeResults/' + cid + '/' + code);
@@ -12885,92 +13013,199 @@ function initPushSystem() {
 (function() {
   const H = () => window.challengeHelpers;
   const DEFAULT_POINTS = [500, 400, 300, 200, 100];
+  const ui = { open: {}, tab: {} };
+  let pendingRender = false;
 
   function parsePoints(str) {
     const arr = String(str || '').split(/[,،\s]+/).map(Number).filter(n => isFinite(n) && n > 0).map(Math.round).slice(0, 20);
     return arr.length ? arr : DEFAULT_POINTS.slice();
   }
+  function toast(msg) {
+    const d = document.createElement('div');
+    d.className = 'cha-toast';
+    d.textContent = msg;
+    document.body.appendChild(d);
+    setTimeout(() => d.remove(), 1800);
+  }
+  function pointsPreviewHtml(str) {
+    return parsePoints(str).map((p, i) => `<span>${['🥇','🥈','🥉'][i] || ('#' + (i + 1))} ${p}</span>`).join('');
+  }
+  window.adminChPreviewPoints = function(inputId, previewId) {
+    const pv = document.getElementById(previewId);
+    if (pv) pv.innerHTML = pointsPreviewHtml(document.getElementById(inputId).value);
+  };
+  window.adminChPreset = function(inputId, previewId, val) {
+    document.getElementById(inputId).value = val;
+    adminChPreviewPoints(inputId, previewId);
+  };
+  window.adminChToggleNew = function() {
+    const panel = document.getElementById('cha-new-panel');
+    const btn = document.getElementById('cha-new-toggle');
+    const show = panel.style.display === 'none';
+    panel.style.display = show ? 'block' : 'none';
+    btn.style.display = show ? 'none' : 'block';
+    if (show) { adminChPreviewPoints('ch-new-points', 'ch-new-points-preview'); panel.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+  };
 
-  window.renderAdminChallenges = function() {
+  function switchHtml(id, checked, title, sub, extra) {
+    return `<label class="cha-switch"><input type="checkbox" id="${id}" ${checked ? 'checked' : ''} ${extra || ''}><span class="cha-slider"></span><span class="cha-switch-text">${title}<small>${sub}</small></span></label>`;
+  }
+
+  window.renderAdminChallenges = function(force) {
     const listEl = document.getElementById('admin-challenges-list');
+    const statsEl = document.getElementById('admin-ch-stats');
     if (!listEl || !H()) return;
-    const { getChallenges, finishedList, pointsFor, fmtMs, qCount, esc } = H();
-    const openIds = Array.from(listEl.querySelectorAll('.admin-level-body.open')).map(b => b.id);
+    // ما نعيدش الرسم والأدمن بيكتب في خانة (عشان ما يضيعش اللي كتبه)
+    const ae = document.activeElement;
+    if (!force && ae && listEl.contains(ae) && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName)) { pendingRender = true; return; }
+    pendingRender = false;
+
+    const { getChallenges, finishedList, pointsFor, fmtMs, qCount, esc, getType, challengeStatus } = H();
+    const types = window.CHALLENGE_TYPES || {};
     const entries = getChallenges(true);
+
+    // ---- stats ----
+    let participants = 0, openNow = 0, lockedN = 0;
+    entries.forEach(([id, e]) => {
+      participants += finishedList(id).length;
+      const k = challengeStatus(e).key;
+      if (k === 'open') openNow++;
+      if (k === 'locked' || k === 'upcoming' || k === 'ended') lockedN++;
+    });
+    if (statsEl) statsEl.innerHTML = `
+      <div class="cha-stat"><b>${entries.length}</b><span>🏆 التحديات</span></div>
+      <div class="cha-stat"><b>${openNow}</b><span>🟢 مفتوحة الآن</span></div>
+      <div class="cha-stat"><b>${lockedN}</b><span>🔒 مقفولة</span></div>
+      <div class="cha-stat"><b>${participants}</b><span>👥 المشاركات</span></div>`;
+
     if (!entries.length) {
-      listEl.innerHTML = '<p class="sd-empty">لا توجد تحديات بعد. أنشئ أول تحدي من الفورم اللي تحت.</p>';
+      listEl.innerHTML = '<p class="sd-empty">لا توجد تحديات بعد. اضغط «إنشاء تحدي جديد» لتبدأ.</p>';
       return;
     }
     const loadErr = typeof getChallengeLoadError === 'function' && getChallengeLoadError();
-    listEl.innerHTML = (loadErr ? '<div class="admin-bulk-result err" style="display:block;margin-bottom:12px;">⚠️ تعذر قراءة نتايج التحديات من Firebase. غالباً محتاج تضيف قواعد (Rules) لعقدة challengeResults.</div>' : '') +
+
+    listEl.innerHTML = (loadErr ? '<div class="cha-warn" style="margin:0 0 12px;">⚠️ تعذر قراءة نتايج التحديات من Firebase. تأكد من إضافة قواعد عقدة challengeResults.</div>' : '') +
       entries.map(([id, e]) => {
+        const st = challengeStatus(e);
+        const type = getType(e);
         const raw = ((window.challengeResultsCache || {})[id]) || {};
         const ranked = finishedList(id);
         const unfinished = Object.entries(raw).filter(([k, v]) => v && typeof v.score !== 'number');
         const pts = (Array.isArray(e.challengePoints) && e.challengePoints.length ? e.challengePoints : DEFAULT_POINTS).join(',');
+        const isOpen = ui.open[id] === undefined ? entries.length === 1 : !!ui.open[id];
+        const tab = ui.tab[id] || 'settings';
+        const nQ = qCount(e);
+        const locked = !!e.locked;
+        const visible = e.active !== false;
+        const schedChip = e.scheduleEnabled && e.scheduleDate ? `<span class="cha-chip">📅 ${formatDateArabic(e.scheduleDate)} · ${formatTimeArabic(e.scheduleStartTime)} – ${formatTimeArabic(e.scheduleEndTime)}</span>` : '';
+
         const rows = ranked.map((r, i) => `
-          <div class="admin-question-item" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-            <b style="min-width:30px;">#${i + 1}</b>
-            <span style="flex:1;min-width:120px;">${esc(r.name || '')}${r.grade ? ' <small style="opacity:.6">(' + esc(r.grade) + ')</small>' : ''}</span>
+          <div class="cha-board-row">
+            <span class="rk">${['🥇','🥈','🥉'][i] || ('#' + (i + 1))}</span>
+            <span class="nm">${esc(r.name || '')}${r.grade ? ' <small style="opacity:.6;font-weight:400">· ' + esc(r.grade) + '</small>' : ''}</span>
             <span>🎯 ${r.score}/${r.total} (${r.percentage}%)</span>
             <span>⏱ ${fmtMs(r.timeMs)}</span>
             <span>⭐ ${pointsFor(e, i + 1)}</span>
-            <button class="admin-btn-del" title="إعادة تعيين مشاركة الطالب" onclick="adminResetChallengeEntry('${id}','${esc(r.code)}')">🗑</button>
+            <button class="cha-btn danger" style="padding:4px 10px;" title="إعادة تعيين مشاركة الطالب" onclick="adminResetChallengeEntry('${id}','${esc(r.code)}')">🗑</button>
           </div>`).join('');
         const unfRows = unfinished.map(([code, v]) => `
-          <div class="admin-question-item" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;opacity:.8;">
-            <span style="flex:1;">⏳ ${esc(v.name || code)} — بدأ ولم يُنهِ التحدي</span>
-            <button class="admin-btn-del" title="السماح له بالإعادة" onclick="adminResetChallengeEntry('${id}','${esc(code)}')">🗑</button>
+          <div class="cha-board-row unf">
+            <span class="nm">⏳ ${esc(v.name || code)}</span><span>بدأ ولم يُنهِ التحدي</span>
+            <button class="cha-btn danger" style="padding:4px 10px;" title="السماح له بالإعادة" onclick="adminResetChallengeEntry('${id}','${esc(code)}')">🗑</button>
           </div>`).join('');
-        return `
-        <div class="admin-level-block">
-          <div class="admin-level-header" onclick="toggleLevel('chblock-${id}')">
-            <span class="admin-level-title">🏆 ${esc(e.title || 'بدون عنوان')} ${e.active === false ? '(مخفي)' : ''} — ${qCount(e)} سؤال — ${ranked.length} مشارك</span>
-            <span class="admin-level-toggle" id="chblock-${id}-toggle">▾</span>
+
+        const settingsPane = `
+          <div class="cha-sec">
+            <div class="cha-sec-title">⚡ نوع التحدي</div>
+            <select class="notif-type-select" id="ch-edit-type-${id}" dir="rtl">
+              ${Object.entries(types).map(([k, v]) => `<option value="${k}" ${(e.challengeType || 'speed') === k ? 'selected' : ''}>${v.icon} ${esc(v.label)}</option>`).join('')}
+            </select>
           </div>
-          <div class="admin-level-body" id="chblock-${id}-body">
-            <div class="admin-add-form" style="margin-bottom:14px;">
-              <div class="admin-add-form-title">⚙️ إعدادات التحدي</div>
-              <input class="admin-input" id="ch-edit-title-${id}" value="${esc(e.title || '')}" placeholder="اسم التحدي" dir="rtl">
-              <input class="admin-input" id="ch-edit-desc-${id}" value="${esc(e.description || '')}" placeholder="وصف التحدي" dir="rtl">
-              <div class="admin-exam-meta-grid">
-                <input class="admin-input" id="ch-edit-duration-${id}" value="${e.durationMinutes || 20}" type="number" min="1" dir="ltr">
-              </div>
-              <input class="admin-input" id="ch-edit-points-${id}" value="${esc(pts)}" placeholder="نقاط المراكز: 500,400,300,200,100" dir="ltr">
-              <label class="admin-checkbox-row">
-                <input type="checkbox" id="ch-edit-active-${id}" ${e.active === false ? '' : 'checked'}>
-                <span>التحدي ظاهر للطلاب</span>
-              </label>
-              <label class="admin-checkbox-row">
-                <input type="checkbox" id="ch-edit-sched-enabled-${id}" ${e.scheduleEnabled ? 'checked' : ''} onchange="document.getElementById('ch-edit-sched-fields-${id}').style.display = this.checked ? 'grid' : 'none'">
-                <span>⏰ جدولة التحدي</span>
-              </label>
-              <div class="admin-exam-meta-grid" id="ch-edit-sched-fields-${id}" style="display:${e.scheduleEnabled ? 'grid' : 'none'};">
-                <input class="admin-input" id="ch-edit-sched-date-${id}" type="date" value="${e.scheduleDate || ''}" dir="ltr">
-                <input class="admin-input" id="ch-edit-sched-start-${id}" type="time" value="${e.scheduleStartTime || ''}" dir="ltr">
-                <input class="admin-input" id="ch-edit-sched-end-${id}" type="time" value="${e.scheduleEndTime || ''}" dir="ltr">
-              </div>
-              <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
-                <button class="admin-save-tracking-btn" style="flex:1;min-width:120px;" onclick="adminSaveChallenge('${id}')">💾 حفظ</button>
-                <button class="admin-save-tracking-btn" style="flex:1;min-width:120px;" onclick="adminChallengeQuestions('${id}')">📝 إدارة الأسئلة</button>
-                <button class="admin-reset-btn" style="flex:1;min-width:120px;" onclick="adminDeleteChallenge('${id}')">🗑 حذف التحدي</button>
+          <div class="cha-sec">
+            <div class="cha-sec-title">📝 البيانات</div>
+            <input class="admin-input" id="ch-edit-title-${id}" value="${esc(e.title || '')}" placeholder="اسم التحدي" dir="rtl">
+            <input class="admin-input" id="ch-edit-desc-${id}" value="${esc(e.description || '')}" placeholder="وصف التحدي" dir="rtl">
+            <label class="cha-field-label">المدة بالدقايق</label>
+            <input class="admin-input" id="ch-edit-duration-${id}" value="${e.durationMinutes || 15}" type="number" min="1" dir="ltr">
+          </div>
+          <div class="cha-sec">
+            <div class="cha-sec-title">⭐ نقاط المراكز</div>
+            <input class="admin-input" id="ch-edit-points-${id}" value="${esc(pts)}" dir="ltr" oninput="adminChPreviewPoints('ch-edit-points-${id}','ch-edit-points-pv-${id}')">
+            <div class="cha-points-preview" id="ch-edit-points-pv-${id}">${pointsPreviewHtml(pts)}</div>
+          </div>
+          <div class="cha-sec">
+            <div class="cha-sec-title">🔐 الإتاحة والظهور</div>
+            ${switchHtml('ch-edit-active-' + id, visible, '👁️ ظاهر للطلاب', 'لو اتقفل الظهور التحدي بيختفي تماماً من صفحة الطلاب')}
+            ${switchHtml('ch-edit-locked-' + id, locked, '🔒 قفل التحدي', 'بيظهر للطلاب بشارة قفل وما يقدروش يبدأوه لحد ما تفتحه')}
+            ${switchHtml('ch-edit-sched-enabled-' + id, !!e.scheduleEnabled, '⏰ جدولة التحدي', 'يتفتح في الوقت المحدد ويتقفل تلقائي بعد انتهائه', `onchange="document.getElementById('ch-edit-sched-fields-${id}').classList.toggle('show', this.checked)"`)}
+            <div class="cha-sched-fields ${e.scheduleEnabled ? 'show' : ''}" id="ch-edit-sched-fields-${id}">
+              <div><label class="cha-field-label">اليوم</label><input class="admin-input" id="ch-edit-sched-date-${id}" type="date" value="${e.scheduleDate || ''}" dir="ltr"></div>
+              <div><label class="cha-field-label">من</label><input class="admin-input" id="ch-edit-sched-start-${id}" type="time" value="${e.scheduleStartTime || ''}" dir="ltr"></div>
+              <div><label class="cha-field-label">إلى</label><input class="admin-input" id="ch-edit-sched-end-${id}" type="time" value="${e.scheduleEndTime || ''}" dir="ltr"></div>
+            </div>
+          </div>
+          <div class="cha-form-actions">
+            <button class="cha-btn primary" style="flex:1;padding:12px;" onclick="adminSaveChallenge('${id}')">💾 حفظ التعديلات</button>
+            <button class="cha-btn danger" onclick="adminDeleteChallenge('${id}')">🗑 حذف التحدي</button>
+          </div>`;
+
+        const boardPane = `
+          <div class="cha-form-actions" style="margin:0 0 12px;">
+            <button class="cha-btn" onclick="adminCopyChallengeBoard('${id}')">📋 نسخ الترتيب</button>
+            ${(ranked.length || unfinished.length) ? `<button class="cha-btn danger" onclick="adminClearChallengeResults('${id}')">🗑 مسح كل النتايج</button>` : ''}
+          </div>
+          ${rows}${unfRows}${(!rows && !unfRows) ? '<p class="sd-empty">لسه محدش شارك.</p>' : ''}`;
+
+        return `
+        <div class="cha-card st-${st.key} ${isOpen ? 'is-open' : ''}" id="chcard-${id}">
+          <div class="cha-head" onclick="adminChToggle('${id}')">
+            <div class="cha-ico">${type.icon}</div>
+            <div class="cha-head-main">
+              <div class="cha-title">${esc(e.title || 'بدون عنوان')}</div>
+              <div class="cha-chips">
+                <span class="cha-pill st-${st.key}">${st.icon} ${st.label}</span>
+                <span class="cha-chip">${type.icon} ${esc(type.label)}</span>
+                <span class="cha-chip">📝 ${nQ} سؤال</span>
+                <span class="cha-chip">⏳ ${e.durationMinutes || 15} د</span>
+                <span class="cha-chip">👥 ${ranked.length}</span>
+                <span class="cha-chip">⭐ حتى ${pointsFor(e, 1)}</span>
+                ${schedChip}
               </div>
             </div>
-            <div class="admin-add-form-title" style="margin:10px 0;">📊 المشاركون والترتيب</div>
-            <div class="admin-item-list">${rows || ''}${unfRows || ''}${(!rows && !unfRows) ? '<p class="sd-empty">لسه محدش شارك.</p>' : ''}</div>
-            ${(ranked.length || unfinished.length) ? `<button class="admin-reset-btn" style="width:100%;margin-top:10px;" onclick="adminClearChallengeResults('${id}')">🗑 مسح كل نتايج التحدي</button>` : ''}
+            <span class="cha-caret">▼</span>
+          </div>
+          ${nQ === 0 ? '<div class="cha-warn">⚠️ التحدي من غير أسئلة — الطلاب مش هيقدروا يبدأوه. دوس «الأسئلة» وضيف أسئلة.</div>' : ''}
+          <div class="cha-actions">
+            <button class="cha-btn ${locked ? 'unlock' : 'lock'}" onclick="adminToggleChallengeLock('${id}')">${locked ? '🔓 فتح التحدي' : '🔒 قفل التحدي'}</button>
+            <button class="cha-btn" onclick="adminToggleChallengeVisible('${id}')">${visible ? '🙈 إخفاء' : '👁️ إظهار'}</button>
+            <button class="cha-btn primary" onclick="adminChallengeQuestions('${id}')">📝 الأسئلة</button>
+          </div>
+          <div class="cha-body">
+            <div class="cha-tabs">
+              <button class="cha-tab ${tab === 'settings' ? 'active' : ''}" onclick="adminChTab('${id}','settings')">⚙️ الإعدادات</button>
+              <button class="cha-tab ${tab === 'board' ? 'active' : ''}" onclick="adminChTab('${id}','board')">📊 المشاركون (${ranked.length + unfinished.length})</button>
+            </div>
+            ${tab === 'board' ? boardPane : settingsPane}
           </div>
         </div>`;
       }).join('');
-    openIds.forEach(bid => {
-      const b = document.getElementById(bid);
-      if (b) {
-        b.classList.add('open');
-        const tog = document.getElementById(bid.replace(/-body$/, '-toggle'));
-        if (tog) tog.classList.add('open');
-      }
-    });
   };
+
+  document.addEventListener('focusout', function() {
+    if (!pendingRender) return;
+    setTimeout(function() {
+      const listEl = document.getElementById('admin-challenges-list');
+      const ae = document.activeElement;
+      if (pendingRender && !(listEl && ae && listEl.contains(ae) && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName))) renderAdminChallenges(true);
+    }, 150);
+  });
+
+  window.adminChToggle = function(id) {
+    const card = document.getElementById('chcard-' + id);
+    ui.open[id] = !(card && card.classList.contains('is-open'));
+    if (card) card.classList.toggle('is-open', ui.open[id]);
+  };
+  window.adminChTab = function(id, tab) { ui.tab[id] = tab; ui.open[id] = true; renderAdminChallenges(true); };
 
   function readSchedule(prefix, suffix) {
     const on = document.getElementById(prefix + 'sched-enabled' + suffix).checked;
@@ -12994,11 +13229,16 @@ function initPushSystem() {
       durationMinutes: parseInt(document.getElementById('ch-new-duration').value, 10) || 15,
       active: true, order: Date.now(), questions: {}, targetGrade: '',
       isChallenge: true,
+      challengeType: document.getElementById('ch-new-type').value || 'speed',
+      locked: document.getElementById('ch-new-locked').checked,
       challengePoints: parsePoints(document.getElementById('ch-new-points').value)
     }, sched)).then(() => {
       ['ch-new-title', 'ch-new-desc', 'ch-new-duration', 'ch-new-points', 'ch-new-sched-date', 'ch-new-sched-start', 'ch-new-sched-end'].forEach(i => { document.getElementById(i).value = ''; });
       document.getElementById('ch-new-sched-enabled').checked = false;
-      document.getElementById('ch-new-sched-fields').style.display = 'none';
+      document.getElementById('ch-new-locked').checked = false;
+      document.getElementById('ch-new-sched-fields').classList.remove('show');
+      adminChToggleNew();
+      toast('✅ تم إنشاء التحدي');
     }).catch(e => alert('حصل خطأ: ' + e.message));
   };
 
@@ -13011,9 +13251,26 @@ function initPushSystem() {
       description: document.getElementById('ch-edit-desc-' + id).value.trim(),
       durationMinutes: parseInt(document.getElementById('ch-edit-duration-' + id).value, 10) || 15,
       active: document.getElementById('ch-edit-active-' + id).checked,
+      locked: document.getElementById('ch-edit-locked-' + id).checked,
+      challengeType: document.getElementById('ch-edit-type-' + id).value || 'speed',
       challengePoints: parsePoints(document.getElementById('ch-edit-points-' + id).value)
-    }, sched)).then(() => { if (typeof showAdminToast === 'function') showAdminToast(); })
+    }, sched)).then(() => { pendingRender = false; renderAdminChallenges(true); toast('💾 تم الحفظ'); })
       .catch(e => alert('حصل خطأ: ' + e.message));
+  };
+
+  window.adminToggleChallengeLock = function(id) {
+    const e = (examsCache || {})[id];
+    if (!e || !examsRef) return;
+    const next = !e.locked;
+    examsRef.child(id).update({ locked: next }).then(() => toast(next ? '🔒 تم قفل التحدي' : '🔓 تم فتح التحدي'))
+      .catch(err => alert('حصل خطأ: ' + err.message));
+  };
+  window.adminToggleChallengeVisible = function(id) {
+    const e = (examsCache || {})[id];
+    if (!e || !examsRef) return;
+    const next = e.active === false;
+    examsRef.child(id).update({ active: next }).then(() => toast(next ? '👁️ التحدي ظاهر للطلاب' : '🙈 التحدي مخفي عن الطلاب'))
+      .catch(err => alert('حصل خطأ: ' + err.message));
   };
 
   window.adminDeleteChallenge = function(id) {
@@ -13028,8 +13285,15 @@ function initPushSystem() {
     if (typeof renderAdminExamsSection === 'function') renderAdminExamsSection();
     const body = document.getElementById('examblock-' + id + '-body');
     if (body && !body.classList.contains('open')) toggleLevel('examblock-' + id);
-    const block = document.getElementById('examblock-' + id + '-body');
-    if (block) setTimeout(() => block.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+    if (body) setTimeout(() => body.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+  };
+
+  window.adminCopyChallengeBoard = function(id) {
+    const { finishedList, pointsFor, fmtMs } = H();
+    const e = examsCache[id];
+    const text = finishedList(id).map((r, i) => `${i + 1}. ${r.name} — ${r.score}/${r.total} — ${fmtMs(r.timeMs)} — ${pointsFor(e, i + 1)} نقطة`).join('\n');
+    if (!text) { alert('لسه محدش شارك'); return; }
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(() => toast('📋 تم نسخ الترتيب')).catch(() => prompt('انسخ الترتيب:', text));
   };
 
   window.adminResetChallengeEntry = function(cid, code) {
@@ -14026,7 +14290,7 @@ if (document.readyState === 'loading') {
     try {
       db.ref('challengeResults/' + ctx.id + '/' + ctx.code).update({
         name: ctx.name, grade: ctx.grade, score, total, percentage,
-        timeMs, startedAt: ctx.startedAt, finishedAt: Date.now(), status: 'done'
+        timeMs, finishedAt: Date.now(), status: 'done'
       }).then(function() {
         if (typeof window.ensureChallengeResultsListener === 'function') window.ensureChallengeResultsListener();
         window.updateChallengeResultState({ saved: true });
