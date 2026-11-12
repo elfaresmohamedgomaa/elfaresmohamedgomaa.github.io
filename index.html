@@ -1407,6 +1407,71 @@
     box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 30px rgba(201,168,76,0.1) !important;
   }
 
+/* ===== TOP STUDENTS (أوائل المنصة) ===== */
+#top-students { padding: 90px 40px 110px; position: relative; z-index: 1; overflow: hidden; }
+#top-students::before { content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse at 15% 0%, rgba(123,79,160,0.20), transparent 55%), radial-gradient(ellipse at 88% 100%, rgba(201,168,76,0.13), transparent 55%); }
+.ts-grid { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 86px 28px; max-width: 1100px; margin: 96px auto 0; }
+.ts-card { --c1: #b79cf5; --c2: #6b46c1; --glow: rgba(123,79,160,0.55);
+  position: relative; padding: 84px 22px 26px; text-align: center; border-radius: 26px; opacity: 0;
+  background: linear-gradient(165deg, rgba(34,34,58,0.95), rgba(17,17,24,0.97));
+  border: 1px solid rgba(201,168,76,0.16); box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+  transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease; }
+.ts-card.r1 { --c1: #f6dd8f; --c2: #c9a84c; --glow: rgba(240,208,128,0.6); border-color: rgba(240,208,128,0.45); }
+.ts-card.r2 { --c1: #eef1f9; --c2: #9aa3b8; --glow: rgba(190,200,225,0.5); }
+.ts-card.r3 { --c1: #f0b47a; --c2: #b06a28; --glow: rgba(224,150,80,0.5); }
+.ts-card.in { opacity: 1; animation: tsIn 0.75s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0s) backwards; }
+@keyframes tsIn { from { opacity: 0; transform: translateY(34px) scale(0.96); } to { opacity: 1; transform: none; } }
+.ts-card:hover { transform: translateY(-8px); border-color: var(--c1); box-shadow: 0 28px 60px rgba(0,0,0,0.55), 0 0 40px -8px var(--glow); }
+.ts-avatar-wrap { position: absolute; top: -62px; left: 50%; transform: translateX(-50%); width: 124px; height: 124px; }
+.ts-avatar { width: 100%; height: 100%; border-radius: 50%; padding: 4px; background: linear-gradient(145deg, var(--c1), var(--c2)); box-shadow: 0 12px 30px rgba(0,0,0,0.5), 0 0 36px var(--glow); cursor: zoom-in; transition: transform 0.35s ease; }
+.ts-card:hover .ts-avatar { transform: scale(1.05) rotate(-2deg); }
+.ts-avatar-in { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; border: 3px solid #12121c; background: linear-gradient(145deg, #2a2a44, #15151f); display: flex; align-items: center; justify-content: center; }
+.ts-avatar-in img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ts-avatar-in span { font-size: 2.6rem; font-weight: 900; color: var(--c1); }
+.ts-card.r1 .ts-avatar-wrap::before { content: '👑'; position: absolute; top: -30px; left: 50%; transform: translateX(-50%) rotate(-8deg); font-size: 1.9rem; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5)); z-index: 2; }
+.ts-rank { position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); padding: 4px 15px; border-radius: 50px; white-space: nowrap; font-weight: 900; font-size: 0.78rem; color: #1a1206; background: linear-gradient(135deg, var(--c1), var(--c2)); box-shadow: 0 6px 16px rgba(0,0,0,0.45); z-index: 2; }
+.ts-spark { position: absolute; color: #fff; pointer-events: none; animation: tsTwinkle 2.8s ease-in-out infinite; filter: drop-shadow(0 0 6px rgba(255,255,255,0.7)); }
+.ts-spark svg { width: 100%; height: 100%; display: block; fill: currentColor; }
+.ts-spark.s1 { width: 26px; height: 26px; top: 4px; left: -30px; }
+.ts-spark.s2 { width: 14px; height: 14px; top: -10px; left: 4px; animation-delay: 0.9s; }
+.ts-spark.s3 { width: 12px; height: 12px; bottom: 6px; right: -22px; animation-delay: 1.7s; color: var(--c1); }
+@keyframes tsTwinkle { 0%, 100% { opacity: 0.25; transform: scale(0.7) rotate(0deg); } 50% { opacity: 1; transform: scale(1.1) rotate(25deg); } }
+.ts-name { font-size: 1.3rem; font-weight: 900; color: var(--white); margin-top: 18px; line-height: 1.5; word-break: break-word; }
+.ts-grade { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; padding: 5px 16px; border-radius: 50px; font-size: 0.82rem; font-weight: 700; color: var(--gold-light); background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.3); }
+.ts-title { margin-top: 14px; font-size: 0.85rem; color: var(--white2); opacity: 0.8; line-height: 1.8; }
+.ts-stats { display: flex; justify-content: center; margin-top: 14px; }
+.ts-pts { font-size: 0.8rem; font-weight: 800; padding: 5px 14px; border-radius: 12px; color: var(--c1); background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
+.ts-line { height: 3px; width: 62%; border-radius: 3px; margin: 22px auto 0; background: linear-gradient(90deg, transparent, var(--c1), transparent); opacity: 0.85; }
+.ts-empty { grid-column: 1 / -1; text-align: center; padding: 50px 20px; color: var(--white2); opacity: 0.75; line-height: 2.1; border: 1px dashed rgba(201,168,76,0.35); border-radius: 22px; background: rgba(255,255,255,0.02); }
+.ts-empty .big { font-size: 2.6rem; }
+@media (max-width: 900px) { .ts-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { #top-students { padding: 70px 18px 90px; } .ts-grid { grid-template-columns: minmax(0, 1fr); max-width: 380px; gap: 82px 0; } }
+@media (prefers-reduced-motion: reduce) { .ts-spark, .ts-card.in { animation: none; } }
+
+/* ----- admin ----- */
+.tsa-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 80px 18px; margin: 84px 0 30px; }
+.tsa-grid .ts-card { opacity: 1; padding-bottom: 18px; }
+.tsa-grid .ts-card:hover { transform: none; }
+.tsa-actions { display: flex; gap: 8px; justify-content: center; margin-top: 16px; }
+.tsa-actions button { font-family: inherit; font-size: 0.78rem; font-weight: 700; padding: 6px 14px; border-radius: 10px; cursor: pointer; border: 1px solid rgba(201,168,76,0.35); background: rgba(201,168,76,0.1); color: var(--gold-light); }
+.tsa-actions button.del { border-color: rgba(224,103,90,0.4); background: rgba(224,103,90,0.1); color: #ff8f84; }
+.tsa-counter { font-size: 0.82rem; color: var(--gold-light); margin-bottom: 6px; }
+.tsa-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.tsa-label { display: block; font-size: 0.74rem; color: var(--white2); opacity: 0.7; margin: 6px 2px 4px; }
+.ts-drop { border: 2px dashed rgba(201,168,76,0.35); border-radius: 14px; background: rgba(201,168,76,0.04); margin-bottom: 10px; transition: all 0.25s; outline: none; position: relative; overflow: hidden; }
+.ts-drop:focus, .ts-drop.drag { border-color: var(--gold); background: rgba(201,168,76,0.12); box-shadow: 0 0 0 4px rgba(201,168,76,0.12); }
+.ts-drop-empty { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 18px 12px; cursor: pointer; text-align: center; color: var(--white2); }
+.ts-drop-empty b { color: var(--white); font-size: 0.88rem; }
+.ts-drop-empty span { font-size: 0.72rem; opacity: 0.6; }
+.ts-drop-prev { display: none; padding: 10px; text-align: center; }
+.ts-drop.has-img .ts-drop-empty { display: none; }
+.ts-drop.has-img .ts-drop-prev { display: block; }
+.ts-drop-prev img { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 3px solid var(--gold); }
+.ts-drop-info { font-size: 0.72rem; color: var(--white2); opacity: 0.6; margin: 6px 0; direction: ltr; }
+.ts-drop.loading::after { content: 'جاري تجهيز الصورة...'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); color: var(--gold-light); font-size: 0.85rem; }
+@media (max-width: 560px) { .tsa-row2 { grid-template-columns: 1fr; } }
+
   /* ===== CHALLENGES PAGE ===== */
   .ch-hero { text-align: center; padding: 4px 0 2px; }
   .ch-hero h2 { font-size: clamp(1.7rem, 4.5vw, 2.5rem); font-weight: 900; color: var(--gold-light); }
@@ -6073,6 +6138,17 @@
   </div>
 </section>
 
+<!-- TOP STUDENTS (أوائل المنصة) -->
+<section id="top-students">
+  <div class="section-header reveal">
+    <div class="section-tag">أوائل المنصة 🏆</div>
+    <h2 class="section-title">أوائل المنصة</h2>
+    <div class="section-line"></div>
+    <p style="color:var(--white2); opacity:0.7; margin-top:16px; font-size:1rem; max-width:560px; margin-inline:auto; line-height:1.8;">أوائل منصة الفارس النشطين في المنصة والاختبارات والمسابقات</p>
+  </div>
+  <div class="ts-grid" id="ts-grid"></div>
+</section>
+
 <!-- HEART MESSAGES -->
 <section id="heart-messages" style="padding: 80px 40px; position:relative; z-index:1;">
   <div class="section-header reveal">
@@ -8182,6 +8258,9 @@ adminLoadFromStorage();
       <button class="admin-tab-btn" onclick="switchAdminTab('notes', this)">
         <span class="admin-tab-icon">📄</span><span>المذكرات</span>
       </button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('top-students', this); ensureTopStudentsListener(); renderTopStudents()">
+        <span class="admin-tab-icon">🏆</span><span>أوائل المنصة</span>
+      </button>
       <button class="admin-tab-btn" onclick="switchAdminTab('heart', this)">
         <span class="admin-tab-icon">❤️</span><span>رسائل من القلب</span>
       </button>
@@ -8337,6 +8416,62 @@ adminLoadFromStorage();
           <div class="admin-add-form-title">+ إضافة رسالة جديدة</div>
           <input class="admin-input" id="heart-new-text" placeholder="نص الرسالة..." dir="rtl" style="height:80px; resize:vertical;">
           <button class="admin-add-btn" onclick="addHeartMessage()">إضافة الرسالة</button>
+        </div>
+      </div>
+
+      <!-- ===== TOP STUDENTS TAB ===== -->
+      <div class="admin-section" id="admin-top-students">
+        <div class="admin-section-title">🏆 إدارة أوائل المنصة</div>
+        <p style="font-size:0.85rem; color:var(--white2); opacity:0.6; margin-bottom:14px;">بطاقات الأوائل اللي بتظهر في قسم «أوائل المنصة» (الحد الأقصى 6 بطاقات، 3 في كل صف). الصور بتتضغط وتتقص مربعة تلقائياً.</p>
+        <div class="tsa-counter" id="tsa-counter"></div>
+        <div class="tsa-grid" id="tsa-grid"></div>
+
+        <div class="admin-add-form" id="tsa-form">
+          <div class="admin-add-form-title" id="tsa-form-title">+ إضافة طالب متفوق</div>
+          <div class="ts-drop" id="ts-drop" tabindex="0">
+            <input type="file" accept="image/*" hidden id="ts-file" onchange="tsPickPhoto(this.files[0]); this.value='';">
+            <div class="ts-drop-empty" onclick="document.getElementById('ts-file').click()">
+              <b>📷 اضغط لاختيار صورة الطالب</b>
+              <span>أو اسحبها هنا، أو الصقها بـ Ctrl+V بعد الضغط على المربع</span>
+            </div>
+            <div class="ts-drop-prev">
+              <img id="ts-prev" alt="معاينة">
+              <div class="ts-drop-info" id="ts-info"></div>
+              <button type="button" class="q-img-remove" onclick="tsClearPhoto()">✕ إزالة الصورة</button>
+            </div>
+          </div>
+          <input class="admin-input" id="ts-name" placeholder="اسم الطالب" dir="rtl" maxlength="100">
+          <div class="tsa-row2">
+            <div>
+              <label class="tsa-label">السنة الدراسية</label>
+              <select class="notif-type-select" id="ts-grade" dir="rtl">
+                <option value="الأول الإعدادي">الأول الإعدادي</option>
+                <option value="الثاني الإعدادي">الثاني الإعدادي</option>
+                <option value="الثالث الإعدادي">الثالث الإعدادي</option>
+                <option value="الأول الثانوي">الأول الثانوي</option>
+                <option value="الثاني الثانوي">الثاني الثانوي</option>
+                <option value="الثالث الثانوي">الثالث الثانوي</option>
+              </select>
+            </div>
+            <div>
+              <label class="tsa-label">الترتيب</label>
+              <select class="notif-type-select" id="ts-rank" dir="rtl"></select>
+            </div>
+          </div>
+          <div class="tsa-row2">
+            <div>
+              <label class="tsa-label">نقاط الطالب (اختياري)</label>
+              <input class="admin-input" id="ts-points" type="number" min="0" placeholder="مثال: 950" dir="ltr">
+            </div>
+            <div>
+              <label class="tsa-label">لقب أو إنجاز (اختياري)</label>
+              <input class="admin-input" id="ts-title" placeholder="مثال: بطل الاختبارات" dir="rtl" maxlength="60">
+            </div>
+          </div>
+          <div style="display:flex; gap:8px; margin-top:6px; flex-wrap:wrap;">
+            <button class="admin-add-btn" style="flex:1; min-width:140px;" id="ts-save-btn" onclick="tsSave()">➕ إضافة الطالب</button>
+            <button class="admin-reset-btn" id="ts-cancel-btn" style="display:none;" onclick="tsCancelEdit()">إلغاء التعديل</button>
+          </div>
         </div>
       </div>
 
@@ -9070,6 +9205,7 @@ function initFirebase() {
     });
 
     if (typeof ensureChallengeResultsListener === 'function') ensureChallengeResultsListener();
+    if (typeof ensureTopStudentsListener === 'function') ensureTopStudentsListener();
     console.log('✅ Firebase initialized successfully');
   } catch(e) {
     console.error('❌ Firebase error:', e);
@@ -13305,6 +13441,236 @@ function initPushSystem() {
     if (!confirm('مسح كل نتايج التحدي ده؟ لا يمكن التراجع.')) return;
     if (db) db.ref('challengeResults/' + cid).remove();
   };
+})();
+</script>
+
+<script>
+// ===== TOP STUDENTS (أوائل المنصة) =====
+// البيانات في Firebase: topStudents/{id} = { name, grade, rank, points?, title?, photo? (base64 JPEG), updatedAt }
+(function() {
+  const MAX_CARDS = 6;
+  const ORDINALS = ['', 'الأول', 'الثاني', 'الثالث', 'الرابع', 'الخامس', 'السادس'];
+  const MEDALS = ['', '🥇', '🥈', '🥉', '🏅', '🏅', '🏅'];
+  const SPARK = '<svg viewBox="0 0 24 24"><path d="M12 0C13 7 17 11 24 12C17 13 13 17 12 24C11 17 7 13 0 12C7 11 11 7 12 0Z"/></svg>';
+  let cache = {};
+  let listenerOn = false;
+  let editId = null;
+  let photoState; // undefined = بدون تغيير | string = صورة جديدة | null = إزالة الصورة
+
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+  function getList() {
+    return Object.entries(cache || {})
+      .map(([id, v]) => Object.assign({ id: id }, v))
+      .filter(x => x && x.name)
+      .sort((a, b) => ((a.rank || 99) - (b.rank || 99)) || ((a.updatedAt || 0) - (b.updatedAt || 0)))
+      .slice(0, MAX_CARDS);
+  }
+
+  function cardHtml(s, i, admin) {
+    const r = Math.min(Math.max(parseInt(s.rank, 10) || (i + 1), 1), 6);
+    const photo = typeof s.photo === 'string' && s.photo.indexOf('data:image/') === 0 ? s.photo : '';
+    const initial = esc(String(s.name).trim().charAt(0));
+    return `
+    <article class="ts-card r${r}" style="--d:${(i % 3) * 0.12}s">
+      <div class="ts-avatar-wrap">
+        <span class="ts-spark s1">${SPARK}</span><span class="ts-spark s2">${SPARK}</span><span class="ts-spark s3">${SPARK}</span>
+        <div class="ts-avatar" ${photo && !admin ? 'onclick="tsZoom(this)"' : ''}><div class="ts-avatar-in">${photo ? `<img src="${photo}" alt="${esc(s.name)}" loading="lazy">` : `<span>${initial}</span>`}</div></div>
+        <div class="ts-rank">${MEDALS[r]} المركز ${ORDINALS[r]}</div>
+      </div>
+      <div class="ts-name">${esc(s.name)}</div>
+      <div class="ts-grade">🎓 ${esc(s.grade || '')}</div>
+      ${s.title ? `<div class="ts-title">✦ ${esc(s.title)} ✦</div>` : ''}
+      ${s.points != null && s.points !== '' ? `<div class="ts-stats"><span class="ts-pts">⭐ ${esc(s.points)} نقطة</span></div>` : ''}
+      <div class="ts-line"></div>
+      ${admin ? `<div class="tsa-actions"><button onclick="tsEdit('${esc(s.id)}')">✏️ تعديل</button><button class="del" onclick="tsDelete('${esc(s.id)}')">🗑 حذف</button></div>` : ''}
+    </article>`;
+  }
+
+  let io = null;
+  function observeCards() {
+    const cards = document.querySelectorAll('#ts-grid .ts-card');
+    if (!('IntersectionObserver' in window)) { cards.forEach(c => c.classList.add('in')); return; }
+    if (!io) io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(en) { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+    }, { threshold: 0.15 });
+    cards.forEach(c => io.observe(c));
+  }
+
+  window.renderTopStudents = function() {
+    const list = getList();
+    const grid = document.getElementById('ts-grid');
+    if (grid) {
+      grid.innerHTML = list.length
+        ? list.map((s, i) => cardHtml(s, i, false)).join('')
+        : '<div class="ts-empty"><div class="big">🏆✨</div>هيتم الإعلان عن أوائل المنصة قريباً.<br>كمّل نشاطك في الاختبارات والمسابقات، وممكن تلاقي اسمك هنا!</div>';
+      observeCards();
+    }
+    renderAdmin(list);
+  };
+
+  function renderAdmin(list) {
+    const g = document.getElementById('tsa-grid');
+    if (!g) return;
+    const counter = document.getElementById('tsa-counter');
+    if (counter) counter.textContent = '🏆 ' + list.length + ' / ' + MAX_CARDS + ' بطاقات';
+    g.innerHTML = list.length ? list.map((s, i) => cardHtml(s, i, true)).join('') : '<p class="sd-empty" style="grid-column:1/-1;">لسه مفيش أوائل. ضيف أول طالب من الفورم اللي تحت.</p>';
+    fillRankOptions();
+  }
+
+  function fillRankOptions() {
+    const sel = document.getElementById('ts-rank');
+    if (!sel) return;
+    const keep = sel.value;
+    const taken = {};
+    getList().forEach(s => { if (s.id !== editId) taken[s.rank] = s.name; });
+    sel.innerHTML = [1, 2, 3, 4, 5, 6].map(n => `<option value="${n}">${MEDALS[n]} المركز ${ORDINALS[n]}${taken[n] ? ' (مستخدم)' : ''}</option>`).join('');
+    if (keep) sel.value = keep;
+    else {
+      const free = [1, 2, 3, 4, 5, 6].find(n => !taken[n]);
+      if (free) sel.value = String(free);
+    }
+  }
+
+  window.ensureTopStudentsListener = function() {
+    if (listenerOn || typeof db === 'undefined' || !db) return;
+    listenerOn = true;
+    db.ref('topStudents').on('value', function(snap) {
+      cache = snap.val() || {};
+      renderTopStudents();
+    }, function(err) { console.error('topStudents listener error:', err); });
+  };
+
+  window.tsZoom = function(el) {
+    const img = el.querySelector('img');
+    const lb = document.getElementById('img-lightbox');
+    if (!img || !lb) return;
+    lb.querySelector('img').src = img.src;
+    lb.classList.add('show');
+  };
+
+  // ===== صورة الطالب: تتقص مربعة وتتضغط وتتحول Base64 (زي صور الأسئلة) =====
+  function compressAvatar(file) {
+    return new Promise(function(resolve, reject) {
+      if (!file || !/^image\//.test(file.type)) return reject(new Error('الملف ده مش صورة'));
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = function() {
+        URL.revokeObjectURL(url);
+        const S = 480;
+        const side = Math.min(img.naturalWidth, img.naturalHeight);
+        const sx = (img.naturalWidth - side) / 2, sy = (img.naturalHeight - side) / 2;
+        const c = document.createElement('canvas');
+        c.width = S; c.height = S;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, S, S);
+        ctx.drawImage(img, sx, sy, side, side, 0, 0, S, S);
+        let q = 0.85, out = c.toDataURL('image/jpeg', q);
+        while (out.length > 120000 && q > 0.4) { q -= 0.1; out = c.toDataURL('image/jpeg', q); }
+        resolve({ dataUrl: out, kb: Math.round(out.length * 0.75 / 1024) });
+      };
+      img.onerror = function() { URL.revokeObjectURL(url); reject(new Error('تعذر قراءة الصورة')); };
+      img.src = url;
+    });
+  }
+  function showPreview(dataUrl, info) {
+    const drop = document.getElementById('ts-drop');
+    drop.classList.remove('loading');
+    if (dataUrl) {
+      drop.classList.add('has-img');
+      document.getElementById('ts-prev').src = dataUrl;
+      document.getElementById('ts-info').textContent = info || '';
+    } else {
+      drop.classList.remove('has-img');
+      document.getElementById('ts-prev').removeAttribute('src');
+      document.getElementById('ts-info').textContent = '';
+    }
+  }
+  window.tsPickPhoto = function(file) {
+    if (!file) return;
+    const drop = document.getElementById('ts-drop');
+    drop.classList.add('loading');
+    compressAvatar(file).then(function(r) {
+      photoState = r.dataUrl;
+      showPreview(r.dataUrl, r.kb + 'KB (اتقصت وإتضغطت تلقائياً)');
+    }).catch(function(e) { drop.classList.remove('loading'); alert(e.message || 'حصل خطأ في الصورة'); });
+  };
+  window.tsClearPhoto = function() { photoState = null; showPreview(null); };
+
+  (function bindDrop() {
+    const drop = document.getElementById('ts-drop');
+    if (!drop) return;
+    ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, function(e) { e.preventDefault(); drop.classList.add('drag'); }));
+    ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, function(e) { e.preventDefault(); drop.classList.remove('drag'); }));
+    drop.addEventListener('drop', function(e) { const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; if (f) tsPickPhoto(f); });
+    drop.addEventListener('paste', function(e) {
+      const items = (e.clipboardData && e.clipboardData.items) || [];
+      for (const it of items) { if (it.type && it.type.indexOf('image') === 0) { e.preventDefault(); tsPickPhoto(it.getAsFile()); return; } }
+    });
+  })();
+
+  // ===== حفظ / تعديل / حذف =====
+  function resetForm() {
+    editId = null; photoState = undefined;
+    ['ts-name', 'ts-points', 'ts-title'].forEach(i => { document.getElementById(i).value = ''; });
+    showPreview(null);
+    document.getElementById('tsa-form-title').textContent = '+ إضافة طالب متفوق';
+    document.getElementById('ts-save-btn').textContent = '➕ إضافة الطالب';
+    document.getElementById('ts-cancel-btn').style.display = 'none';
+    document.getElementById('ts-rank').value = '';
+    fillRankOptions();
+  }
+  window.tsCancelEdit = resetForm;
+
+  window.tsEdit = function(id) {
+    const s = (cache || {})[id];
+    if (!s) return;
+    editId = id; photoState = undefined;
+    document.getElementById('ts-name').value = s.name || '';
+    document.getElementById('ts-grade').value = s.grade || 'الأول الإعدادي';
+    document.getElementById('ts-points').value = s.points != null ? s.points : '';
+    document.getElementById('ts-title').value = s.title || '';
+    showPreview(typeof s.photo === 'string' ? s.photo : null, 'الصورة الحالية');
+    document.getElementById('ts-rank').value = '';
+    fillRankOptions();
+    document.getElementById('ts-rank').value = String(s.rank || 1);
+    document.getElementById('tsa-form-title').textContent = '✏️ تعديل: ' + s.name;
+    document.getElementById('ts-save-btn').textContent = '💾 حفظ التعديلات';
+    document.getElementById('ts-cancel-btn').style.display = 'inline-block';
+    document.getElementById('tsa-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+
+  window.tsSave = function() {
+    if (typeof db === 'undefined' || !db) { alert('لسه بيتصل بقاعدة البيانات، حاول تاني بعد شوية'); return; }
+    const name = document.getElementById('ts-name').value.trim();
+    if (!name) { alert('من فضلك اكتب اسم الطالب'); return; }
+    const rank = parseInt(document.getElementById('ts-rank').value, 10) || 1;
+    if (!editId && getList().length >= MAX_CARDS) { alert('وصلت للحد الأقصى (' + MAX_CARDS + ' بطاقات). احذف بطاقة الأول عشان تضيف جديدة.'); return; }
+    const clash = getList().find(s => s.rank === rank && s.id !== editId);
+    if (clash) { alert('الترتيب ده مستخدم بالفعل مع «' + clash.name + '». اختار ترتيب تاني أو عدّل بطاقته الأول.'); return; }
+    const pointsRaw = document.getElementById('ts-points').value.trim();
+    const title = document.getElementById('ts-title').value.trim();
+    const data = {
+      name: name,
+      grade: document.getElementById('ts-grade').value,
+      rank: rank,
+      points: pointsRaw === '' ? null : Math.max(0, Math.round(Number(pointsRaw)) || 0),
+      title: title || null,
+      updatedAt: Date.now()
+    };
+    if (photoState !== undefined) data.photo = photoState; // null = إزالة
+    const ref = db.ref('topStudents');
+    const p = editId ? ref.child(editId).update(data) : ref.push().set(Object.keys(data).reduce(function(o, k) { if (data[k] !== null) o[k] = data[k]; return o; }, {}));
+    p.then(resetForm).catch(function(e) { alert('تعذر الحفظ: ' + (e && e.message ? e.message : 'تأكد من قواعد Firebase') + '\n(لو الصورة كبيرة جرّب صورة أصغر)'); });
+  };
+
+  window.tsDelete = function(id) {
+    const s = (cache || {})[id];
+    if (!s || !confirm('متأكد عايز تحذف «' + s.name + '» من أوائل المنصة؟')) return;
+    db.ref('topStudents/' + id).remove();
+    if (editId === id) resetForm();
+  };
+
+  document.addEventListener('DOMContentLoaded', function() { renderTopStudents(); ensureTopStudentsListener(); });
 })();
 </script>
 
