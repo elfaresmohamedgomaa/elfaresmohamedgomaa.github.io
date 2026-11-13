@@ -1585,6 +1585,42 @@
   .cha-sec { margin-bottom: 18px; }
   .cha-sec-title { font-size: 0.82rem; font-weight: 800; color: var(--gold-light); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
   .cha-sec-title i { font-style: normal; width: 22px; height: 22px; border-radius: 50%; background: rgba(201,168,76,0.18); display: inline-flex; align-items: center; justify-content: center; font-size: 0.72rem; }
+
+  /* ===== CHALLENGE INTRO + REGISTER (قبل بدء التحدي) ===== */
+  .chi-card { max-width: 520px; margin: 0 auto; background: var(--dark3); border: 1px solid rgba(201,168,76,0.22); border-radius: 22px; padding: 22px 18px; }
+  .chi-icon { font-size: 2.4rem; text-align: center; }
+  .chi-title { text-align: center; font-size: 1.25rem; font-weight: 900; color: var(--gold-light); margin: 6px 0 4px; }
+  .chi-desc { text-align: center; color: var(--white2); opacity: 0.8; font-size: 0.9rem; line-height: 1.9; margin-bottom: 16px; }
+  .chi-sec-title { font-size: 0.82rem; font-weight: 800; color: var(--gold-light); margin: 16px 2px 8px; }
+  .chi-list { display: flex; flex-direction: column; gap: 8px; }
+  .chi-item { display: flex; gap: 10px; align-items: flex-start; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 10px 12px; font-size: 0.86rem; color: var(--white2); line-height: 1.8; }
+  .chi-item b { color: var(--gold-light); }
+  .chi-item .ic { flex-shrink: 0; }
+  .chi-grades { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .chi-grade-box { text-align: center; background: rgba(255,255,255,0.04); border: 1px solid rgba(201,168,76,0.18); border-radius: 12px; padding: 10px 4px; font-size: 0.78rem; color: var(--white2); }
+  .chi-grade-box b { display: block; color: var(--gold-light); font-size: 1rem; margin-bottom: 2px; }
+  .chi-ladder { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chi-ladder span { background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.3); color: var(--gold-light); border-radius: 50px; padding: 4px 12px; font-size: 0.8rem; font-weight: 700; }
+  .chi-actions { display: flex; gap: 10px; margin-top: 20px; }
+  .chi-actions .exam-start-btn { flex: 1; margin: 0; }
+  .chi-back-btn { font-family: inherit; font-weight: 700; font-size: 0.9rem; padding: 0 18px; border-radius: 14px; cursor: pointer; background: transparent; border: 1px solid rgba(255,255,255,0.2); color: var(--white2); }
+  .chi-grade-pick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 6px; }
+  .chi-grade-pick button { font-family: inherit; font-weight: 800; font-size: 0.9rem; padding: 12px 4px; border-radius: 12px; cursor: pointer; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.14); color: var(--white2); }
+  .chi-grade-pick button small { display: block; font-weight: 600; font-size: 0.68rem; opacity: 0.7; margin-top: 2px; }
+  .chi-grade-pick button.sel { background: rgba(201,168,76,0.18); border-color: var(--gold-light); color: var(--gold-light); }
+  .chi-qnote { font-size: 0.8rem; color: var(--gold-light); margin: 2px 2px 14px; min-height: 1.2em; }
+  .chi-center-pick { display: flex; flex-direction: column; gap: 8px; margin-bottom: 6px; }
+  .chi-center-pick button { font-family: inherit; font-weight: 700; font-size: 0.88rem; text-align: right; padding: 12px 14px; border-radius: 12px; cursor: pointer; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.14); color: var(--white2); display: flex; align-items: center; gap: 10px; }
+  .chi-center-pick button::before { content: ''; width: 16px; height: 16px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.3); flex-shrink: 0; }
+  .chi-center-pick button.sel { background: rgba(201,168,76,0.18); border-color: var(--gold-light); color: var(--gold-light); }
+  .chi-center-pick button.sel::before { border-color: var(--gold-light); background: radial-gradient(circle, var(--gold-light) 45%, transparent 50%); }
+  /* admin: grade sub-tabs inside challenge questions */
+  .cha-gtabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+  .cha-gtab { font-family: inherit; font-weight: 800; font-size: 0.9rem; padding: 10px 4px; border-radius: 12px; cursor: pointer; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.12); color: var(--white2); }
+  .cha-gtab small { display: block; font-weight: 600; font-size: 0.7rem; opacity: 0.75; margin-top: 2px; }
+  .cha-gtab.active { background: rgba(201,168,76,0.18); border-color: var(--gold-light); color: var(--gold-light); }
+  .cha-gtab.empty small { color: #ff8a8a; opacity: 1; }
+  .cha-meta-line { font-size: 0.74rem; opacity: 0.75; margin-top: 2px; }
   .cha-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .cha-field-label { display: block; font-size: 0.74rem; color: var(--white2); opacity: 0.7; margin: 6px 2px 4px; }
   .cha-switch { display: flex; align-items: center; gap: 12px; padding: 11px 14px; margin-bottom: 8px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; cursor: pointer; }
@@ -12791,6 +12827,54 @@ function initPushSystem() {
   </div>
 </div>
 
+<!-- ===== CHALLENGE INTRO + REGISTER (شاشة تعريف التحدي + بيانات الطالب) ===== -->
+<div class="legal-overlay" id="challenge-intro-page">
+  <div class="legal-topbar"></div>
+  <div class="legal-header">
+    <button class="legal-close-btn" onclick="chIntroClose()" aria-label="إغلاق">✕</button>
+    <div class="legal-header-title-wrap">
+      <div>
+        <div class="legal-header-title" id="chi-head-title">نظام التحدي</div>
+        <div class="legal-header-sub" id="chi-head-sub"></div>
+      </div>
+      <div class="legal-header-icon">🏆</div>
+    </div>
+  </div>
+  <div class="legal-body">
+    <div id="chi-view-intro"></div>
+    <div id="chi-view-form" style="display:none;">
+      <div class="chi-card">
+        <div class="chi-icon">🧑‍🎓</div>
+        <div class="chi-title">بيانات المتسابق</div>
+        <div class="chi-desc">اكتب بياناتك بشكل صحيح، وبعدها هيبدأ التحدي مباشرة.</div>
+
+        <label class="exam-form-label">الاسم ثلاثي</label>
+        <input class="admin-input" id="chi-name" placeholder="مثال: أحمد محمد علي" dir="rtl" autocomplete="off">
+        <div class="exam-form-error" id="chi-name-err">من فضلك اكتب الاسم ثلاثي على الأقل</div>
+
+        <label class="exam-form-label" style="margin-top:14px;">الصف الدراسي</label>
+        <div class="chi-grade-pick" id="chi-grade-pick"></div>
+        <div class="chi-qnote" id="chi-qnote"></div>
+        <div class="exam-form-error" id="chi-grade-err">من فضلك اختر صفك الدراسي</div>
+
+        <label class="exam-form-label" style="margin-top:6px;">السنتر</label>
+        <div class="chi-center-pick" id="chi-center-pick"></div>
+        <div class="exam-form-error" id="chi-center-err">من فضلك اختر السنتر</div>
+
+        <label class="exam-form-label" style="margin-top:14px;">رقم الواتساب</label>
+        <input class="admin-input" id="chi-phone" placeholder="01xxxxxxxxx" dir="ltr" type="tel" inputmode="numeric" autocomplete="off">
+        <div class="exam-form-error" id="chi-phone-err">من فضلك اكتب رقم واتساب صحيح (11 رقم يبدأ بـ 01)</div>
+
+        <div class="chi-actions">
+          <button class="chi-back-btn" onclick="chIntroBack()">رجوع</button>
+          <button class="exam-start-btn" id="chi-start-btn" onclick="chFormSubmit()">🚀 ابدأ التحدي الآن</button>
+        </div>
+        <div class="exam-form-hint" style="text-align:center;margin-top:10px;">⏱ الوقت بيبدأ يتحسب أول ما تدوس «ابدأ التحدي»</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 // ===== CHALLENGES (مسابقات وتحديات) =====
 // - التحدي = اختبار في عقدة exams عليه isChallenge:true (الأسئلة بتتدار من تاب «الاختبارات» في لوحة التحكم)
@@ -12826,7 +12910,30 @@ function initPushSystem() {
     const s = Math.max(0, Math.round((ms || 0) / 1000));
     return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
   }
-  function qCount(e) { return e && e.questions ? Object.keys(e.questions).length : 0; }
+  // ===== المراحل (إعدادي فقط) والسناتر =====
+  const CH_GRADES = [
+    { key: 'g1', short: '1ع', label: 'الأول الإعدادي' },
+    { key: 'g2', short: '2ع', label: 'الثاني الإعدادي' },
+    { key: 'g3', short: '3ع', label: 'الثالث الإعدادي' }
+  ];
+  const CH_CENTERS = ['سنتر رسالة الساعة', 'سنتر رسالة السيوف', 'سنتر القمة', 'سنتر جاردينيا', 'سنتر الأصدقاء'];
+  window.CHALLENGE_GRADES = CH_GRADES;
+  window.CHALLENGE_CENTERS = CH_CENTERS;
+  function gradeByKey(k) { return CH_GRADES.find(g => g.key === k) || null; }
+  function gradeByLabel(label) {
+    const t = String(label || '');
+    return CH_GRADES.find(g => g.label === t) || null;
+  }
+  // أسئلة صف معين: gradeQuestions/{g1|g2|g3}. التحديات القديمة (قبل التعديل) كانت بأسئلة موحدة في questions، فبنستخدمها لكل الصفوف لحد ما الأدمن يوزعها.
+  function hasGradeQs(e) { return !!(e && e.gradeQuestions); }
+  function gradeQs(e, key) {
+    if (!e) return {};
+    if (hasGradeQs(e)) return e.gradeQuestions[key] || {};
+    return e.questions || {};
+  }
+  function qCountGrade(e, key) { return Object.keys(gradeQs(e, key)).length; }
+  // إجمالي الأسئلة في كل الصفوف (للتحذيرات والإحصائيات)
+  function qCount(e) { return CH_GRADES.reduce((n, g) => n + qCountGrade(e, g.key), 0); }
 
   // أنواع التحديات (حالياً تحدي السرعة فقط — ضيف أنواع جديدة هنا لما تجهز)
   const CHALLENGE_TYPES = {
@@ -12872,7 +12979,7 @@ function initPushSystem() {
     return sum;
   }
   function badgeFor(points) { return CH_BADGES.find(b => points >= b.points) || null; }
-  window.challengeHelpers = { getChallenges, finishedList, pointsFor, totalPointsFor, fmtMs, qCount, esc, shortName, getType, challengeStatus };
+  window.challengeHelpers = { getChallenges, finishedList, pointsFor, totalPointsFor, fmtMs, qCount, qCountGrade, gradeQs, hasGradeQs, gradeByKey, gradeByLabel, esc, shortName, getType, challengeStatus };
 
   // ===== Firebase listener =====
   window.ensureChallengeResultsListener = function() {
@@ -12975,7 +13082,7 @@ function initPushSystem() {
             <div class="ch-tile"><div class="ic">⏱️</div><b>التقييم</b><span>الدرجة + الزمن</span></div>
             <div class="ch-tile"><div class="ic">${type.icon}</div><b>نوع التحدي</b><span>${esc(type.label)}</span></div>
           </div>
-          <div class="ch-meta"><span>📝 ${n} سؤال</span><span>⏳ ${e.durationMinutes || 20} دقيقة</span><span>✅ اختيارات متعددة</span><span>☝️ محاولة واحدة فقط</span>${schedLine}</div>
+          <div class="ch-meta"><span>📝 أسئلة حسب صفك الدراسي</span><span>⏳ ${e.durationMinutes || 20} دقيقة</span><span>✅ اختيارات متعددة</span><span>☝️ محاولة واحدة فقط</span>${schedLine}</div>
           <div class="ch-ladder">${ladder}</div>
           <button class="ch-cta" ${btnDis ? 'disabled' : ''} onclick="chStart('${cid}')">${btnTxt}</button>
         </div>`;
@@ -13073,7 +13180,7 @@ function initPushSystem() {
   });
   document.addEventListener('keydown', function(e) {
     if (e.key !== 'Escape') return;
-    const busy = ['exam-take-page', 'challenge-result-page'].some(id => {
+    const busy = ['exam-take-page', 'challenge-result-page', 'challenge-intro-page'].some(id => {
       const x = document.getElementById(id); return x && x.classList.contains('open');
     });
     const page = document.getElementById('challenges-page');
@@ -13092,7 +13199,11 @@ function initPushSystem() {
     if (cid && cid !== '__none__') continueStart(cid);
   };
 
-  // ===== Start flow =====
+  // ===== Start flow: (1) شاشة التعريف بالنظام → (2) بيانات المتسابق → (3) بدء التحدي =====
+  let introCid = null;
+  let formGradeKey = '';
+  let formCenter = '';
+
   window.chStart = function(cid) {
     if (!examsCache[cid]) return;
     if (typeof currentStudent === 'undefined' || !currentStudent) {
@@ -13114,29 +13225,166 @@ function initPushSystem() {
     }
     if (!qCount(e)) { alert('الأسئلة لسه بتتجهز، تابعنا قريباً.'); return; }
     const code = currentStudent.code;
-    const ref = db.ref('challengeResults/' + cid + '/' + code);
-    ref.once('value').then(function(snap) {
+    db.ref('challengeResults/' + cid + '/' + code).once('value').then(function(snap) {
       if (snap.exists()) {
         alert(typeof (snap.val() || {}).score === 'number'
           ? '✅ إنت شاركت في التحدي ده قبل كده، وليك محاولة واحدة بس.'
           : '⚠️ إنت بدأت التحدي ده قبل كده ومخلصتوش، فمش هتقدر تعيده. لو حصلت مشكلة كلّم الأستاذ.');
         return;
       }
-      const msg = '🏁 «' + (e.title || 'التحدي') + '»\n\n• ' + qCount(e) + ' سؤال في ' + (e.durationMinutes || 20) + ' دقيقة\n• التقييم بالدرجة ثم الوقت، وليك محاولة واحدة فقط\n• الوقت بيبدأ يتحسب أول ما تدوس موافق\n\nجاهز تبدأ؟';
-      if (!confirm(msg)) return;
-      return db.ref('students/' + code).once('value').then(function(s) {
-        const sd = s.val() || {};
-        return ref.transaction(function(cur) {
-          return cur ? undefined : { name: currentStudent.name, grade: sd.grade || '', startedAt: Date.now(), status: 'started' };
-        }).then(function(res) {
-          if (!res.committed) { alert('إنت بدأت التحدي ده قبل كده.'); return; }
-          window.__beginChallengeExam(cid, e, { code: code, name: currentStudent.name, grade: sd.grade || '' });
-        });
-      });
+      return db.ref('students/' + code + '/grade').once('value').then(function(g) {
+        window.__chStudentGrade = g.val() || '';
+      }, function() { window.__chStudentGrade = ''; }).then(function() { openIntro(cid); });
     }).catch(function(err) {
       alert('⚠️ تعذر بدء التحدي: ' + (err && err.message ? err.message : 'مشكلة في الاتصال'));
     });
   }
+
+  function qEl(id) { return document.getElementById(id); }
+
+  function openIntro(cid) {
+    const e = examsCache[cid];
+    if (!e) return;
+    introCid = cid;
+    const type = getType(e);
+    const st = challengeStatus(e);
+    const ladder = (Array.isArray(e.challengePoints) && e.challengePoints.length ? e.challengePoints : DEFAULT_POINTS)
+      .slice(0, 5).map((p, i) => `<span>${['🥇','🥈','🥉'][i] || ('#' + (i + 1))} ${p} نقطة</span>`).join('');
+    const gradesBoxes = CH_GRADES.map(g => `<div class="chi-grade-box"><b>${g.short}</b>${qCountGrade(e, g.key)} سؤال</div>`).join('');
+    let schedLine = '';
+    if (st.sched && st.sched.state === 'open') schedLine = `<div class="chi-item"><span class="ic">🟢</span><div>التحدي متاح حتى الساعة <b>${formatTimeArabic(e.scheduleEndTime)}</b> وبعدها بيتقفل تلقائي.</div></div>`;
+
+    qEl('chi-head-title').textContent = 'نظام التحدي';
+    qEl('chi-head-sub').textContent = e.title || '';
+    qEl('chi-view-intro').innerHTML = `
+      <div class="chi-card">
+        <div class="chi-icon">${type.icon}</div>
+        <div class="chi-title">${esc(e.title || 'تحدي')}</div>
+        <div class="chi-desc">${esc(e.description || 'اختبار تنافسي لقياس مستواك في أسرع وقت وأعلى درجة')}</div>
+
+        <div class="chi-sec-title">📋 معلومات التحدي</div>
+        <div class="chi-list">
+          <div class="chi-item"><span class="ic">${type.icon}</span><div>نوع التحدي: <b>${esc(type.label)}</b></div></div>
+          <div class="chi-item"><span class="ic">⏳</span><div>مدة التحدي: <b>${e.durationMinutes || 20} دقيقة</b></div></div>
+          <div class="chi-item"><span class="ic">✅</span><div>أسئلة <b>اختيار من متعدد</b>، وكل سؤال له إجابة صحيحة واحدة.</div></div>
+          <div class="chi-item"><span class="ic">🎓</span><div>الأسئلة بتختلف حسب <b>صفك الدراسي</b>، وبتظهرلك أسئلة صفك إنت بس.</div></div>
+          ${schedLine}
+        </div>
+        <div class="chi-sec-title">❓ عدد الأسئلة لكل صف</div>
+        <div class="chi-grades">${gradesBoxes}</div>
+
+        <div class="chi-sec-title">⚖️ نظام التقييم والترتيب</div>
+        <div class="chi-list">
+          <div class="chi-item"><span class="ic">🎯</span><div>الترتيب بـ<b>الدرجة الأعلى</b> أولاً، ولو تساوى طالبين بيتقدّم اللي خلّص في <b>وقت أقل</b>.</div></div>
+          <div class="chi-item"><span class="ic">☝️</span><div>ليك <b>محاولة واحدة فقط</b>، ومينفعش تعيد التحدي أو تخرج منه وترجع.</div></div>
+          <div class="chi-item"><span class="ic">⏱️</span><div>الوقت بيبدأ أول ما تدوس «ابدأ التحدي»، ولما يخلص بيتسلّم حلك <b>تلقائياً</b>.</div></div>
+          <div class="chi-item"><span class="ic">🔀</span><div>تقدر تتنقل بين الأسئلة وتغيّر إجابتك قبل ما تنهي التحدي.</div></div>
+        </div>
+        <div class="chi-sec-title">⭐ النقاط حسب المركز</div>
+        <div class="chi-ladder">${ladder}</div>
+
+        <div class="chi-actions">
+          <button class="exam-start-btn" onclick="chIntroNext()">متابعة وتسجيل البيانات ←</button>
+        </div>
+      </div>`;
+    qEl('chi-view-form').style.display = 'none';
+    qEl('chi-view-intro').style.display = 'block';
+
+    // تجهيز النموذج (القيم الافتراضية من حساب الطالب)
+    const sg = gradeByLabel(window.__chStudentGrade || '');
+    formGradeKey = sg ? sg.key : '';
+    formCenter = '';
+    qEl('chi-name').value = (currentStudent && currentStudent.name) || '';
+    qEl('chi-phone').value = '';
+    document.querySelectorAll('#challenge-intro-page .exam-form-error').forEach(x => x.classList.remove('show'));
+    renderFormPickers();
+
+    const page = qEl('challenge-intro-page');
+    page.classList.add('open');
+    page.scrollTop = 0;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function renderFormPickers() {
+    const e = examsCache[introCid];
+    qEl('chi-grade-pick').innerHTML = CH_GRADES.map(g =>
+      `<button type="button" class="${formGradeKey === g.key ? 'sel' : ''}" onclick="chPickGrade('${g.key}')">${g.short}<small>${g.label}</small></button>`).join('');
+    qEl('chi-center-pick').innerHTML = CH_CENTERS.map((c, i) =>
+      `<button type="button" class="${formCenter === c ? 'sel' : ''}" onclick="chPickCenter(${i})">${esc(c)}</button>`).join('');
+    const n = formGradeKey && e ? qCountGrade(e, formGradeKey) : 0;
+    qEl('chi-qnote').textContent = formGradeKey ? (n ? '📝 عدد أسئلتك في التحدي: ' + n + ' سؤال' : '⚠️ لسه مفيش أسئلة لصفك في التحدي ده') : '';
+  }
+  window.chPickGrade = function(k) { formGradeKey = k; qEl('chi-grade-err').classList.remove('show'); renderFormPickers(); };
+  window.chPickCenter = function(i) { formCenter = CH_CENTERS[i] || ''; qEl('chi-center-err').classList.remove('show'); renderFormPickers(); };
+
+  window.chIntroNext = function() {
+    qEl('chi-view-intro').style.display = 'none';
+    qEl('chi-view-form').style.display = 'block';
+    qEl('chi-head-title').textContent = 'بيانات المتسابق';
+    qEl('challenge-intro-page').scrollTop = 0;
+  };
+  window.chIntroBack = function() {
+    qEl('chi-view-form').style.display = 'none';
+    qEl('chi-view-intro').style.display = 'block';
+    qEl('chi-head-title').textContent = 'نظام التحدي';
+    qEl('challenge-intro-page').scrollTop = 0;
+  };
+  window.chIntroClose = function() {
+    const page = qEl('challenge-intro-page');
+    if (page) page.classList.remove('open');
+    introCid = null;
+    const cp = qEl('challenges-page');
+    document.body.style.overflow = (cp && cp.classList.contains('open')) ? 'hidden' : '';
+  };
+
+  function normPhone(v) {
+    let d = String(v || '').replace(/[٠-٩]/g, x => '٠١٢٣٤٥٦٧٨٩'.indexOf(x)).replace(/[^0-9]/g, '');
+    if (d.indexOf('0020') === 0) d = '0' + d.slice(4);
+    else if (d.indexOf('20') === 0 && d.length === 12) d = '0' + d.slice(2);
+    return d;
+  }
+
+  window.chFormSubmit = function() {
+    const e = examsCache[introCid];
+    if (!e || !db || !currentStudent) return;
+    const cid = introCid;
+    const name = qEl('chi-name').value.trim().replace(/\s+/g, ' ');
+    const phone = normPhone(qEl('chi-phone').value);
+    let ok = true;
+    const flag = (id, bad) => { qEl(id).classList.toggle('show', !!bad); if (bad) ok = false; };
+    flag('chi-name-err', name.split(' ').filter(Boolean).length < 3);
+    flag('chi-grade-err', !gradeByKey(formGradeKey));
+    flag('chi-center-err', CH_CENTERS.indexOf(formCenter) === -1);
+    flag('chi-phone-err', !/^01[0125][0-9]{8}$/.test(phone));
+    if (!ok) { const first = document.querySelector('#challenge-intro-page .exam-form-error.show'); if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+
+    const st = challengeStatus(e);
+    if (!st.canStart) { alert(st.key === 'locked' ? '🔒 التحدي مقفول حالياً.' : '⏳ التحدي مش متاح دلوقتي، راجع موعده.'); chIntroClose(); renderChallengesPage(); return; }
+    const g = gradeByKey(formGradeKey);
+    const qs = gradeQs(e, g.key);
+    if (!Object.keys(qs).length) { alert('لسه مفيش أسئلة لصفك (' + g.label + ') في التحدي ده، تابعنا قريباً.'); return; }
+
+    const btn = qEl('chi-start-btn');
+    btn.disabled = true;
+    const code = currentStudent.code;
+    const ref = db.ref('challengeResults/' + cid + '/' + code);
+    ref.transaction(function(cur) {
+      return cur ? undefined : { name: name, grade: g.label, gradeKey: g.key, center: formCenter, startedAt: Date.now(), status: 'started' };
+    }).then(function(res) {
+      btn.disabled = false;
+      if (!res.committed) { alert('إنت بدأت التحدي ده قبل كده.'); chIntroClose(); return; }
+      // رقم الواتساب بيتحفظ في عقدة منفصلة (مش في challengeResults) عشان نتايج التحدي بتتحمّل عند كل الطلاب
+      try {
+        db.ref('challengeContacts/' + cid + '/' + code).set({ name: name, whatsapp: phone, center: formCenter, grade: g.label, savedAt: Date.now() })
+          .catch(function(err) { console.error('challengeContacts write failed:', err); });
+      } catch (err) { console.error(err); }
+      chIntroClose();
+      window.__beginChallengeExam(cid, Object.assign({}, e, { questions: qs }), { code: code, name: name, grade: g.label, center: formCenter, whatsapp: phone });
+    }).catch(function(err) {
+      btn.disabled = false;
+      alert('⚠️ تعذر بدء التحدي: ' + (err && err.message ? err.message : 'مشكلة في الاتصال'));
+    });
+  };
 
   // ===== Result page =====
   window.showChallengeResultPage = function(info) {
@@ -13192,7 +13440,19 @@ function initPushSystem() {
 (function() {
   const H = () => window.challengeHelpers;
   const DEFAULT_POINTS = [500, 400, 300, 200, 100];
-  const ui = { open: {}, tab: {} };
+  const ui = { open: {}, tab: {}, qgrade: {} };
+  let contactsCache = {}, contactsListenerOn = false, contactsError = false;
+  function ensureContactsListener() {
+    if (contactsListenerOn || typeof db === 'undefined' || !db) return;
+    contactsListenerOn = true;
+    db.ref('challengeContacts').on('value', function(snap) {
+      contactsCache = snap.val() || {}; contactsError = false;
+      if (typeof renderAdminChallenges === 'function') renderAdminChallenges();
+    }, function(err) {
+      console.error('challengeContacts listener error:', err);
+      contactsError = true;
+    });
+  }
   let pendingRender = false;
 
   function parsePoints(str) {
@@ -13230,6 +13490,102 @@ function initPushSystem() {
     return `<label class="cha-switch"><input type="checkbox" id="${id}" ${checked ? 'checked' : ''} ${extra || ''}><span class="cha-slider"></span><span class="cha-switch-text">${title}<small>${sub}</small></span></label>`;
   }
 
+
+  function waLink(num) {
+    const d = String(num || '').replace(/[^0-9]/g, '');
+    if (!d) return '';
+    return 'https://wa.me/' + (d.indexOf('0') === 0 ? '2' + d : d);
+  }
+  // سطر بيانات المتسابق: الصف · السنتر · واتساب
+  function metaLine(cid, r) {
+    const esc = H().esc;
+    const c = ((contactsCache || {})[cid] || {})[r.code] || {};
+    const center = r.center || c.center || '';
+    const wa = c.whatsapp || '';
+    const bits = [];
+    if (r.grade) bits.push(esc(r.grade));
+    if (center) bits.push(esc(center));
+    if (wa) bits.push('<a href="' + waLink(wa) + '" target="_blank" rel="noopener" style="color:var(--gold-light);" onclick="event.stopPropagation()" dir="ltr">📱 ' + esc(wa) + '</a>');
+    return bits.length ? '<div class="cha-meta-line">' + bits.join(' · ') + '</div>' : '';
+  }
+
+  // ===== تاب الأسئلة (منفصل لكل صف) =====
+  function questionsPane(id, e) {
+    const { qCountGrade, gradeQs, hasGradeQs, esc } = H();
+    const GRADES = window.CHALLENGE_GRADES || [];
+    const gk = ui.qgrade[id] || GRADES[0].key;
+    const g = GRADES.find(x => x.key === gk) || GRADES[0];
+    const key = id + '_' + g.key;
+    const letters = ['أ', 'ب', 'ج', 'د'];
+    const math = window.renderMathHtml || (x => esc(x));
+    const legacy = !hasGradeQs(e) && e.questions && Object.keys(e.questions).length;
+
+    const gtabs = GRADES.map(x => `<button class="cha-gtab ${x.key === g.key ? 'active' : ''} ${qCountGrade(e, x.key) === 0 ? 'empty' : ''}" onclick="adminChQGrade('${id}','${x.key}')">${x.short}<small>${x.label} · ${qCountGrade(e, x.key)} سؤال</small></button>`).join('');
+
+    const qs = Object.entries(gradeQs(e, g.key)).sort((a, b) => (a[1].order || 0) - (b[1].order || 0));
+    const list = qs.length ? qs.map(([qid, q]) => `
+      <div class="admin-question-item">
+        ${q.imageUrl ? `<img src="${esc(q.imageUrl)}" alt="صورة السؤال" style="max-width:100%; max-height:160px; border-radius:8px; margin-bottom:8px; display:block;">` : ''}
+        <div class="admin-question-item-text">${q.text ? math(q.text) : ''}</div>
+        <div class="admin-question-opts">
+          ${(q.options || []).map((opt, i) => `<div class="admin-question-opt ${i === q.correctIndex ? 'correct' : ''}">${letters[i]}) ${math(opt)}${i === q.correctIndex ? ' ✓' : ''}</div>`).join('')}
+        </div>
+        <button class="admin-btn-del" ${legacy ? 'disabled title="وزّع الأسئلة القديمة الأول"' : ''} onclick="adminChDelQ('${id}','${g.key}','${qid}')">🗑</button>
+      </div>`).join('') : '<p class="sd-empty">لا توجد أسئلة لـ ' + g.label + ' بعد.</p>';
+
+    const pending = (window._qPendingImg && window._qPendingImg[key]) || '';
+    return `
+      ${legacy ? `<div class="cha-warn" style="margin:0 0 12px;">ℹ️ الأسئلة الحالية (${Object.keys(e.questions).length}) من النظام القديم وبتظهر لكل الصفوف. دوس الزرار لنسخها لكل صف (1ع و2ع و3ع) وبعدها تقدر تعدّل كل صف لوحده.
+        <button class="cha-btn primary" style="margin-top:8px;width:100%;" onclick="adminChMigrate('${id}')">📥 توزيع الأسئلة الحالية على الصفوف الثلاثة</button></div>` : ''}
+      <div class="cha-gtabs">${gtabs}</div>
+      <div class="cha-sec-title">🎓 أسئلة ${g.label} (بتظهر لطلاب الصف ده بس)</div>
+      <div class="admin-item-list">${list}</div>
+
+      <div class="admin-add-form" ${legacy ? 'style="opacity:.5;pointer-events:none;"' : ''}>
+        <div class="admin-add-form-title">+ إضافة سؤال جديد لـ ${g.short}</div>
+        <input class="admin-input exam-math-font" id="q-new-text-${key}" placeholder="نص السؤال... (سيبه فاضي لو السؤال هيكون بصورة)" dir="rtl">
+        <div class="q-img-drop ${pending ? 'has-img' : ''}" id="q-drop-${key}" data-exam="${key}" tabindex="0">
+          <input type="file" accept="image/*" hidden id="q-file-${key}" onchange="adminPickQuestionImage('${key}', this.files[0]); this.value='';">
+          <div class="q-img-empty" onclick="document.getElementById('q-file-${key}').click()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-9 9"/></svg>
+            <b>اضغط لاختيار صورة السؤال</b>
+            <span>أو اسحبها هنا، أو الصقها بـ Ctrl+V بعد الضغط على المربع</span>
+          </div>
+          <div class="q-img-preview">
+            <img id="q-prev-${key}" alt="معاينة" src="${pending}">
+            <div class="q-img-info" id="q-info-${key}"></div>
+            <button type="button" class="q-img-remove" onclick="adminClearQuestionImage('${key}')">✕ إزالة الصورة</button>
+          </div>
+        </div>
+        <input class="admin-input" id="q-new-image-${key}" placeholder="أو رابط صورة مباشر (اختياري) — https://..." dir="ltr">
+        ${[0, 1, 2, 3].map(i => `<input class="admin-input exam-math-font" id="q-new-opt${i}-${key}" placeholder="الاختيار ${['الأول (أ)', 'الثاني (ب)', 'الثالث (ج)', 'الرابع (د)'][i]}" dir="rtl">`).join('')}
+        <select class="notif-type-select" id="q-new-correct-${key}">
+          <option value="0">الإجابة الصحيحة: أ</option>
+          <option value="1">الإجابة الصحيحة: ب</option>
+          <option value="2">الإجابة الصحيحة: ج</option>
+          <option value="3">الإجابة الصحيحة: د</option>
+        </select>
+        <button class="admin-add-btn" onclick="adminChAddQ('${id}','${g.key}')">➕ إضافة السؤال</button>
+      </div>
+
+      <div class="admin-add-form" ${legacy ? 'style="opacity:.5;pointer-events:none;"' : ''}>
+        <button class="admin-bulk-toggle-btn" onclick="toggleBulkAddBox('${key}')" id="bulk-toggle-btn-${key}">📋 إضافة أسئلة دفعة واحدة لـ ${g.short}</button>
+        <div id="bulk-add-box-${key}" style="display:none;">
+          <div class="admin-bulk-format-hint">الصيغة المطلوبة لكل سؤال (افصل بين الأسئلة بسطر فاضي):
+
+سؤال : نص السؤال هنا
+اختيار ١ : الاختيار الأول
+اختيار ٢ : الاختيار الثاني
+اختيار ٣ : الاختيار الثالث
+اختيار ٤ : الاختيار الرابع
+الاجابة الصحيحة هي ٣</div>
+          <textarea class="admin-bulk-textarea" id="bulk-add-text-${key}" placeholder="الصق هنا كل أسئلة ${g.label} دفعة واحدة..."></textarea>
+          <button class="admin-add-btn" onclick="adminChBulkQ('${id}','${g.key}')">➕ إضافة كل الأسئلة</button>
+          <div class="admin-bulk-result" id="bulk-add-result-${key}"></div>
+        </div>
+      </div>`;
+  }
+
   window.renderAdminChallenges = function(force) {
     const listEl = document.getElementById('admin-challenges-list');
     const statsEl = document.getElementById('admin-ch-stats');
@@ -13239,7 +13595,9 @@ function initPushSystem() {
     if (!force && ae && listEl.contains(ae) && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName)) { pendingRender = true; return; }
     pendingRender = false;
 
-    const { getChallenges, finishedList, pointsFor, fmtMs, qCount, esc, getType, challengeStatus } = H();
+    const { getChallenges, finishedList, pointsFor, fmtMs, qCount, qCountGrade, gradeQs, hasGradeQs, gradeByLabel, esc, getType, challengeStatus } = H();
+    const GRADES = window.CHALLENGE_GRADES || [];
+    ensureContactsListener();
     const types = window.CHALLENGE_TYPES || {};
     const entries = getChallenges(true);
 
@@ -13281,7 +13639,7 @@ function initPushSystem() {
         const rows = ranked.map((r, i) => `
           <div class="cha-board-row">
             <span class="rk">${['🥇','🥈','🥉'][i] || ('#' + (i + 1))}</span>
-            <span class="nm">${esc(r.name || '')}${r.grade ? ' <small style="opacity:.6;font-weight:400">· ' + esc(r.grade) + '</small>' : ''}</span>
+            <span class="nm">${esc(r.name || '')}${metaLine(id, r)}</span>
             <span>🎯 ${r.score}/${r.total} (${r.percentage}%)</span>
             <span>⏱ ${fmtMs(r.timeMs)}</span>
             <span>⭐ ${pointsFor(e, i + 1)}</span>
@@ -13289,7 +13647,7 @@ function initPushSystem() {
           </div>`).join('');
         const unfRows = unfinished.map(([code, v]) => `
           <div class="cha-board-row unf">
-            <span class="nm">⏳ ${esc(v.name || code)}</span><span>بدأ ولم يُنهِ التحدي</span>
+            <span class="nm">⏳ ${esc(v.name || code)}${metaLine(id, Object.assign({ code: code }, v))}</span><span>بدأ ولم يُنهِ التحدي</span>
             <button class="cha-btn danger" style="padding:4px 10px;" title="السماح له بالإعادة" onclick="adminResetChallengeEntry('${id}','${esc(code)}')">🗑</button>
           </div>`).join('');
 
@@ -13344,7 +13702,7 @@ function initPushSystem() {
               <div class="cha-chips">
                 <span class="cha-pill st-${st.key}">${st.icon} ${st.label}</span>
                 <span class="cha-chip">${type.icon} ${esc(type.label)}</span>
-                <span class="cha-chip">📝 ${nQ} سؤال</span>
+                <span class="cha-chip" title="عدد الأسئلة لكل صف">📝 ${GRADES.map(g => g.short + ': ' + qCountGrade(e, g.key)).join(' · ')}</span>
                 <span class="cha-chip">⏳ ${e.durationMinutes || 15} د</span>
                 <span class="cha-chip">👥 ${ranked.length}</span>
                 <span class="cha-chip">⭐ حتى ${pointsFor(e, 1)}</span>
@@ -13353,7 +13711,8 @@ function initPushSystem() {
             </div>
             <span class="cha-caret">▼</span>
           </div>
-          ${nQ === 0 ? '<div class="cha-warn">⚠️ التحدي من غير أسئلة — الطلاب مش هيقدروا يبدأوه. دوس «الأسئلة» وضيف أسئلة.</div>' : ''}
+          ${nQ === 0 ? '<div class="cha-warn">⚠️ التحدي من غير أسئلة — الطلاب مش هيقدروا يبدأوه. دوس «الأسئلة» وضيف أسئلة لكل صف.</div>'
+            : (GRADES.filter(g => qCountGrade(e, g.key) === 0).length ? '<div class="cha-warn">⚠️ مفيش أسئلة لـ ' + GRADES.filter(g => qCountGrade(e, g.key) === 0).map(g => g.short).join(' و ') + ' — طلاب الصف ده مش هيقدروا يبدأوا التحدي.</div>' : '')}
           <div class="cha-actions">
             <button class="cha-btn ${locked ? 'unlock' : 'lock'}" onclick="adminToggleChallengeLock('${id}')">${locked ? '🔓 فتح التحدي' : '🔒 قفل التحدي'}</button>
             <button class="cha-btn" onclick="adminToggleChallengeVisible('${id}')">${visible ? '🙈 إخفاء' : '👁️ إظهار'}</button>
@@ -13362,9 +13721,10 @@ function initPushSystem() {
           <div class="cha-body">
             <div class="cha-tabs">
               <button class="cha-tab ${tab === 'settings' ? 'active' : ''}" onclick="adminChTab('${id}','settings')">⚙️ الإعدادات</button>
+              <button class="cha-tab ${tab === 'questions' ? 'active' : ''}" onclick="adminChTab('${id}','questions')">📝 الأسئلة (${nQ})</button>
               <button class="cha-tab ${tab === 'board' ? 'active' : ''}" onclick="adminChTab('${id}','board')">📊 المشاركون (${ranked.length + unfinished.length})</button>
             </div>
-            ${tab === 'board' ? boardPane : settingsPane}
+            ${tab === 'board' ? boardPane : (tab === 'questions' ? questionsPane(id, e) : settingsPane)}
           </div>
         </div>`;
       }).join('');
@@ -13406,7 +13766,7 @@ function initPushSystem() {
       title,
       description: document.getElementById('ch-new-desc').value.trim(),
       durationMinutes: parseInt(document.getElementById('ch-new-duration').value, 10) || 15,
-      active: true, order: Date.now(), questions: {}, targetGrade: '',
+      active: true, order: Date.now(), gradeQuestions: { g1: {}, g2: {}, g3: {} }, targetGrade: '',
       isChallenge: true,
       challengeType: document.getElementById('ch-new-type').value || 'speed',
       locked: document.getElementById('ch-new-locked').checked,
@@ -13455,16 +13815,78 @@ function initPushSystem() {
   window.adminDeleteChallenge = function(id) {
     if (!confirm('متأكد عايز تحذف التحدي ده بكل أسئلته ونتايج الطلاب فيه؟ النقاط المكتسبة منه هتتشال من الطلاب.')) return;
     if (examsRef) examsRef.child(id).remove();
-    if (db) db.ref('challengeResults/' + id).remove();
+    if (db) { db.ref('challengeResults/' + id).remove(); db.ref('challengeContacts/' + id).remove(); }
   };
 
   window.adminChallengeQuestions = function(id) {
-    const btn = document.querySelector('.admin-tab-btn[onclick*="switchAdminTab(\'exams\'"]');
-    if (btn && typeof switchAdminTab === 'function') switchAdminTab('exams', btn);
-    if (typeof renderAdminExamsSection === 'function') renderAdminExamsSection();
-    const body = document.getElementById('examblock-' + id + '-body');
-    if (body && !body.classList.contains('open')) toggleLevel('examblock-' + id);
-    if (body) setTimeout(() => body.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+    ui.tab[id] = 'questions'; ui.open[id] = true;
+    renderAdminChallenges(true);
+    const card = document.getElementById('chcard-' + id);
+    if (card) setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
+  };
+  window.adminChQGrade = function(id, g) { ui.qgrade[id] = g; ui.tab[id] = 'questions'; ui.open[id] = true; renderAdminChallenges(true); };
+
+  function gradeRef(id, g) { return examsRef.child(id).child('gradeQuestions').child(g); }
+
+  window.adminChAddQ = function(id, g) {
+    const key = id + '_' + g;
+    const val = n => document.getElementById(n + key).value.trim();
+    const text = val('q-new-text-');
+    const imageUrl = (window._qPendingImg && window._qPendingImg[key]) || val('q-new-image-');
+    const opts = [0, 1, 2, 3].map(i => val('q-new-opt' + i + '-'));
+    const correctIndex = parseInt(document.getElementById('q-new-correct-' + key).value, 10) || 0;
+    if (!text && !imageUrl) { alert('من فضلك اكتب نص السؤال أو حط رابط صورة السؤال'); return; }
+    if (imageUrl && !/^(https?:\/\/|data:image\/)/i.test(imageUrl)) { alert('رابط الصورة لازم يبدأ بـ http:// أو https://'); return; }
+    if (opts.some(o => !o)) { alert('من فضلك املأ الاختيارات الأربعة'); return; }
+    if (!examsRef) return;
+    const q = { text, options: opts, correctIndex, order: Date.now() };
+    if (imageUrl) q.imageUrl = imageUrl;
+    gradeRef(id, g).push().set(q).then(() => {
+      adminClearQuestionImage(key);
+      ['q-new-text-', 'q-new-image-', 'q-new-opt0-', 'q-new-opt1-', 'q-new-opt2-', 'q-new-opt3-'].forEach(n => { const el = document.getElementById(n + key); if (el) el.value = ''; });
+      toast('✅ تمت إضافة السؤال');
+    }).catch(e => alert('حصل خطأ: ' + e.message));
+  };
+
+  window.adminChDelQ = function(id, g, qid) {
+    if (!confirm('حذف السؤال؟')) return;
+    if (examsRef) gradeRef(id, g).child(qid).remove();
+  };
+
+  window.adminChBulkQ = function(id, g) {
+    const key = id + '_' + g;
+    const textarea = document.getElementById('bulk-add-text-' + key);
+    const resultEl = document.getElementById('bulk-add-result-' + key);
+    if (!textarea || !resultEl) return;
+    const raw = textarea.value.trim();
+    const fail = m => { resultEl.className = 'admin-bulk-result err'; resultEl.textContent = m; };
+    if (!raw) { fail('⚠️ اكتب الأسئلة الأول'); return; }
+    if (!examsRef) { fail('⚠️ لسه بيتصل بقاعدة البيانات، حاول تاني بعد شوية'); return; }
+    if (typeof window.parseBulkExamQuestions !== 'function') { fail('⚠️ حصل خطأ داخلي، حدّث الصفحة وحاول تاني'); return; }
+    const { questions, errors } = window.parseBulkExamQuestions(raw);
+    if (!questions.length) { fail('❌ مفيش أي سؤال اتقرا صح:\n' + errors.join('\n')); return; }
+    const base = Date.now();
+    const ref = gradeRef(id, g);
+    Promise.all(questions.map((q, i) => ref.push().set({ text: q.text, options: q.options, correctIndex: q.correctIndex, order: base + i })))
+      .then(() => {
+        textarea.value = '';
+        toast('✅ تمت إضافة ' + questions.length + ' سؤال' + (errors.length ? ' (واتجاهل ' + errors.length + ' فيه مشكلة)' : ''));
+        const el = document.getElementById('bulk-add-result-' + key);
+        if (el) { el.className = 'admin-bulk-result ok'; el.textContent = '✅ تم إضافة ' + questions.length + ' سؤال' + (errors.length ? '\n⚠️ اتجاهل ' + errors.length + ' بلوك فيه مشكلة:\n' + errors.join('\n') : ''); }
+      })
+      .catch(e => fail('❌ حصل خطأ أثناء الحفظ: ' + e.message));
+  };
+
+  // نسخ الأسئلة القديمة (الموحدة) لكل صف
+  window.adminChMigrate = function(id) {
+    const e = (examsCache || {})[id];
+    if (!e || !examsRef || !e.questions) return;
+    if (!confirm('هيتم نسخ الأسئلة الحالية لـ 1ع و2ع و3ع، وبعدها تقدر تعدّل كل صف لوحده. متابعة؟')) return;
+    const gq = {};
+    (window.CHALLENGE_GRADES || []).forEach(g => { gq[g.key] = JSON.parse(JSON.stringify(e.questions)); });
+    examsRef.child(id).update({ gradeQuestions: gq, questions: null })
+      .then(() => toast('✅ تم توزيع الأسئلة على الصفوف'))
+      .catch(err => alert('حصل خطأ: ' + err.message));
   };
 
   window.adminCopyChallengeBoard = function(id) {
@@ -14791,7 +15213,8 @@ if (document.readyState === 'loading') {
   window.renderAdminExamsSection = function() {
     const listEl = document.getElementById('admin-exams-list');
     if (!listEl) return;
-    const entries = Object.entries(examsCache || {});
+    // التحديات بتتدار من تاب «التحديات» (أسئلتها منفصلة لكل صف)
+    const entries = Object.entries(examsCache || {}).filter(([id, e]) => !(e && e.isChallenge));
     if (!entries.length) {
       listEl.innerHTML = '<p class="sd-empty">لا توجد اختبارات مضافة بعد.</p>';
     } else {
@@ -15194,6 +15617,9 @@ if (document.readyState === 'loading') {
 
     return { questions, errors };
   }
+
+  window.parseBulkExamQuestions = parseBulkExamQuestions;
+  window.renderMathHtml = renderMathHtml;
 
   window.adminBulkAddQuestions = function(examId) {
     const textarea = document.getElementById('bulk-add-text-' + examId);
