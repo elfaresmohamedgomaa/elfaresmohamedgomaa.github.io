@@ -1472,6 +1472,22 @@
 .ts-drop.loading::after { content: 'جاري تجهيز الصورة...'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); color: var(--gold-light); font-size: 0.85rem; }
 @media (max-width: 560px) { .tsa-row2 { grid-template-columns: 1fr; } }
 
+  /* ===== ORGANIZED COPY (نسخ منظّم) ===== */
+  .results-copy-btn.org { background: linear-gradient(135deg, #c9a84c, #8a6a1a); color: #1a1206; }
+  .org-overlay { position: fixed; inset: 0; z-index: 1000003; display: none; align-items: center; justify-content: center; padding: 16px; background: rgba(0,0,0,0.78); backdrop-filter: blur(4px); }
+  .org-overlay.open { display: flex; animation: lbIn 0.2s ease; }
+  .org-box { width: 100%; max-width: 640px; max-height: 92vh; overflow-y: auto; background: var(--dark2); border: 1px solid rgba(201,168,76,0.3); border-radius: 22px; padding: 20px 22px 22px; box-shadow: 0 30px 80px rgba(0,0,0,0.6); }
+  .org-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .org-head b { font-size: 1.1rem; color: var(--gold-light); }
+  .org-x { background: none; border: none; color: var(--white2); font-size: 1.2rem; cursor: pointer; opacity: 0.7; }
+  .org-scope { font-size: 0.8rem; color: var(--white2); opacity: 0.7; margin-bottom: 14px; line-height: 1.8; }
+  .org-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; margin-bottom: 8px; }
+  .org-opts .cha-switch { margin-bottom: 8px; padding: 9px 12px; }
+  .org-sort-row { grid-column: 1 / -1; margin-bottom: 10px; }
+  #org-preview { width: 100%; min-height: 260px; max-height: 42vh; resize: vertical; background: #0c0c12; color: var(--white); border: 1px solid rgba(201,168,76,0.25); border-radius: 14px; padding: 14px; font-family: inherit; font-size: 0.9rem; line-height: 2; white-space: pre; }
+  .org-foot { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+  @media (max-width: 560px) { .org-opts { grid-template-columns: 1fr; } }
+
   /* ===== CHALLENGES PAGE ===== */
   .ch-hero { text-align: center; padding: 4px 0 2px; }
   .ch-hero h2 { font-size: clamp(1.7rem, 4.5vw, 2.5rem); font-weight: 900; color: var(--gold-light); }
@@ -8620,10 +8636,37 @@ STU-26-0003	معاذ خالد" style="resize:vertical; font-family:'IBM Plex San
           </select>
           <button type="button" class="results-sort-dir-btn" id="examresults-sort-dir" onclick="toggleExamResultsSortDir()">⬇️ تنازلي</button>
           <button type="button" class="results-copy-btn" onclick="copyExamResultsToClipboard()">📋 نسخ الدرجات</button>
+          <button type="button" class="results-copy-btn org" onclick="openOrganizedCopy()">🗂️ نسخ منظّم</button>
           <span class="results-summary-badge" id="examresults-count">0 نتيجة</span>
         </div>
 
         <div class="admin-students-list" id="admin-examresults-list"></div>
+
+        <!-- نافذة النسخ المنظّم -->
+        <div class="org-overlay" id="org-copy-modal" onclick="if(event.target===this) closeOrganizedCopy()">
+          <div class="org-box">
+            <div class="org-head"><b>🗂️ نسخ منظّم للدرجات</b><button class="org-x" onclick="closeOrganizedCopy()" aria-label="إغلاق">✕</button></div>
+            <div class="org-scope" id="org-scope"></div>
+            <div class="org-opts">
+              <label class="cha-switch"><input type="checkbox" id="org-opt-stats" onchange="orgCopyRefresh()"><span class="cha-slider"></span><span class="cha-switch-text">📊 إحصائيات الاختبار<small>عدد الطلاب والمتوسط وأعلى درجة</small></span></label>
+              <label class="cha-switch"><input type="checkbox" id="org-opt-num" onchange="orgCopyRefresh()"><span class="cha-slider"></span><span class="cha-switch-text">🔢 ترقيم الطلاب<small>1. 2. 3. قبل كل اسم</small></span></label>
+              <label class="cha-switch"><input type="checkbox" id="org-opt-pct" onchange="orgCopyRefresh()"><span class="cha-slider"></span><span class="cha-switch-text">％ النسبة المئوية<small>تظهر بعد الدرجة</small></span></label>
+              <label class="cha-switch"><input type="checkbox" id="org-opt-sep" onchange="orgCopyRefresh()"><span class="cha-slider"></span><span class="cha-switch-text">➖ خط فاصل<small>بين كل اختبار والتاني</small></span></label>
+              <div class="org-sort-row">
+                <select class="notif-type-select" id="org-opt-sort" onchange="orgCopyRefresh()" dir="rtl">
+                  <option value="score">🏅 ترتيب الطلاب: الدرجة الأعلى أولاً</option>
+                  <option value="name">🔤 ترتيب الطلاب: أبجدياً بالاسم</option>
+                  <option value="time">🕒 ترتيب الطلاب: الأحدث أولاً</option>
+                </select>
+              </div>
+            </div>
+            <textarea id="org-preview" readonly dir="rtl"></textarea>
+            <div class="org-foot">
+              <button class="cha-btn primary" style="flex:1; padding:12px;" onclick="orgCopyDo()">📋 نسخ النص</button>
+              <button class="cha-btn" onclick="closeOrganizedCopy()">إغلاق</button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- ===== CHALLENGES TAB ===== -->
@@ -15272,6 +15315,150 @@ if (document.readyState === 'loading') {
       showAdminToast && showAdminToast();
     });
   };
+
+
+  // ===== نسخ منظّم للدرجات (مجمّعة حسب الاختبار) =====
+  const ORG_GRADE_SHORT = {
+    'الأول الإعدادي': '1ع', 'الثاني الإعدادي': '2ع', 'الثالث الإعدادي': '3ع',
+    'الأول الثانوي': '1ث', 'الثاني الثانوي': '2ث', 'الثالث الثانوي': '3ث'
+  };
+  const ORG_OPTS_KEY = 'af_org_copy_opts';
+
+  function orgPointsWord(n) {
+    if (n === 1) return 'درجة واحدة';
+    if (n === 2) return 'درجتين';
+    if (n >= 3 && n <= 10) return n + ' درجات';
+    return n + ' درجة';
+  }
+  function orgStudentsWord(n) {
+    if (n === 1) return 'طالب واحد';
+    if (n === 2) return 'طالبين';
+    if (n >= 3 && n <= 10) return n + ' طلاب';
+    return n + ' طالب';
+  }
+  function orgNum(x) { return String(Math.round(x * 10) / 10); }
+
+  function orgReadOpts() {
+    return {
+      stats: document.getElementById('org-opt-stats').checked,
+      num: document.getElementById('org-opt-num').checked,
+      pct: document.getElementById('org-opt-pct').checked,
+      sep: document.getElementById('org-opt-sep').checked,
+      sort: document.getElementById('org-opt-sort').value
+    };
+  }
+
+  function buildOrganizedResultsText(o) {
+    const filterSel = document.getElementById('examresults-filter');
+    const filterId = filterSel ? filterSel.value : '';
+    let results = Object.values(examResultsCache || {}).filter(r => r && (!filterId || r.examId === filterId));
+    if (!results.length) return '';
+
+    // تجميع حسب الاختبار
+    const groups = {};
+    results.forEach(r => {
+      const key = r.examId || ('t:' + (r.examTitle || ''));
+      const g0 = (groups[key] = groups[key] || { id: r.examId, title: '', list: [] });
+      if (!g0.title && r.examTitle) g0.title = r.examTitle;
+      g0.list.push(r);
+    });
+
+    // ترتيب الاختبارات بنفس ترتيبها في قسم الاختبارات
+    const keys = Object.keys(groups).sort((a, b) => {
+      const ea = (examsCache || {})[a], eb = (examsCache || {})[b];
+      return (ea ? (ea.order || 0) : Infinity) - (eb ? (eb.order || 0) : Infinity);
+    });
+
+    const blocks = keys.map(key => {
+      const g = groups[key];
+      const exam = (examsCache || {})[g.id];
+
+      // نفس الطالب لو دخل أكتر من مرة (نفس الاسم والتليفون): ناخد أعلى درجة
+      const byStudent = {};
+      g.list.forEach(r => {
+        const k = String(r.name || '').trim() + '|' + String(r.phone || '').trim();
+        const cur = byStudent[k];
+        const better = !cur || (r.percentage || 0) > (cur.percentage || 0) || ((r.percentage || 0) === (cur.percentage || 0) && (r.timestamp || 0) > (cur.timestamp || 0));
+        if (better) byStudent[k] = r;
+      });
+      let list = Object.values(byStudent);
+
+      // إجمالي درجات الاختبار: أكتر إجمالي متكرر في النتايج (أو عدد الأسئلة الحالي)
+      const freq = {};
+      list.forEach(r => { if (r.total) freq[r.total] = (freq[r.total] || 0) + 1; });
+      let total = Object.keys(freq).sort((a, b) => freq[b] - freq[a])[0];
+      total = total ? Number(total) : (exam && exam.questions ? Object.keys(exam.questions).length : 0);
+
+      list.sort((a, b) => {
+        if (o.sort === 'name') return String(a.name || '').localeCompare(String(b.name || ''), 'ar');
+        if (o.sort === 'time') return (b.timestamp || 0) - (a.timestamp || 0);
+        return ((b.score || 0) - (a.score || 0)) || String(a.name || '').localeCompare(String(b.name || ''), 'ar');
+      });
+
+      const stage = exam ? (exam.targetGrade ? (ORG_GRADE_SHORT[exam.targetGrade] || exam.targetGrade) : 'جميع المراحل') : '';
+      let header = String((exam && exam.title) || g.title || 'بدون عنوان').trim();
+      if (stage) header += ' "' + stage + '"';
+      if (total) header += ' (' + orgPointsWord(total) + ')';
+      header += ':';
+
+      const out = [header];
+      if (o.stats && list.length) {
+        const avg = list.reduce((s, r) => s + (r.score || 0), 0) / list.length;
+        const max = Math.max.apply(null, list.map(r => r.score || 0));
+        out.push('👥 ' + orgStudentsWord(list.length) + ' • 📊 المتوسط ' + orgNum(avg) + (total ? ' من ' + total : '') + ' • 🏆 الأعلى ' + max + (total ? ' من ' + total : ''));
+        out.push('');
+      }
+      list.forEach((r, i) => {
+        let line = (o.num ? (i + 1) + '. ' : '') + String(r.name || '').trim() + ' ' + (r.score || 0) + ' من ' + (r.total || total);
+        if (o.pct && r.percentage != null) line += ' (' + r.percentage + '%)';
+        out.push(line);
+      });
+      return out.join('\n');
+    });
+
+    return blocks.join(o.sep ? '\n\n━━━━━━━━━━━━━━\n\n' : '\n\n');
+  }
+
+  window.orgCopyRefresh = function() {
+    const o = orgReadOpts();
+    try { localStorage.setItem(ORG_OPTS_KEY, JSON.stringify(o)); } catch (e) {}
+    const text = buildOrganizedResultsText(o);
+    document.getElementById('org-preview').value = text || 'لا توجد نتائج لنسخها.';
+    const filterSel = document.getElementById('examresults-filter');
+    const label = filterSel && filterSel.value ? filterSel.options[filterSel.selectedIndex].text : 'كل الاختبارات';
+    document.getElementById('org-scope').textContent = '📌 النطاق: ' + label + ' — (بيتغير حسب فلتر الاختبار في الصفحة اللي ورا)';
+  };
+
+  window.openOrganizedCopy = function() {
+    if (!Object.keys(examResultsCache || {}).length) { alert('لا توجد نتائج لنسخها'); return; }
+    let saved = {};
+    try { saved = JSON.parse(localStorage.getItem(ORG_OPTS_KEY) || '{}') || {}; } catch (e) {}
+    document.getElementById('org-opt-stats').checked = saved.stats !== undefined ? !!saved.stats : true;
+    document.getElementById('org-opt-num').checked = !!saved.num;
+    document.getElementById('org-opt-pct').checked = !!saved.pct;
+    document.getElementById('org-opt-sep').checked = saved.sep !== undefined ? !!saved.sep : true;
+    document.getElementById('org-opt-sort').value = saved.sort || 'score';
+    orgCopyRefresh();
+    document.getElementById('org-copy-modal').classList.add('open');
+  };
+  window.closeOrganizedCopy = function() { document.getElementById('org-copy-modal').classList.remove('open'); };
+
+  window.orgCopyDo = function() {
+    const text = document.getElementById('org-preview').value;
+    if (!text || text === 'لا توجد نتائج لنسخها.') { alert('لا توجد نتائج لنسخها'); return; }
+    const done = function() { if (typeof showAdminToast === 'function') showAdminToast(); closeOrganizedCopy(); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(function() { orgFallbackCopy(text); done(); });
+    } else { orgFallbackCopy(text); done(); }
+  };
+  function orgFallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+  }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') { const m = document.getElementById('org-copy-modal'); if (m && m.classList.contains('open')) closeOrganizedCopy(); }
+  });
 
   window.adminDeleteExamResult = function(rid) {
     if (!confirm('حذف النتيجة دي؟')) return;
