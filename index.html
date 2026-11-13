@@ -13023,7 +13023,7 @@ function initPushSystem() {
 
     const userStrip = code
       ? `<div class="ch-user"><div class="ch-user-stats"><span>👋 أهلاً <b>${esc(shortName(currentStudent.name))}</b></span><span>⭐ نقاطك: <b>${myPoints}</b></span><span>🛡️ شارتك: <b>${myBadge ? esc(myBadge.label) : 'لسه ماحصلتش على شارة'}</b></span></div></div>`
-      : `<div class="ch-user"><span>سجّل دخولك عشان نقاطك وشاراتك تتسجل باسمك.</span><button class="ch-mini-btn" onclick="chLoginOnly()">🎓 تسجيل الدخول</button></div>`;
+      : `<div class="ch-user"><span>تقدر تشارك في التحدي من غير حساب. وسجّل دخولك لو عايز نقاطك وشاراتك تتسجل على حسابك.</span><button class="ch-mini-btn" onclick="chLoginOnly()">🎓 تسجيل الدخول</button></div>`;
 
     const list = getChallenges(false);
     const cid = pickSelected(list);
@@ -13061,7 +13061,6 @@ function initPushSystem() {
       else if (st.key === 'upcoming') { btnTxt = '🔒 هيتفتح ' + formatDateArabic(e.scheduleDate) + ' الساعة ' + formatTimeArabic(e.scheduleStartTime); btnDis = true; }
       else if (st.key === 'ended') { btnTxt = '🔒 انتهى وقت التحدي'; btnDis = true; }
       else if (n === 0) { btnTxt = 'الأسئلة قيد التجهيز'; btnDis = true; }
-      else if (!code) { btnTxt = '🎓 سجّل دخولك وابدأ التحدي'; }
       const sched = st.sched || { state: 'none' };
 
       const ladder = (Array.isArray(e.challengePoints) && e.challengePoints.length ? e.challengePoints : DEFAULT_POINTS)
@@ -13206,11 +13205,6 @@ function initPushSystem() {
 
   window.chStart = function(cid) {
     if (!examsCache[cid]) return;
-    if (typeof currentStudent === 'undefined' || !currentStudent) {
-      window.__challengeLoginPending = cid;
-      showLoginOverRidingPage();
-      return;
-    }
     continueStart(cid);
   };
 
@@ -13224,6 +13218,8 @@ function initPushSystem() {
       return;
     }
     if (!qCount(e)) { alert('الأسئلة لسه بتتجهز، تابعنا قريباً.'); return; }
+    const isGuest = (typeof currentStudent === 'undefined' || !currentStudent);
+    if (isGuest) { window.__chStudentGrade = ''; openIntro(cid); return; }
     const code = currentStudent.code;
     db.ref('challengeResults/' + cid + '/' + code).once('value').then(function(snap) {
       if (snap.exists()) {
@@ -13294,7 +13290,7 @@ function initPushSystem() {
     const sg = gradeByLabel(window.__chStudentGrade || '');
     formGradeKey = sg ? sg.key : '';
     formCenter = '';
-    qEl('chi-name').value = (currentStudent && currentStudent.name) || '';
+    qEl('chi-name').value = (typeof currentStudent !== 'undefined' && currentStudent && currentStudent.name) || '';
     qEl('chi-phone').value = '';
     document.querySelectorAll('#challenge-intro-page .exam-form-error').forEach(x => x.classList.remove('show'));
     renderFormPickers();
@@ -13346,7 +13342,7 @@ function initPushSystem() {
 
   window.chFormSubmit = function() {
     const e = examsCache[introCid];
-    if (!e || !db || !currentStudent) return;
+    if (!e || !db) return;
     const cid = introCid;
     const name = qEl('chi-name').value.trim().replace(/\s+/g, ' ');
     const phone = normPhone(qEl('chi-phone').value);
@@ -13366,13 +13362,14 @@ function initPushSystem() {
 
     const btn = qEl('chi-start-btn');
     btn.disabled = true;
-    const code = currentStudent.code;
+    // الطالب المسجل: المفتاح كود حسابه (النقاط والشارات بتتسجل عليه). الزائر: المفتاح رقم الواتساب (محاولة واحدة لكل رقم).
+    const code = (typeof currentStudent !== 'undefined' && currentStudent) ? currentStudent.code : ('g' + phone);
     const ref = db.ref('challengeResults/' + cid + '/' + code);
     ref.transaction(function(cur) {
       return cur ? undefined : { name: name, grade: g.label, gradeKey: g.key, center: formCenter, startedAt: Date.now(), status: 'started' };
     }).then(function(res) {
       btn.disabled = false;
-      if (!res.committed) { alert('إنت بدأت التحدي ده قبل كده.'); chIntroClose(); return; }
+      if (!res.committed) { alert('الحساب أو رقم الواتساب ده شارك في التحدي قبل كده، والمحاولة واحدة بس.'); chIntroClose(); return; }
       // رقم الواتساب بيتحفظ في عقدة منفصلة (مش في challengeResults) عشان نتايج التحدي بتتحمّل عند كل الطلاب
       try {
         db.ref('challengeContacts/' + cid + '/' + code).set({ name: name, whatsapp: phone, center: formCenter, grade: g.label, savedAt: Date.now() })
